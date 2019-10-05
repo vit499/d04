@@ -1,0 +1,65 @@
+package ru.vit499.d04
+
+import android.os.Bundle
+import android.util.Log
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.onNavDestinationSelected
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
+import kotlinx.android.synthetic.main.activity_main.*
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav.setupWithNavController(navController)
+
+        setSupportActionBar(toolbar)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+//        fab.setOnClickListener { view ->
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
+//        }
+
+        navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
+            if (nd.id == R.id.mainFragment || nd.id == R.id.outputsFragment || nd.id == R.id.notifyFragment) {
+                //toolbar.visibility = View.VISIBLE
+                bottomNav.visibility = View.VISIBLE
+            } else {
+                //toolbar.visibility =  View.GONE
+                bottomNav.visibility =  View.GONE
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+//        val navController = this.findNavController(R.id.nav_host_fragment)
+//        return navController.navigateUp()
+        Log.i("aa", "up")
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
+
+    }
+
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="ru.vit499.d04.ui.main.MainFragment"
+        android:label="MainFragment" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="ru.vit499.d04.ui.misc.AboutFragment"
+        android:label="AboutFragment" />
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="ru.vit499.d04.ui.misc.AccountFragment"
+        android:label="AccountFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="ru.vit499.d04.ui.notify.NotifyFragment"
+        android:label="NotifyFragment" >
+        <action
+            android:id="@+id/action_notifyFragment_to_objFragment"
+            app:destination="@id/objFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/objEditFragment"
+        android:name="ru.vit499.d04.ui.objects.ObjEditFragment"
+        android:label="ObjEditFragment" >
+        <action
+            android:id="@+id/action_objEditFragment_to_objFragment"
+            app:destination="@id/objFragment"
+            app:popUpTo="@+id/objFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/objFragment"
+        android:name="ru.vit499.d04.ui.objects.ObjFragment"
+        android:label="ObjFragment" >
+        <action
+            android:id="@+id/action_objFragment_to_objEditFragment"
+            app:destination="@id/objEditFragment" />
+        <action
+            android:id="@+id/action_objFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/outputsFragment"
+        android:name="ru.vit499.d04.ui.outputs.OutputsFragment"
+        android:label="OutputsFragment" >
+        <action
+            android:id="@+id/action_outputsFragment_to_objFragment"
+            app:destination="@id/objFragment" />
+    </fragment>
+</navigation>
