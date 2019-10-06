@@ -8,6 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,10 +19,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.vit499.d04.database.ObjDatabase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +55,11 @@ class MainActivity : AppCompatActivity() {
                 bottomNav.visibility =  View.GONE
             }
         }
+
+        val application = requireNotNull(this).application
+        val dataSource = ObjDatabase.getInstance(application).objDatabaseDao
+        val viewModelFactory = MainViewModelFactory(dataSource, application)
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
     override fun onSupportNavigateUp(): Boolean {
