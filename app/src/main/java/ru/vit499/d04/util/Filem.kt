@@ -49,7 +49,9 @@ class Filem {
             return(getVal(fileAccPort))
         }
         fun getCurrentObjName() : String {
-            return(getVal(fileCurObj))
+            var s = getVal(fileCurObj)
+            if(s.equals("")) s = "-"
+            return(s)
         }
 
         fun setAccUser(s : String) {

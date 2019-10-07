@@ -4,12 +4,18 @@ package ru.vit499.d04.ui.main
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
 import ru.vit499.d04.http.HttpReq
+import ru.vit499.d04.util.Logm
+import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
@@ -17,6 +23,7 @@ import ru.vit499.d04.http.HttpReq
 class MainFragment : Fragment() {
 
     private var httpReq: HttpReq? = null
+    private lateinit var mainViewModel : MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +43,20 @@ class MainFragment : Fragment() {
         buttonClose.setOnClickListener(){
             httpReq?.Close()
         }
+
+        mainViewModel = activity?.run {
+            Logm.aa("main fr")
+            ViewModelProviders.of(this)[MainViewModel::class.java]
+        } ?: throw Exception("Invalid activity")
+
+        mainViewModel.curObjName.observe(this, Observer { objName ->
+            objName.let{
+                Logm.aa("obj name=$objName ")
+                (activity as AppCompatActivity).supportActionBar?.title = objName
+            }
+            Logm.aa("curObjName in MainFragment")
+        })
+        //(activity as AppCompatActivity).actionBar?.title = ""
         return view
     }
 
