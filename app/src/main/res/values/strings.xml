@@ -25,4 +25,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_obj_edit">Изменить</string>
+    <string name="enter_new_number">Введите номер объекта:</string>
+    <string name="enter_descr">Описание:</string>
+    <string name="enter_code">Код пользователя:</string>
+    <string name="text_save">Сохранить</string>
+    <string name="number_obj">Номер объекта:</string>
 </resources>
