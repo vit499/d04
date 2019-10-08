@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import ru.vit499.d04.MainViewModel
 
@@ -56,6 +57,22 @@ class MainFragment : Fragment() {
             }
             Logm.aa("curObjName in MainFragment")
         })
+
+        mainViewModel.navigateToNewObj.observe(this, Observer {
+            if(it) {
+                Logm.aa("to add obj")
+                findNavController().navigate(R.id.action_mainFragment_to_objEditFragment)
+                mainViewModel.clrNavigationToNewObj()
+            }
+        })
+        mainViewModel.navigateToAcc.observe(this, Observer {
+            if(it){
+                Logm.aa("to acc ")
+                findNavController().navigate(R.id.action_mainFragment_to_accountFragment)
+                mainViewModel.clrNavigationToAcc()
+            }
+        })
+
         //(activity as AppCompatActivity).actionBar?.title = ""
         return view
     }

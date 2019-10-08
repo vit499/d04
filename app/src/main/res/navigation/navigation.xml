@@ -6,7 +6,14 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="ru.vit499.d04.ui.main.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_objEditFragment"
+            app:destination="@id/objEditFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="ru.vit499.d04.ui.misc.AboutFragment"
