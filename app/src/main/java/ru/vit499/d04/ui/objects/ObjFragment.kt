@@ -53,9 +53,9 @@ class ObjFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.objEditFragment) {
+        if(item.itemId == R.id.objNewFragment) {
             //Log.i("aa", "opt to edit obj")
-            findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
+            findNavController().navigate(R.id.action_objFragment_to_objNewFragment)
             return false
         }
         if(item.itemId == R.id.aboutFragment) {

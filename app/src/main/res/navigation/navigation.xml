@@ -8,11 +8,11 @@
         android:name="ru.vit499.d04.ui.main.MainFragment"
         android:label="MainFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_objEditFragment"
-            app:destination="@id/objEditFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_objNewFragment"
+            app:destination="@id/objNewFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -49,6 +49,9 @@
         <action
             android:id="@+id/action_objFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_objFragment_to_objNewFragment"
+            app:destination="@id/objNewFragment" />
     </fragment>
     <fragment
         android:id="@+id/outputsFragment"
@@ -58,4 +61,8 @@
             android:id="@+id/action_outputsFragment_to_objFragment"
             app:destination="@id/objFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/objNewFragment"
+        android:name="ru.vit499.d04.ui.objects.ObjNewFragment"
+        android:label="ObjNewFragment" />
 </navigation>

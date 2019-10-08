@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
         mainViewModel.navigateToNewObj.observe(this, Observer {
             if(it) {
                 Logm.aa("to add obj")
-                findNavController().navigate(R.id.action_mainFragment_to_objEditFragment)
+                findNavController().navigate(R.id.action_mainFragment_to_objNewFragment)
                 mainViewModel.clrNavigationToNewObj()
             }
         })

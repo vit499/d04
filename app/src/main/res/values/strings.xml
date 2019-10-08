@@ -21,4 +21,8 @@
     <string name="title_notify1">Уведомления</string>
     <string name="title_outputs">Выходы</string>
     <string name="button_http">HTTP</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_obj_edit">Изменить</string>
 </resources>

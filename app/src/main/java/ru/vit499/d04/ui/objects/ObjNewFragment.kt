@@ -6,29 +6,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-
 import ru.vit499.d04.R
 
 /**
  * A simple [Fragment] subclass.
  */
-class ObjEditFragment : Fragment() {
+class ObjNewFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_obj_edit, container, false)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_obj_edit)
+        val view = inflater.inflate(R.layout.fragment_obj_new, container, false)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_obj_new)
 
         return view
     }
-
 
 
 }
