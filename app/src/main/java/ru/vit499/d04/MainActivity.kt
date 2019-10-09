@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         val dataSource = ObjDatabase.getInstance(application).objDatabaseDao
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

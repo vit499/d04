@@ -30,6 +30,7 @@ class MainViewModel(
 //        get() = _objExist
     private var objExist : Boolean = false
     private var accExist : Boolean = false
+    private var curObjKey : Long = 0
 //    private val _accExist = MutableLiveData<Boolean>()
 //    val accExist : LiveData<Boolean>
 //        get() = _accExist
@@ -48,13 +49,14 @@ class MainViewModel(
         _navigateToAcc.value = false
     }
 
-    private val objs = database.getAllObj()
+    val objs = database.getAllObj()
 
     private val _curObj = MutableLiveData<Obj?>()
     val curObj : LiveData<Obj?>
         get() = _curObj
 
     init{
+        Filem.setDir(application)
         _navigateToNewObj.value = false
         val objName = Filem.getCurrentObjName()
         _curObjName.value = objName
@@ -76,6 +78,7 @@ class MainViewModel(
         }
     }
 
+    // извлечение активного объекта
     fun initCurObj () {
         uiScope.launch {
             getObjFromDatabase()
@@ -89,6 +92,43 @@ class MainViewModel(
             Logm.aa(formStrObj(obj))
             obj?.let {
                 _curObj.value = obj
+                curObjKey = obj.objId
+            }
+        }
+    }
+
+
+    fun onAddObj (s: ArrayList<String>) {
+        val obj = Obj()
+        obj.objName = s.get(0)
+        obj.objDescr = s.get(1)
+        obj.objCode = s.get(2)
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                database.insert(obj)
+            }
+        }
+    }
+    fun onUpdateObj (s: ArrayList<String>) {
+        val obj = _curObj.value ?: return
+        if(obj.objDescr.equals(s.get(0)) && obj.objCode.equals(s.get(1))) return
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                val obj = _curObj.value ?: return@withContext
+                //val obj = database.get(curObjKey) ?: return@withContext
+                obj.objDescr = s.get(0)
+                obj.objCode = s.get(1)
+                database.update(obj)
+                _curObj.value = obj
+            }
+        }
+    }
+    fun onDeleteObj () {
+        val obj = _curObj.value ?: return
+        val s = _curObjName.value ?: return
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                database.deleteObjByName(s)
             }
         }
     }
@@ -108,5 +148,6 @@ class MainViewModel(
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
+        Logm.aa("shutdown")
     }
 }

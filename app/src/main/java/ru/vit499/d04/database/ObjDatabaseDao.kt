@@ -27,4 +27,7 @@ interface ObjDatabaseDao {
     @Query("SELECT * from obj_table WHERE obj_name = :obj_name")
     fun getObjByName(obj_name: String): Obj?
 
+    @Query("DELETE FROM obj_table WHERE obj_name = :obj_name")
+    fun deleteObjByName(obj_name: String)
+
 }

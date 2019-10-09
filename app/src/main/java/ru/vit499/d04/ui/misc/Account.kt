@@ -1,8 +1,10 @@
 package ru.vit499.d04.ui.misc
 
+import android.app.Application
 import ru.vit499.d04.util.Filem
+import ru.vit499.d04.util.Logm
 
-class Account {
+class Account() {
 
     companion object {
         var accUser: String = ""
@@ -13,6 +15,7 @@ class Account {
 
         fun fill(): Boolean {
             accUser = Filem.getAccUser()
+            Logm.aa("accUser=$accUser")
             accPass = Filem.getAccPass()
             accServ = Filem.getAccServ()
             accPort = Filem.getAccPort()

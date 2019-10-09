@@ -1,9 +1,11 @@
 package ru.vit499.d04.util
 
+import android.app.Application
+import android.content.Context
 import java.io.File
 import java.lang.Exception
 
-class Filem {
+class Filem() {
 
     companion object{
 
@@ -12,9 +14,16 @@ class Filem {
         val fileAccPass : String = "accPass.txt"
         val fileAccServ : String = "accServ.txt"
         val fileAccPort : String = "accPort.txt"
+        var strDir : String = ""
+        //val strDir : String = (application as Context).getFilesDir().getPath().toString()
 
-        fun getVal(f : String): String {
+        fun setDir(application: Application) {
+            strDir = (application as Context).getFilesDir().getPath().toString()
+            Logm.aa("strDir = $strDir")
+        }
+        fun getVal(f1 : String): String {
             var str : String = ""
+            var f = strDir + "/" + f1
             try {
                 val file = File(f)
                 if (file.exists()) {
@@ -24,11 +33,14 @@ class Filem {
             catch (ex: Exception){
                 Logm.aa(ex.toString())
             }
+            Logm.aa("get val $str from file $f ")
             return str
         }
-        fun setVal(f: String, str: String) {
+        fun setVal(f1: String, str: String) {
+            var f = strDir + "/" + f1
             try {
                 val file = File(f)
+                Logm.aa("save val $str to file $f")
                 file.writeText(str)
             }
             catch(ex: Exception){

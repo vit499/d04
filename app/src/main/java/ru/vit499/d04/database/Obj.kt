@@ -11,11 +11,11 @@ data class Obj(
     var objId: Long = 0L,
 
     @ColumnInfo(name = "obj_name")
-    val objName: String = "",
+    var objName: String = "",
 
     @ColumnInfo(name = "obj_descr")
-    val objDescr: String = "",
+    var objDescr: String = "",
 
     @ColumnInfo(name = "obj_code")
-    val objCode: String = ""
+    var objCode: String = ""
 )

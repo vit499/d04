@@ -7,6 +7,7 @@ import android.view.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -43,7 +44,11 @@ class ObjFragment : Fragment() {
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
-
+        objViewModel.objs.observe(this, Observer {
+            it?.let {
+                adapter.data = it
+            }
+        })
         return view
     }
 

@@ -30,4 +30,9 @@
     <string name="enter_code">Код пользователя:</string>
     <string name="text_save">Сохранить</string>
     <string name="number_obj">Номер объекта:</string>
+    <string name="text_view_login">Логин:</string>
+    <string name="text_view_pass">Пароль:</string>
+    <string name="text_view_server">Сервер:</string>
+    <string name="text_view_port">Порт:</string>
+    <string name="err_acc_message">Заполните все поля</string>
 </resources>
