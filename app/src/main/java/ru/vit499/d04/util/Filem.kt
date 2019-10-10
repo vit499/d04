@@ -33,14 +33,14 @@ class Filem() {
             catch (ex: Exception){
                 Logm.aa(ex.toString())
             }
-            Logm.aa("get val $str from file $f ")
+           // Logm.aa("get val $str from file $f ")
             return str
         }
         fun setVal(f1: String, str: String) {
             var f = strDir + "/" + f1
             try {
                 val file = File(f)
-                Logm.aa("save val $str to file $f")
+               // Logm.aa("save val $str to file $f")
                 file.writeText(str)
             }
             catch(ex: Exception){

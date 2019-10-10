@@ -91,21 +91,40 @@ class MainViewModel(
 
             Logm.aa(formStrObj(obj))
             obj?.let {
-                _curObj.value = obj
+                _curObj.postValue(obj)
                 curObjKey = obj.objId
+            }
+        }
+    }
+    fun getObjById (id: Long) {
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                val obj = database.getObjById(id)
+                obj?.let {
+                    _curObj.postValue(obj)
+                    _curObjName.postValue(obj.objName)
+
+                } ?: return@withContext
             }
         }
     }
 
 
     fun onAddObj (s: ArrayList<String>) {
+        Logm.aa("n=${s.get(0)} d=${s.get(1)} c=${s.get(2)}")
         val obj = Obj()
         obj.objName = s.get(0)
         obj.objDescr = s.get(1)
         obj.objCode = s.get(2)
+        val objName = obj.objName
+
         uiScope.launch {
             withContext(Dispatchers.IO){
                 database.insert(obj)
+                Filem.setCurrentObjName(objName)
+                _curObjName.postValue(objName)
+                objExist = true
+                Logm.aa("obj cnt= ${objs.value?.size}")
             }
         }
     }
@@ -132,7 +151,9 @@ class MainViewModel(
             }
         }
     }
-
+    fun onCurrentObj (id: Long) {
+        getObjById(id)
+    }
     fun onSaveAcc(s: ArrayList<String>) {
         val acc = Account.setAcc(s)
         accExist = acc

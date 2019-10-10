@@ -24,8 +24,8 @@
             <EditText
                 android:id="@+id/et_55_1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </EditText>
+                android:layout_height="wrap_content"
+                android:textAlignment="center"></EditText>
 
             <TextView
                 android:id="@+id/tv55_2"
@@ -35,12 +35,13 @@
                 android:layout_marginBottom="2dp"
                 android:text="@string/text_view_pass">
             </TextView>
+
             <EditText
                 android:id="@+id/et_55_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword">
-            </EditText>
+                android:inputType="textPassword"
+                android:textAlignment="center"></EditText>
 
             <TextView
                 android:id="@+id/tv55_3"
@@ -54,8 +55,8 @@
             <EditText
                 android:id="@+id/et_55_3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </EditText>
+                android:layout_height="wrap_content"
+                android:textAlignment="center"></EditText>
             <TextView
                 android:id="@+id/tv55_4"
                 style="@style/tvstyle1"
@@ -68,8 +69,8 @@
             <EditText
                 android:id="@+id/et_55_4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </EditText>
+                android:layout_height="wrap_content"
+                android:textAlignment="center"></EditText>
 
             <Button
                 android:id="@+id/btn_55_1"

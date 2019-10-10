@@ -68,5 +68,11 @@
     <fragment
         android:id="@+id/objNewFragment"
         android:name="ru.vit499.d04.ui.objects.ObjNewFragment"
-        android:label="ObjNewFragment" />
+        android:label="ObjNewFragment" >
+        <action
+            android:id="@+id/action_objNewFragment_to_objFragment"
+            app:destination="@id/objFragment"
+            app:popUpTo="@+id/objFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

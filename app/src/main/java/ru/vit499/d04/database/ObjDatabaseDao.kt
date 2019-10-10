@@ -16,7 +16,7 @@ interface ObjDatabaseDao {
     fun update(obj: Obj)
 
     @Query("SELECT * from obj_table WHERE objId = :key")
-    fun get(key: Long): Obj?
+    fun getObjById(key: Long): Obj?
 
     @Query("DELETE FROM obj_table")
     fun deleteAllObj()
