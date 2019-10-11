@@ -37,4 +37,7 @@
     <string name="err_acc_message">Заполните все поля</string>
     <string name="text_delete">Удалить</string>
     <string name="err_obj_message">Допустимы только 0-9,A-F</string>
+    <string name="obj_empty">Нет объектов</string>
+    <string name="title_about">О программе</string>
+    <string name="title_account">Аккаунт</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.lang.Exception
 import java.net.InetAddress
@@ -40,8 +41,10 @@ class HttpReq (
             socket = Socket(InetAddress.getByName(server), port)
             Log.i("aa", "connected")
             socket?.setSoTimeout(2000)
-            outputStreamWriter = OutputStreamWriter(socket?.getOutputStream())
-            inputStreamReader = InputStreamReader(socket?.getInputStream())
+            val outputStream : OutputStream? = socket?.getOutputStream() ?: return false
+            val inputStream : InputStream? = socket?.getInputStream() ?: return false
+            outputStreamWriter = OutputStreamWriter(outputStream!!)
+            inputStreamReader = InputStreamReader(inputStream!!)
             //inputStream = socket?.getInputStream()
 
             rcnt2 = 0

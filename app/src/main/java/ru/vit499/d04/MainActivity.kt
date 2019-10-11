@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
-            if (nd.id == R.id.mainFragment || nd.id == R.id.outputsFragment || nd.id == R.id.notifyFragment) {
+            if (nd.id == R.id.mainFragment || nd.id == R.id.outputsFragment
+                || nd.id == R.id.notifyFragment) {
                 //toolbar.visibility = View.VISIBLE
                 bottomNav.visibility = View.VISIBLE
             } else {

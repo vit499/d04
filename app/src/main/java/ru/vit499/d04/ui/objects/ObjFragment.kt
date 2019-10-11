@@ -1,6 +1,7 @@
 package ru.vit499.d04.ui.objects
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -36,16 +37,17 @@ class ObjFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_obj)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recl_obj)
-        val adapter = ObjAdapter(onClickListener = { m, pos ->
-            Logm.aa("m= $m , pos=$pos")
+        val adapter = ObjAdapter(onClickListener = { m, objId ->
+            Logm.aa("m= $m , pos=$objId")
             Logm.aa("ajdf")
             if(m == 0){
-                objViewModel.onCurrentObj(pos)
-                findNavController().navigate(R.id.action_objFragment_to_mainFragment)
+                objViewModel.onCurrentObj(objId)
+                //this.findNavController().navigate(R.id.action_objFragment_to_mainFragment)
+                (activity as AppCompatActivity).onBackPressed()
             }
             else {
-                objViewModel.onCurrentObj(pos)
-                findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
+                objViewModel.onCurrentObjEdit(objId)
+                this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
             }
         })
         recyclerView.adapter = adapter
@@ -73,13 +75,13 @@ class ObjFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.objNewFragment) {
             //Log.i("aa", "opt to edit obj")
-            findNavController().navigate(R.id.action_objFragment_to_objNewFragment)
+            this.findNavController().navigate(R.id.action_objFragment_to_objNewFragment)
             return false
         }
-        if(item.itemId == R.id.aboutFragment) {
-            NavigationUI.onNavDestinationSelected(item!!, view!!.findNavController())
-            return false
-        }
+//        if(item.itemId == R.id.aboutFragment) {
+//            NavigationUI.onNavDestinationSelected(item!!, view!!.findNavController())
+//            return false
+//        }
         return super.onOptionsItemSelected(item)
 //        if(item.itemId == R.id.objEditFragment) {
 //            Log.i("aa", "opt to edit obj")

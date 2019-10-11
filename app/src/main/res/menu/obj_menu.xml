@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_control_point_black_24dp"
         android:title="@string/obj_menu_obj_add"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/aboutFragment"
-        android:title="@string/main_menu_about" />
+<!--    <item-->
+<!--        android:id="@+id/aboutFragment"-->
+<!--        android:title="@string/main_menu_about" />-->
 </menu>

@@ -74,7 +74,7 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
                 <Button
-                    android:id="@+id/btn_6_1"
+                    android:id="@+id/btn_62_1"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginLeft="5dp"
@@ -85,7 +85,7 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/btn_6_2"
+                    android:id="@+id/btn_62_2"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginLeft="5dp"

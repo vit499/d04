@@ -48,11 +48,6 @@ class ObjNewFragment : Fragment() {
         val filter1 = InputFilter { source, start, end, dest, dstart, dend ->
             val blockCharacterSet = "0123456789ABCDEF"
             if (source != null && !blockCharacterSet.contains("" + source)) {
-//                Snackbar.make(
-//                    activity!!.findViewById(android.R.id.content),
-//                    getString(R.string.err_obj_message),
-//                    Snackbar.LENGTH_SHORT // How long to display the message.
-//                ).show()
                 Toast.makeText(activity, "Допустимы 0-9,A-F", Toast.LENGTH_SHORT).show()
                 return@InputFilter ""
             }
@@ -82,7 +77,8 @@ class ObjNewFragment : Fragment() {
                 s.add(objDescr)
                 s.add(objCode)
                 viewModel.onAddObj(s)
-                findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
+                //findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
+                (activity as AppCompatActivity).onBackPressed()
             }
         }
 

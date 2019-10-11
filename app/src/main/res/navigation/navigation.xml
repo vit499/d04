@@ -37,12 +37,7 @@
     <fragment
         android:id="@+id/objEditFragment"
         android:name="ru.vit499.d04.ui.objects.ObjEditFragment"
-        android:label="ObjEditFragment" >
-        <action
-            android:id="@+id/action_objEditFragment_to_objFragment"
-            app:destination="@id/objFragment"
-            app:popUpTo="@+id/objFragment" />
-    </fragment>
+        android:label="ObjEditFragment" />
     <fragment
         android:id="@+id/objFragment"
         android:name="ru.vit499.d04.ui.objects.ObjFragment"
@@ -50,9 +45,6 @@
         <action
             android:id="@+id/action_objFragment_to_objEditFragment"
             app:destination="@id/objEditFragment" />
-        <action
-            android:id="@+id/action_objFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_objFragment_to_objNewFragment"
             app:destination="@id/objNewFragment" />
@@ -68,11 +60,5 @@
     <fragment
         android:id="@+id/objNewFragment"
         android:name="ru.vit499.d04.ui.objects.ObjNewFragment"
-        android:label="ObjNewFragment" >
-        <action
-            android:id="@+id/action_objNewFragment_to_objFragment"
-            app:destination="@id/objFragment"
-            app:popUpTo="@+id/objFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        android:label="ObjNewFragment" />
 </navigation>

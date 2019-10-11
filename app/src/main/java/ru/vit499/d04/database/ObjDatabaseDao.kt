@@ -30,4 +30,7 @@ interface ObjDatabaseDao {
     @Query("DELETE FROM obj_table WHERE obj_name = :obj_name")
     fun deleteObjByName(obj_name: String)
 
+    @Query("SELECT * FROM obj_table ORDER BY objId DESC LIMIT 1")
+    fun getObj(): Obj?
+
 }

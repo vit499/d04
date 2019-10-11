@@ -50,11 +50,13 @@ class MainFragment : Fragment() {
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid activity")
 
-        mainViewModel.curObjName.observe(this, Observer { objName ->
-            objName.let{
-                Logm.aa("obj name=$objName ")
-                (activity as AppCompatActivity).supportActionBar?.title = objName
+        mainViewModel.curObj.observe(this, Observer { obj ->
+            var s: String = getString(R.string.obj_empty)
+            obj?.let{
+                Logm.aa("obj name=${obj.objName} ")
+                s = obj.objName
             }
+            (activity as AppCompatActivity).supportActionBar?.title = s
             Logm.aa("curObjName in MainFragment")
         })
 

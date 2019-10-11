@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -30,6 +31,7 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account, container, false)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_account)
 
         val viewModel = activity?.run {
             ViewModelProviders.of(this)[MainViewModel::class.java]
@@ -54,7 +56,8 @@ class AccountFragment : Fragment() {
             }
             else {
                 viewModel.onSaveAcc(acc!!)
-                findNavController().navigate(R.id.action_accountFragment_to_mainFragment)
+                //findNavController().navigate(R.id.action_accountFragment_to_mainFragment)
+                (activity as AppCompatActivity).onBackPressed()
             }
         }
         return binding.root
