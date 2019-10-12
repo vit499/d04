@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
+import ru.vit499.d04.http.HttpCor
+import ru.vit499.d04.http.HttpReq
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Filem
 import ru.vit499.d04.util.Logm
@@ -246,6 +248,45 @@ class MainViewModel(
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
+        httpReq?.Close()
         Logm.aa("shutdown")
+    }
+
+    //--------------------------
+
+    val httpJob = Job()
+    val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
+    //val hr = HttpCor()
+
+    private var _strHttpStat = MutableLiveData<String>()
+    val strHttpStat : LiveData<String>
+        get() = _strHttpStat
+
+    private var httpReq: HttpReq? = null
+
+    fun onReqStat () {
+        val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
+        httpReq = HttpReq(this.getApplication())
+        httpReq?.Send1(strReq, resultReq = {s -> updObjStat(s)})
+
+        //val hr = HttpCor()
+//        httpScope.launch {
+//            withContext(Dispatchers.Default){
+//                val f1 = async { hr.Send(strReq) }
+//                val s = f1.await()
+//                updObjStat(s)
+//                Logm.aa("httpScope end")
+//            }
+//        }
+    }
+    fun updObjStat (s: String) {
+        Logm.aa("http callback:")
+        Logm.aa(s)
+        _strHttpStat.postValue(s)
+    }
+    fun onHttpClose(){
+        httpReq?.Close()
+        //hr.Close()
+        //httpJob.cancel()
     }
 }

@@ -6,17 +6,17 @@
 
     <TextView
         android:id="@+id/text_view_main"
+        style="@style/tvstyle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/view_main"
-        style="@style/tvstyle1" />
+        android:text="@string/view_main" />
 
     <Button
         android:id="@+id/buttonHttp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/button_http" />
 
@@ -24,11 +24,29 @@
         android:id="@+id/buttonClose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:text="Close" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:bufferType="spannable"
+            android:drawablePadding="2dp"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="5dp"
+            android:isScrollContainer="true"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbars="vertical">
+        </TextView>
+    </ScrollView>
 
 </LinearLayout>

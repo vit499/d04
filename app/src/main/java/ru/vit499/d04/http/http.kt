@@ -2,6 +2,8 @@ package ru.vit499.d04.http
 
 import android.app.Application
 import android.util.Log
+import ru.vit499.d04.ui.misc.Account
+import ru.vit499.d04.util.Logm
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
@@ -10,18 +12,25 @@ import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
 
-class HttpReq (
+class HttpReq(
     val application: Application) {
 
-    companion object{
-        //val server: String = "online1.navigard.ru"
-        val server: String = "vit499.ru"
-        val port: Int = 80
-        val user: String = "aa11"
-        val pass: String = "aa11"
-        val numObj: String = "2223"
-        val SIZEBUF: Int = 10000
-    }
+//    companion object{
+//        //val server: String = "online1.navigard.ru"
+//        val server: String = "vit499.ru"
+//        val port: Int = 80
+//        val user: String = "aa11"
+//        val pass: String = "aa11"
+//        val numObj: String = "2223"
+//        val SIZEBUF: Int = 10000
+//    }
+
+    val SIZEBUF: Int = 10000
+    val server = "vit499.ru" // Account.accServ
+    val strPort = Account.accPort
+    val port: Int = 80  // strPort.toInt()
+    val user = Account.accUser
+    val pass = Account.accPass
 
     var isOpen: Boolean = false
     var socket: Socket? = null
@@ -35,11 +44,14 @@ class HttpReq (
     var rcnt1: Int = 0
     var rcnt2: Int = 0
 
-    fun Send(strSend: String) : Boolean {
+    fun Send(
+        strSend: String,
+        resultReq: (String) -> Unit
+    ) : Boolean {
         isOpen = false
         try{
             socket = Socket(InetAddress.getByName(server), port)
-            Log.i("aa", "connected")
+            Logm.aa("connected")
             socket?.setSoTimeout(2000)
             val outputStream : OutputStream? = socket?.getOutputStream() ?: return false
             val inputStream : InputStream? = socket?.getInputStream() ?: return false
@@ -72,12 +84,13 @@ class HttpReq (
                         }
                         if(rcnt2 >= 100) {
                             val s: String = String(rbuf2, 0, rcnt2)
-                            Log.i("aa", "rcnt=${rcnt2.toString()} b=$s")
+                            Logm.aa("rcnt=${rcnt2.toString()} b=$s")
+                            resultReq(s)
                             break
                         }
                     }
                     catch(ex: Exception){
-                        Log.i("aa", "rec exc: ${ex.toString()}")
+                        Logm.aa("rec exc: ${ex.toString()}")
                     }
                 }
             }
@@ -85,19 +98,19 @@ class HttpReq (
 
             outputStreamWriter?.write(strSend)
             outputStreamWriter?.flush()
-            Log.i("aa", "sended")
+            Logm.aa("sended")
 
 
         }
         catch(ex: Exception) {
-            Log.i("aa", "open exc: ${ex.toString()}")
+            Logm.aa("open exc: ${ex.toString()}")
         }
         return(isOpen)
     }
 
-    fun Send1(strSend: String){
+    fun Send1(strSend: String, resultReq: (String) -> Unit){
         val thread = Thread() {
-            Send(strSend)
+            Send(strSend, resultReq)
         }
         thread.start()
     }
@@ -112,7 +125,7 @@ class HttpReq (
             socket?.close()
         }
         catch(ex: Exception){
-            Log.i("aa", "close exc: ${ex.toString()}")
+            Logm.aa("close exc: ${ex.toString()}")
         }
         isOpen = false
     }

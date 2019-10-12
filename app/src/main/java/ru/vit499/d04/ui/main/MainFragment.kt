@@ -4,6 +4,7 @@ package ru.vit499.d04.ui.main
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -37,12 +38,15 @@ class MainFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val buttonSend = view.findViewById<Button>(R.id.buttonHttp)
         val buttonClose = view.findViewById<Button>(R.id.buttonClose)
+        val tvLog = view.findViewById<TextView>(R.id.tv_log)
         buttonSend.setOnClickListener(){
-            httpReq = HttpReq(application)
-            httpReq?.Send1("GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n")
+//            httpReq = HttpReq(application)
+//            httpReq?.Send1("GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n")
+            mainViewModel.onReqStat()
         }
         buttonClose.setOnClickListener(){
-            httpReq?.Close()
+            //httpReq?.Close()
+            mainViewModel.onHttpClose()
         }
 
         mainViewModel = activity?.run {
@@ -72,6 +76,14 @@ class MainFragment : Fragment() {
                 Logm.aa("to acc ")
                 findNavController().navigate(R.id.action_mainFragment_to_accountFragment)
                 mainViewModel.clrNavigationToAcc()
+            }
+        })
+        mainViewModel.strHttpStat.observe(this, Observer { s ->
+            s?.let{
+                var s1 : StringBuffer = StringBuffer()
+                s1.append(tvLog.text.toString())
+                s1.append(s)
+                tvLog.text = s1.toString()
             }
         })
 
