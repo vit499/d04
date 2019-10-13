@@ -40,4 +40,6 @@
     <string name="obj_empty">Нет объектов</string>
     <string name="title_about">О программе</string>
     <string name="title_account">Аккаунт</string>
+    <string name="default_notification_channel_id">notification</string>
+    <string name="fcm_message">fcm message</string>
 </resources>

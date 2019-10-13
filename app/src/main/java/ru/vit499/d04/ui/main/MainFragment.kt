@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
@@ -40,9 +42,8 @@ class MainFragment : Fragment() {
         val buttonClose = view.findViewById<Button>(R.id.buttonClose)
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
         buttonSend.setOnClickListener(){
-//            httpReq = HttpReq(application)
-//            httpReq?.Send1("GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n")
             mainViewModel.onReqStat()
+
         }
         buttonClose.setOnClickListener(){
             //httpReq?.Close()
