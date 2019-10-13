@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDestination
@@ -41,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
+
 //        fab.setOnClickListener { view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
@@ -62,6 +66,12 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
+        mainViewModel.progress.observe(this, Observer {
+            if(it){
+                progressBar.visibility = View.VISIBLE
+            }
+            else progressBar.visibility = View.GONE
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -13,6 +13,7 @@ import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Filem
 import ru.vit499.d04.util.Logm
 import ru.vit499.d04.util.formStrObj
+import ru.vit499.d04.util.strReqHttp
 
 class MainViewModel(
     val database: ObjDatabaseDao,
@@ -248,7 +249,8 @@ class MainViewModel(
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
-        httpReq?.Close()
+        httpJob.cancel()
+        httpR?.Close()
         Logm.aa("shutdown")
     }
 
@@ -256,37 +258,37 @@ class MainViewModel(
 
     val httpJob = Job()
     val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
-    //val hr = HttpCor()
 
     private var _strHttpStat = MutableLiveData<String>()
     val strHttpStat : LiveData<String>
         get() = _strHttpStat
 
+    private var _progress = MutableLiveData<Boolean>()
+    val progress : LiveData<Boolean>
+        get() = _progress
+
     private var httpReq: HttpReq? = null
+    private var httpR: HttpCor? = null
 
     fun onReqStat () {
-        val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
-        httpReq = HttpReq(this.getApplication())
-        httpReq?.Send1(strReq, resultReq = {s -> updObjStat(s)})
-
-        //val hr = HttpCor()
-//        httpScope.launch {
-//            withContext(Dispatchers.Default){
-//                val f1 = async { hr.Send(strReq) }
-//                val s = f1.await()
-//                updObjStat(s)
-//                Logm.aa("httpScope end")
-//            }
-//        }
+        //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
+        val strReq = strReqHttp(curObjName, "state")
+        _progress.value = true
+        httpR = HttpCor()
+        httpScope.launch {
+            val s = httpR?.reqStat(strReq, 10) ?: "-"
+            updObjStat(s)
+            _progress.postValue(false)
+        }
     }
+
     fun updObjStat (s: String) {
-        Logm.aa("http callback:")
+        Logm.aa("http end:")
         Logm.aa(s)
         _strHttpStat.postValue(s)
     }
     fun onHttpClose(){
-        httpReq?.Close()
-        //hr.Close()
+        httpR?.Close()
         //httpJob.cancel()
     }
 }
