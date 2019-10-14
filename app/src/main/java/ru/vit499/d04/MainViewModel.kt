@@ -7,13 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
+import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.http.HttpReq
 import ru.vit499.d04.ui.misc.Account
-import ru.vit499.d04.util.Filem
-import ru.vit499.d04.util.Logm
-import ru.vit499.d04.util.formStrObj
-import ru.vit499.d04.util.strReqHttp
+import ru.vit499.d04.util.*
 
 class MainViewModel(
     val database: ObjDatabaseDao,
@@ -64,7 +62,11 @@ class MainViewModel(
         _navigateToObj.value = false
     }
 
-    val objs = database.getAllObj()
+    val objs = database.getAllObj1()
+
+    private val _listObj = MutableLiveData<List<Obj>>()
+    val listObj : LiveData<List<Obj>>
+        get() = _listObj
 
     private val _curObj = MutableLiveData<Obj?>()
     val curObj : LiveData<Obj?>
@@ -104,6 +106,10 @@ class MainViewModel(
                 if(s.equals("")) return@withContext
                 val obj = database.getObjByName(s)
 
+                //val arr : List<Obj> = database.getAllObj()
+                //Logm.aa("arr: ${arr.size.toString()}")
+                //_listObj.postValue(arr)
+
                 Logm.aa(formStrObj(obj))
                 if(obj != null) {
                     _curObj.postValue(obj)
@@ -124,6 +130,8 @@ class MainViewModel(
                         _navigateToNewObj.postValue(true)
                     }
                 }
+                //Logm.aa("obj cnt= ${objs.value?.size.toString()}")
+                //Logm.aa("obj cnt= ${_listObj.value?.size.toString()}")
             }
         }
     }
@@ -274,7 +282,7 @@ class MainViewModel(
         //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
         val strReq = strReqHttp(curObjName, "state")
         _progress.value = true
-        httpR = HttpCor()
+        if(httpR == null) httpR = HttpCor()
         httpScope.launch {
             val s = httpR?.reqStat(strReq, 10) ?: "-"
             updObjStat(s)
@@ -290,5 +298,39 @@ class MainViewModel(
     fun onHttpClose(){
         httpR?.Close()
         //httpJob.cancel()
+    }
+
+    //-------------------- fcm -------------
+
+    suspend fun getArrObj() : ArrayList<String>? {
+        return withContext(Dispatchers.IO) {
+            var arr = ArrayList<String>()
+            val arrO : List<Obj> = database.getAllObj()
+
+            val cnt = arrO.size ?: 0
+            //Logm.aa("cnt: ${cnt.toString()}")
+            for (i in 0 until cnt) {
+                val s = arrO.get(i)?.objName
+                s?.let { arr.add(s) }
+            }
+            arr
+        }
+    }
+    fun onFbSub () {
+
+        _progress.value = true
+        httpScope.launch {
+            var arr = getArrObj() ?: return@launch
+            //Logm.aa("arr: ${arr.toString()}")
+            FcmToken.getFcmToken()
+            val token = FcmToken.waitToken()
+            val strReq = strSendToken(arr, token)
+            Logm.aa(strReq)
+          //  if(httpR == null) httpR = HttpCor()
+          //  val s = httpR?.reqStat(strReq, 10) ?: "-"
+          //  updObjStat(s)
+            _progress.postValue(false)
+        }
+
     }
 }

@@ -22,7 +22,10 @@ interface ObjDatabaseDao {
     fun deleteAllObj()
 
     @Query("SELECT * from obj_table ORDER BY objId DESC")
-    fun getAllObj(): LiveData<List<Obj>>
+    fun getAllObj1(): LiveData<List<Obj>>
+
+    @Query("SELECT * from obj_table ORDER BY objId DESC")
+    fun getAllObj(): List<Obj>
 
     @Query("SELECT * from obj_table WHERE obj_name = :obj_name")
     fun getObjByName(obj_name: String): Obj?

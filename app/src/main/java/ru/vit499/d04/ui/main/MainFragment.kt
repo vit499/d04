@@ -42,8 +42,8 @@ class MainFragment : Fragment() {
         val buttonClose = view.findViewById<Button>(R.id.buttonClose)
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
         buttonSend.setOnClickListener(){
-            mainViewModel.onReqStat()
-
+          //  mainViewModel.onReqStat()
+            mainViewModel.onFbSub()
         }
         buttonClose.setOnClickListener(){
             //httpReq?.Close()
@@ -83,6 +83,7 @@ class MainFragment : Fragment() {
             s?.let{
                 var s1 : StringBuffer = StringBuffer()
                 s1.append(tvLog.text.toString())
+                s1.append("\r\n")
                 s1.append(s)
                 tvLog.text = s1.toString()
             }

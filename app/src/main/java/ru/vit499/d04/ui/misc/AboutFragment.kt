@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
+import ru.vit499.d04.BuildConfig
 
 import ru.vit499.d04.R
 
@@ -22,6 +25,12 @@ class AboutFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_about, container, false)
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_about)
+        val textAbout = view.findViewById<TextView>(R.id.text_view_about)
+        val versionName = "Версия: " + BuildConfig.VERSION_NAME
+        textAbout.text = versionName
+        textAbout.setOnClickListener(){
+            findNavController().navigate(R.id.action_aboutFragment_to_hiddenFragment)
+        }
         return view
     }
 
