@@ -6,10 +6,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Logm
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.io.OutputStreamWriter
+import ru.vit499.d04.util.Str
+import java.io.*
 import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
@@ -26,12 +24,13 @@ class HttpCor() {
     var isOpen: Boolean = false
     var socket: Socket? = null
     var outputStreamWriter: OutputStreamWriter? = null
-    var inputStreamReader: InputStreamReader? = null
+    //var inputStreamReader: InputStreamReader? = null
+    var dataInputStream : DataInputStream? = null
     var inputStream: InputStream? = null
-    var rbuf1: CharArray = CharArray(10000)
-    var rbuf2: CharArray = CharArray(10000)
-    //var rbuf1: ByteArray = ByteArray(10000)
-    //var rbuf2: ByteArray = ByteArray(10000)
+//    var rbuf1: CharArray = CharArray(10000)
+//    var rbuf2: CharArray = CharArray(10000)
+    var rbuf1: ByteArray = ByteArray(10000)
+    var rbuf2: ByteArray = ByteArray(10000)
     var rcnt1: Int = 0
     var rcnt2: Int = 0
 
@@ -47,7 +46,8 @@ class HttpCor() {
             val outputStream : OutputStream? = socket?.getOutputStream() ?: return false
             val inputStream : InputStream? = socket?.getInputStream() ?: return false
             outputStreamWriter = OutputStreamWriter(outputStream!!)
-            inputStreamReader = InputStreamReader(inputStream!!)
+           // inputStreamReader = InputStreamReader(inputStream!!)
+            dataInputStream = DataInputStream(inputStream!!)
             //inputStream = socket?.getInputStream()
 
             rcnt2 = 0
@@ -64,40 +64,124 @@ class HttpCor() {
         return(isOpen)
     }
 
-    suspend fun rec (timeout: Long) : String {
+    fun recEvent(buf : ByteArray, len : Int) : String? {
+        var s : String? = null
+
+        var a = -1 // = r2.indexOf('[');
+        var b = -1 // = r2.indexOf(']', a);
+        for (i in 0 until len) {
+            if (buf[i] == ']'.toByte()) {
+                b = i
+                //break;
+            }
+        }
+        for (i in 0 until len) {
+            if (buf[i] == '['.toByte()) {
+                a = i
+                break
+            }
+        }
+
+        if (a != -1 && b != -1) {
+            //Logm.LogAc(buf, (b-100), len);
+            s = Str.byte2str(buf, a, b)
+            if (s == null || s!!.length < 2) s = null
+        }
+        return s
+    }
+
+    fun recState (buf: ByteArray, len_src : Int) : String? {
+        var s : String? = null
+        var a = -1
+        var b = -1
+        val cntEqMax : Int = 59
+        var cntEq : Int = 0
+        var len : Int = len_src
+
+        if(len < 100) return null
+        val r = String(buf, 0, len)
+        Logm.aa(r)
+        if (!Str.checkHttpOk(buf, len)) {
+            if (len > 100) len = 100
+            val r2 = Str.byte2str(buf, 0, len)
+            if (r2 == null || r2.length < 2) return null
+            Logm.aa(r2)
+            return "error"
+        }
+        for (i in 0 until len) {
+            if (buf[i] == '='.toByte()) {
+                cntEq++
+                if (cntEq >= cntEqMax) {
+                    b = 1
+                    break
+                }
+            }
+        }
+        if (b != -1) {
+            s = Str.byte2str(buf, 0, len)
+            Logm.aa("res: $s")
+            if (s == null || s.length < 2) return null
+            Logm.aa("ok > ")
+        }
+        else {
+            Logm.aa("... ")
+        }
+        return s
+    }
+
+    fun rec1111 (buf: ByteArray, len : Int) : String? {
+        var s = ""
+
+        val r2 = Str.byte2str(buf, len)
+
+        if (r2 == null || r2.length < 2) return null
+        Logm.aa("ht rec: $r2")
+        val a = r2.indexOf("111", 0)
+        if(a != -1) {
+            s = "ok"
+        }
+        else {
+            s = "error"
+        }
+        return s
+    }
+
+    suspend fun rec (timeout: Long, wa : Int) : String {
         val t = timeout * 1000
         return withContext(Dispatchers.Default) {
             var resStr: String = "error"
             withTimeout(t) {
                 while (true) {
-                    if (!isOpen) {
-                        Close()
-                        break;
-                    }
-                    if (!isActive) {
+                    if (!isOpen || !isActive) {
                         Close()
                         break;
                     }
                     try {
-                        rcnt1 = inputStreamReader?.read(rbuf1) ?: 0
-
-                        for (j in 0 until rcnt1) {
-                            if (rcnt2 < SIZEBUF) {
-                                rbuf2[rcnt2++] = rbuf1[j]
+                        rcnt1 = dataInputStream?.read(rbuf1) ?: 0
+                        if(rcnt1 > 0) {
+                            for (j in 0 until rcnt1) {
+                                if (rcnt2 < SIZEBUF) {
+                                    rbuf2[rcnt2++] = rbuf1[j]
+                                }
+                            }
+                            var s : String? = null
+                            if(wa == 1) {
+                                s = recState(rbuf2, rcnt2)
+                            }
+                            else if(wa == 2) {
+                                s = recEvent(rbuf2, rcnt2)
+                            }
+                            else {
+                                s = rec1111(rbuf2, rcnt2)
+                            }
+                            if (s != null) {
+                                resStr = s
+                                Close()
+                                break
                             }
                         }
-                        val s = String(rbuf2, 0, rcnt2)
-                        Logm.aa("rcnt=${rcnt2.toString()} b=$s")
-                        if (rcnt2 >= 5000) {
-                            //val s: String = String(rbuf2, 0, rcnt2)
-                            Logm.aa("rcnt=${rcnt2.toString()} b=$s")
-                            //resultReq(s)
-                            resStr = s
-                            Close()
-                            break
-                        }
                     } catch (ex: Exception) {
-                        Logm.aa("rec exc: ${ex.toString()}")
+                        //Logm.aa("rec exc: ${ex.toString()}")
                     }
                 }
             }
@@ -108,7 +192,7 @@ class HttpCor() {
     fun Close(){
         try {
             outputStreamWriter?.close()
-            inputStreamReader?.close()
+            dataInputStream?.close()
             socket?.shutdownOutput()
             socket?.shutdownInput()
             socket?.close()
@@ -119,12 +203,12 @@ class HttpCor() {
         isOpen = false
     }
 
-    suspend fun reqStat(strSend : String, timeout: Long) : String {
+    suspend fun reqStat(strSend : String, wa: Int, timeout: Long) : String {
         var s = ""
         return withContext(Dispatchers.Default) {
             val b = send(strSend)
             if (b) {
-                s = rec(timeout)
+                s = rec(timeout, wa)
             }
             Close()
             s

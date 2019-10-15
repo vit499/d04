@@ -15,6 +15,24 @@ class FcmToken {
 
         var strToken : String? = null
 
+        fun ab(task : Task<InstanceIdResult>)  {
+            if (!task.isSuccessful) {
+                Logm.aa("getInstanceId failed " + task.exception)
+                return  // return@OnCompleteListener
+            }
+            val token = task.result?.token
+            Logm.aa(token)
+            strToken = token
+        }
+        fun getFcmToken2() {
+
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task -> ab(task)})
+
+            val task : Task<InstanceIdResult> = FirebaseInstanceId.getInstance().instanceId
+            task.addOnCompleteListener( { task -> ab(task) })
+        }
+
         fun getFcmToken() {
 
             //var res: String = ""

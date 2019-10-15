@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -13,6 +14,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import ru.vit499.d04.MainActivity
 import ru.vit499.d04.R
+import ru.vit499.d04.util.Logm
 
 class FbNotifyService : FirebaseMessagingService() {
 
@@ -21,7 +23,7 @@ class FbNotifyService : FirebaseMessagingService() {
 
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: ${remoteMessage.from}")
+        Logm.aa("From: ${remoteMessage.from}")
 
         // Check if message contains a data payload.
         remoteMessage.data.isNotEmpty().let {
@@ -38,11 +40,12 @@ class FbNotifyService : FirebaseMessagingService() {
 
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
+            Logm.aa("Message Notification Body: ${it.body}")
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+        sendNotification("abcd")
     }
 
     private fun scheduleJob() {
@@ -71,27 +74,38 @@ class FbNotifyService : FirebaseMessagingService() {
 
     private fun sendNotification(messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT)
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra("NOTICE", "notice")
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0 /* Request code */,
+            intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val vibrate = longArrayOf(200, 500, 200)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-           // .setSmallIcon(R.drawable.ic_stat_ic_notification)
-           // .setContentTitle(getString(R.string.fcm_message))
+            .setSmallIcon(R.drawable.ic_notify2)
+            .setContentTitle(getString(R.string.fcm_message))
             .setContentText(messageBody)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
+            .setVibrate(vibrate)
+            .setLights(Color.WHITE, 100, 3000)
             .setContentIntent(pendingIntent)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId,
+            val channel = NotificationChannel(
+                channelId,
                 "Channel human readable title",
-                NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             notificationManager.createNotificationChannel(channel)
         }
 

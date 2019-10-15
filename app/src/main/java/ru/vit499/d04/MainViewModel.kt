@@ -9,7 +9,6 @@ import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
 import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
-import ru.vit499.d04.http.HttpReq
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.*
 
@@ -275,16 +274,27 @@ class MainViewModel(
     val progress : LiveData<Boolean>
         get() = _progress
 
-    private var httpReq: HttpReq? = null
     private var httpR: HttpCor? = null
 
     fun onReqStat () {
         //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
         val strReq = strReqHttp(curObjName, "state")
+        Logm.aa(strReq)
         _progress.value = true
         if(httpR == null) httpR = HttpCor()
         httpScope.launch {
-            val s = httpR?.reqStat(strReq, 10) ?: "-"
+            val s = httpR?.reqStat(strReq, 1, 10) ?: "-"
+            updObjStat(s)
+            _progress.postValue(false)
+        }
+    }
+    fun onReqEvent () {
+        //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
+        val strReq = strReqHttp(curObjName, "event")
+        _progress.value = true
+        if(httpR == null) httpR = HttpCor()
+        httpScope.launch {
+            val s = httpR?.reqStat(strReq, 2, 10) ?: "-"
             updObjStat(s)
             _progress.postValue(false)
         }
@@ -326,9 +336,9 @@ class MainViewModel(
             val token = FcmToken.waitToken()
             val strReq = strSendToken(arr, token)
             Logm.aa(strReq)
-          //  if(httpR == null) httpR = HttpCor()
-          //  val s = httpR?.reqStat(strReq, 10) ?: "-"
-          //  updObjStat(s)
+            if(httpR == null) httpR = HttpCor()
+            val s = httpR?.reqStat(strReq, 3, 10) ?: "-"
+            updObjStat(s)
             _progress.postValue(false)
         }
 

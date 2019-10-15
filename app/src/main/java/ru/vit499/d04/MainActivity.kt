@@ -22,6 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.vit499.d04.database.ObjDatabase
+import ru.vit499.d04.util.Logm
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var s1 = intent.getStringExtra("NOTICE")
+        if(s1 != null) {
+            Logm.aa(" xxxxxx  $s1")
+        }
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)

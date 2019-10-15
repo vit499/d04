@@ -95,10 +95,6 @@ fun strSendToken (arr: ArrayList<String>, strId: String) : String {
 fun strReqHttp (numObj: String, req: String) : String {
     val sb = StringBuilder()
 
-    var b : Buf = Buf()
-
-    b.Cpy(hg1)
-
     val user = Account.accUser
     val pass = Account.accPass
     val serv = Account.accServ

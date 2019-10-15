@@ -17,7 +17,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
-import ru.vit499.d04.http.HttpReq
 import ru.vit499.d04.util.Logm
 import java.lang.Exception
 
@@ -26,7 +25,6 @@ import java.lang.Exception
  */
 class MainFragment : Fragment() {
 
-    private var httpReq: HttpReq? = null
     private lateinit var mainViewModel : MainViewModel
 
     override fun onCreateView(
@@ -42,8 +40,8 @@ class MainFragment : Fragment() {
         val buttonClose = view.findViewById<Button>(R.id.buttonClose)
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
         buttonSend.setOnClickListener(){
-          //  mainViewModel.onReqStat()
-            mainViewModel.onFbSub()
+            mainViewModel.onReqStat()
+          //  mainViewModel.onFbSub()
         }
         buttonClose.setOnClickListener(){
             //httpReq?.Close()
@@ -104,8 +102,4 @@ class MainFragment : Fragment() {
                 || super.onOptionsItemSelected(item)
     }
 
-    override fun onPause() {
-        super.onPause()
-        httpReq?.Close()
-    }
 }
