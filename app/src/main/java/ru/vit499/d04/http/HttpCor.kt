@@ -85,6 +85,7 @@ class HttpCor() {
         if (a != -1 && b != -1) {
             //Logm.LogAc(buf, (b-100), len);
             s = Str.byte2str(buf, a, b)
+            Logm.aa(s)
             if (s == null || s!!.length < 2) s = null
         }
         return s

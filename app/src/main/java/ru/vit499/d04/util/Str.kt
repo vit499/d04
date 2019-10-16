@@ -171,6 +171,24 @@ class Str {
             return b
         }
 
+        fun indexof(buf: ByteArray, offset: Int, cbyte: Byte, num: Int, max: Int): Int {
+            var pos: Int
+            var n = 0
+            var ind = -1
+
+            pos = 0
+            while (pos < max) {
+                if (buf[pos + offset] == 0.toByte()) break
+                if (buf[pos + offset] == cbyte) n++
+                if (n == num) {
+                    ind = pos + 1
+                    break
+                }
+                pos++
+            }
+            return ind
+        }
+
         fun strncmp3(s1: ByteArray, off1: Int, s2: ByteArray, len: Int): Int {
             for (i in 0 until len) {
                 if (s1[off1 + i] != s2[i]) {

@@ -1,6 +1,7 @@
 package ru.vit499.d04
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,8 @@ import ru.vit499.d04.database.ObjDatabaseDao
 import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.ui.misc.Account
+import ru.vit499.d04.ui.notify.NotifyItem
+import ru.vit499.d04.ui.notify.ParseEvents
 import ru.vit499.d04.util.*
 
 class MainViewModel(
@@ -76,6 +79,7 @@ class MainViewModel(
         get() = _curObjEdit
 
     init{
+        Log.i("aa", "--- init --- ")
         Filem.setDir(application)
         _navigateToNewObj.value = false
         curObjName = Filem.getCurrentObjName()
@@ -290,12 +294,13 @@ class MainViewModel(
     }
     fun onReqEvent () {
         //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
-        val strReq = strReqHttp(curObjName, "event")
+        val strReq = strReqHttp(curObjName, "events")
+        Logm.aa(strReq)
         _progress.value = true
         if(httpR == null) httpR = HttpCor()
         httpScope.launch {
             val s = httpR?.reqStat(strReq, 2, 10) ?: "-"
-            updObjStat(s)
+            updEvents(s)
             _progress.postValue(false)
         }
     }
@@ -305,6 +310,7 @@ class MainViewModel(
         Logm.aa(s)
         _strHttpStat.postValue(s)
     }
+
     fun onHttpClose(){
         httpR?.Close()
         //httpJob.cancel()
@@ -341,6 +347,19 @@ class MainViewModel(
             updObjStat(s)
             _progress.postValue(false)
         }
-
     }
+
+    //--------------------------- events
+
+    private var _events = MutableLiveData<List<NotifyItem>>()
+    val events : LiveData<List<NotifyItem>>
+        get() = _events
+
+    fun updEvents (s: String){
+        var arr : List<NotifyItem>? = null
+        arr = ParseEvents.ParseEvents(s)
+        _events.postValue(arr)
+    }
+
+
 }

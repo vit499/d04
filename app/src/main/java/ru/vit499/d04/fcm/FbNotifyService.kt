@@ -15,6 +15,10 @@ import com.google.firebase.messaging.RemoteMessage
 import ru.vit499.d04.MainActivity
 import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 class FbNotifyService : FirebaseMessagingService() {
 
@@ -75,6 +79,7 @@ class FbNotifyService : FirebaseMessagingService() {
     private fun sendNotification(messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.putExtra("NOTICE", "notice")
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -111,6 +116,7 @@ class FbNotifyService : FirebaseMessagingService() {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
+
 
     companion object {
 
