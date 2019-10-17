@@ -12,7 +12,7 @@ class ParseEvents {
         fun ParseEvents(s: String): ArrayList<NotifyItem> {
             val evLists = ArrayList<NotifyItem>()
 
-            Logm.aa(s)
+            //Logm.aa(s)
             val src = s.toByteArray()
             val len_src = src.size
 

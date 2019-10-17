@@ -65,6 +65,18 @@ class ObjFragment : Fragment() {
                 adapter.data = it
             }
         })
+        objViewModel.navigateBackFromObj.observe(this, Observer {
+            if(it){
+                (activity as AppCompatActivity).onBackPressed()
+                objViewModel.onNavigateBackFromObj()
+            }
+        })
+        objViewModel.navigateToEditObj.observe(this, Observer {
+            if(it){
+                this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
+                objViewModel.onNavigateToEditObj()
+            }
+        })
         return view
     }
 
@@ -74,11 +86,11 @@ class ObjFragment : Fragment() {
         if(m == 0){
             objViewModel.onCurrentObj(objId)
             //this.findNavController().navigate(R.id.action_objFragment_to_mainFragment)
-            (activity as AppCompatActivity).onBackPressed()
+            //(activity as AppCompatActivity).onBackPressed()
         }
         else {
             objViewModel.onCurrentObjEdit(objId)
-            this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
+            //this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
         }
     }
 

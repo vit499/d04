@@ -142,6 +142,8 @@ class Str {
             return c
         }
 
+
+
         // { 0x34 0x46 0x33 } -> 0x04 0x0F 0x03
         fun Str2Hex(src: ByteArray, StartIndex: Int, len_src: Int): Buf {
             val b = Buf()
@@ -153,6 +155,37 @@ class Str {
 
             i = StartIndex
             while (i < StartIndex + len_src) {
+                b1 = char2bcd(src[i]).toInt()
+                if (b1 == 0x7f) {
+                    b.len = 0
+                    return b
+                }
+                b1 = b1 shl 4
+                b2 = char2bcd(src[i + 1]).toInt()
+                if (b2 == 0x7f) {
+                    b.len = 0
+                    return b
+                }
+                b3 = b1 + b2
+                b.Add(b3)
+                i = i + 2
+            }
+            return b
+        }
+
+        // { 0x34 0x46 0x33 } -> 0x04 0x0F 0x03
+        fun Str2Bin(s: String): Buf {
+            val b = Buf()
+            var b1: Int
+            var b2: Int
+            var b3: Int
+            var i: Int
+
+            val src = s.toByteArray()
+            val len_src = src.size
+
+            i = 0
+            while (i < len_src) {
                 b1 = char2bcd(src[i]).toInt()
                 if (b1 == 0x7f) {
                     b.len = 0

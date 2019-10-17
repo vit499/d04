@@ -43,11 +43,22 @@ class NotifyFragment : Fragment() {
         } ?: throw Exception("Invalid Activity")
 
         mainViewModel.onReqEvent()
+        mainViewModel.curObj.observe(this, Observer { obj ->
+            var s: String = getString(R.string.obj_empty)
+            obj?.let{
+                s = obj.objDescr
+                Logm.aa("cur obj in ev= $s ")
+            }
+            (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
+            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)
+            Logm.aa("curObjName in MainFragment")
+        })
         mainViewModel.events.observe(this, Observer {
             it?.let {
                 Logm.aa("ev observe")
                 Logm.aa("ev cnt= ${it.size}")
                 adapter.data = it
+                adapter.notifyDataSetChanged()
             }
         })
         return view

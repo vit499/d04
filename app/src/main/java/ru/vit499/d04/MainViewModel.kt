@@ -10,6 +10,7 @@ import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
 import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
+import ru.vit499.d04.objstate.ObjUpd
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.ui.notify.NotifyItem
 import ru.vit499.d04.ui.notify.ParseEvents
@@ -55,7 +56,6 @@ class MainViewModel(
     fun clrNavigationToAcc() {
         _navigateToAcc.value = false
     }
-
     // возврат из редактирования объекта
     private val _navigateToObj = MutableLiveData<Boolean>()
     val navigateToObj : LiveData<Boolean>
@@ -78,6 +78,27 @@ class MainViewModel(
     val curObjEdit : LiveData<Obj?>
         get() = _curObjEdit
 
+    private val _navigateBackFromObj = MutableLiveData<Boolean>()
+    val navigateBackFromObj : LiveData<Boolean>
+        get() = _navigateBackFromObj
+    fun onNavigateBackFromObj () {
+        _navigateBackFromObj.value = false
+    }
+
+    private val _navigateToEditObj = MutableLiveData<Boolean>()
+    val navigateToEditObj : LiveData<Boolean>
+        get() = _navigateToEditObj
+    fun onNavigateToEditObj () {
+        _navigateToEditObj.value = false
+    }
+
+    private val _navBackFromEditObj = MutableLiveData<Boolean>()
+    val navBackFromEditObj : LiveData<Boolean>
+        get() = _navBackFromEditObj
+    fun onNavBackFromEditObj(){
+        _navBackFromEditObj.value = false
+    }
+
     init{
         Log.i("aa", "--- init --- ")
         Filem.setDir(application)
@@ -99,6 +120,9 @@ class MainViewModel(
             Logm.aa(" obj name = null ")
             _navigateToNewObj.value = true
         }
+        _navigateBackFromObj.value = false
+        _navigateToEditObj.value = false
+        _navigateToObj.value = false
     }
 
     // извлечение активного объекта при старте
@@ -148,7 +172,8 @@ class MainViewModel(
                     _curObj.postValue(obj)
                     curObjName = obj.objName
                     Filem.setCurrentObjName(curObjName)
-
+                    Logm.aa("new current obj: ${curObjName}")
+                    _navigateBackFromObj.postValue(true)
                 } ?: return@withContext
             }
         }
@@ -159,6 +184,7 @@ class MainViewModel(
                 val obj = database.getObjById(id)
                 obj?.let {
                     _curObjEdit.postValue(obj)
+                    _navigateToEditObj.postValue(true)
                 } ?: return@withContext
             }
         }
@@ -180,6 +206,7 @@ class MainViewModel(
                 Filem.setCurrentObjName(curObjName)
                 objExist = true
                 Logm.aa("obj cnt= ${objs.value?.size}")
+                _navigateToObj.postValue(true)
             }
         }
     }
@@ -361,5 +388,35 @@ class MainViewModel(
         _events.postValue(arr)
     }
 
+    //================================== state
 
+    fun UpdState(list: ArrayList<Buf>){
+
+        var obj = _curObj.value ?: return
+        Logm.aa("start update")
+        val idObj = obj.objId
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                val objUpd = ObjUpd(obj)
+                obj = objUpd.UpdAll(list)
+
+                database.update(obj)
+
+                _curObj.postValue(obj)
+                Logm.aa("state updated")
+            }
+        }
+
+    }
+//    public void UpdData(ArrayList<Buf> list){
+//        Obj obj = getOneObj();
+//        for(int i = 0; i < list.size(); i++){
+//            obj.Upd(list.get(i).buf, list.get(i).len);
+//        }
+//        obj.fillDevDataByte();
+//        Context cn = SingletoneC.get().getContext();
+//        DbObjHelper dbObjHelper = new DbObjHelper(cn);
+//        dbObjHelper.updateObj(obj);
+//        setListObj();
+//    }
 }

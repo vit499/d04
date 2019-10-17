@@ -38,10 +38,13 @@ class ObjAdapter(
         val im : ImageButton = itemView.findViewById(R.id.imageButtonObj)
 
         fun bind(obj: Obj, pos: Int, onClickListener: (Int, Long) -> Unit) {
-            tv1.text = obj.objName
-            tv2.text = obj.objDescr
+            tv2.text = obj.objName
+            tv1.text = obj.objDescr
 
             tv1.setOnClickListener(){
+                onClickListener(0, obj.objId)
+            }
+            tv2.setOnClickListener(){
                 onClickListener(0, obj.objId)
             }
             im.setOnClickListener() {

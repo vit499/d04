@@ -55,12 +55,14 @@ class MainFragment : Fragment() {
 
         mainViewModel.curObj.observe(this, Observer { obj ->
             var s: String = getString(R.string.obj_empty)
+            var s2: String = ""
             obj?.let{
-                Logm.aa("obj name=${obj.objName} ")
-                s = obj.objName
+                s = obj.objDescr
+                s2 = obj.objName
             }
             (activity as AppCompatActivity).supportActionBar?.title = s
-            Logm.aa("curObjName in MainFragment")
+            (activity as AppCompatActivity).supportActionBar?.subtitle = s2
+            Logm.aa("cur obj in main= $s ")
         })
 
         mainViewModel.navigateToNewObj.observe(this, Observer {

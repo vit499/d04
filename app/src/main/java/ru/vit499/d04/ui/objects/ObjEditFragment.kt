@@ -53,6 +53,12 @@ class ObjEditFragment : Fragment() {
                 binding.et623.setText(obj.objCode)
             }
         })
+        viewModel.navigateToObj.observe(this, Observer {
+            if(it){
+                (activity as AppCompatActivity).onBackPressed()
+                viewModel.clrNavigateToObj()
+            }
+        })
 
         binding.btn621.setOnClickListener() {
             var isValid : Boolean = true
@@ -70,13 +76,13 @@ class ObjEditFragment : Fragment() {
                 s.add(objCode)
                 viewModel.onEditObj(s)
                 //this.findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
-                (activity as AppCompatActivity).onBackPressed()
+                //(activity as AppCompatActivity).onBackPressed()
             }
         }
         binding.btn622.setOnClickListener(){
             viewModel.onDeleteObj()
             //this.findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
-            (activity as AppCompatActivity).onBackPressed()
+            //(activity as AppCompatActivity).onBackPressed()
         }
 
 //        viewModel.navigateToObj.observe(this, Observer {

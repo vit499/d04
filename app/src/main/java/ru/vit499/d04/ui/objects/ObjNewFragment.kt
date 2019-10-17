@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 
 
@@ -78,9 +79,16 @@ class ObjNewFragment : Fragment() {
                 s.add(objCode)
                 viewModel.onAddObj(s)
                 //findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
-                (activity as AppCompatActivity).onBackPressed()
+                //(activity as AppCompatActivity).onBackPressed()
             }
         }
+
+        viewModel.navigateToObj.observe(this, Observer {
+            if(it){
+                (activity as AppCompatActivity).onBackPressed()
+                viewModel.clrNavigateToObj()
+            }
+        })
 
         binding.et611.requestFocus()
         val imm =

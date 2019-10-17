@@ -14,7 +14,7 @@ import java.net.Socket
 
 class HttpCor() {
 
-    val SIZEBUF: Int = 10000
+    val SIZEBUF: Int = 100000
     val server = Account.accServ
     //val strPort = Account.accPort
     val port: Int = 80  // strPort.toInt()
@@ -27,10 +27,8 @@ class HttpCor() {
     //var inputStreamReader: InputStreamReader? = null
     var dataInputStream : DataInputStream? = null
     var inputStream: InputStream? = null
-//    var rbuf1: CharArray = CharArray(10000)
-//    var rbuf2: CharArray = CharArray(10000)
-    var rbuf1: ByteArray = ByteArray(10000)
-    var rbuf2: ByteArray = ByteArray(10000)
+    var rbuf1: ByteArray = ByteArray(SIZEBUF)
+    var rbuf2: ByteArray = ByteArray(SIZEBUF)
     var rcnt1: Int = 0
     var rcnt2: Int = 0
 
@@ -85,7 +83,7 @@ class HttpCor() {
         if (a != -1 && b != -1) {
             //Logm.LogAc(buf, (b-100), len);
             s = Str.byte2str(buf, a, b)
-            Logm.aa(s)
+            //Logm.aa(s)
             if (s == null || s!!.length < 2) s = null
         }
         return s
@@ -101,7 +99,7 @@ class HttpCor() {
 
         if(len < 100) return null
         val r = String(buf, 0, len)
-        Logm.aa(r)
+        //Logm.aa(r)
         if (!Str.checkHttpOk(buf, len)) {
             if (len > 100) len = 100
             val r2 = Str.byte2str(buf, 0, len)
@@ -120,7 +118,7 @@ class HttpCor() {
         }
         if (b != -1) {
             s = Str.byte2str(buf, 0, len)
-            Logm.aa("res: $s")
+            //Logm.aa("res: $s")
             if (s == null || s.length < 2) return null
             Logm.aa("ok > ")
         }
@@ -199,7 +197,7 @@ class HttpCor() {
             socket?.close()
         }
         catch(ex: Exception){
-            Logm.aa("close exc: ${ex.toString()}")
+            //Logm.aa("close exc: ${ex.toString()}")
         }
         isOpen = false
     }
