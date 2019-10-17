@@ -47,6 +47,10 @@ class ObjState(obj: Obj) {
     internal var strTime: String = ""
 
 
+    init {
+        fillDevDataByte(obj)
+    }
+
     fun fillEmpty() {
         for (i in 0 until NUMBER_PART) {
             configPart[i] = "0000000000000000"
@@ -89,34 +93,34 @@ class ObjState(obj: Obj) {
     }
 
 
-    fun fillStrings(s: Array<String>) {
-        var ind = 4
-        for (i in 0 until NUMBER_PART) {
-            configPart[i] = s[ind++]  // 4,5...
-        }
-        strZoneStat = s[ind++]
-        strZoneAlarm = s[ind++]
-        strPartStat = s[ind++]
-        strFout = s[ind++]
-        strFtout = s[ind++]
-        strSout = s[ind++]  // 25
-        strTrbl = s[ind++]  //
+    fun fillStrings(obj : Obj, s: Array<String>) {
+//        var ind = 4
+//        for (i in 0 until NUMBER_PART) {
+//            configPart[i] = s[ind++]  // 4,5...
+//        }
+//        strZoneStat = s[ind++]
+//        strZoneAlarm = s[ind++]
+//        strPartStat = s[ind++]
+//        strFout = s[ind++]
+//        strFtout = s[ind++]
+//        strSout = s[ind++]  // 25
+//        strTrbl = s[ind++]  //
+//
+//        for (i in strTemp.indices) {
+//            strTemp[i] = s[ind++]
+//        }
+//        str12V = s[ind++]             // 39
+//        str3V = s[ind++]
+//
+//        for (i in strGsm.indices) {
+//            strGsm[i] = s[ind++]
+//        }
+//        strTcp = s[ind++]
+//        strVers = s[ind++]
+//        strEvent = s[ind++]
+//        strTime = s[ind++]
 
-        for (i in strTemp.indices) {
-            strTemp[i] = s[ind++]
-        }
-        str12V = s[ind++]             // 39
-        str3V = s[ind++]
-
-        for (i in strGsm.indices) {
-            strGsm[i] = s[ind++]
-        }
-        strTcp = s[ind++]
-        strVers = s[ind++]
-        strEvent = s[ind++]
-        strTime = s[ind++]
-
-        fillDevDataByte()
+        fillDevDataByte(obj)
     }
 
     fun getAllStr(): Array<String> {
@@ -161,40 +165,40 @@ class ObjState(obj: Obj) {
         return s1
     }
 
-    fun fillDevDataByte() {
-        FillConfigPartsFromDb()
-        UpdPartStat()
-        UpdZoneStat()
-        UpdZoneAlarm()
+    fun fillDevDataByte(obj: Obj) {
+        FillConfigPartsFromDb(obj)
+        UpdPartStat(obj)
+        UpdZoneStat(obj)
+        UpdZoneAlarm(obj)
     }
 
     //================================================================
 
-    fun UpdConfigPart(part: Int) {
-        checkLenConfigPart(part)
-        fillConfigPart(part)
+    fun UpdConfigPart(obj: Obj, part: Int) {
+        //checkLenConfigPart(part)
+        fillConfigPart(obj, part)
     }
 
-    fun FillConfigPartsFromDb() {
+    fun FillConfigPartsFromDb(obj : Obj) {
         for (part in 0 until NUMBER_PART) {
-            UpdConfigPart(part)
+            UpdConfigPart(obj, part)
         }
         //config = true
     }
 
-    fun UpdPartStat() {
-        checkLenPartStat()
-        fillPartStat()
+    fun UpdPartStat(obj : Obj) {
+        //checkLenPartStat()
+        fillPartStat(obj)
     }
 
-    fun UpdZoneStat() {
-        checkLenZoneStat()
-        fillZoneStat()
+    fun UpdZoneStat(obj : Obj) {
+        //checkLenZoneStat()
+        fillZoneStat(obj)
     }
 
-    fun UpdZoneAlarm() {
-        checkLenZoneAlarm()
-        fillZoneAlarm()
+    fun UpdZoneAlarm(obj : Obj) {
+        //checkLenZoneAlarm()
+        fillZoneAlarm(obj)
     }
 
     //======================== check length =========================
@@ -242,10 +246,33 @@ class ObjState(obj: Obj) {
 
     //=========================================== fill data bytes ==============
 
-    fun fillConfigPart(part: Int) {
+    fun getStrCfgPart(obj: Obj, p: Int) : String {
+        var s:String = ""
+        when(p){
+            0 -> s = obj.ZoneInPart1
+            1 -> s = obj.ZoneInPart2
+            2 -> s = obj.ZoneInPart3
+            3 -> s = obj.ZoneInPart4
+            4 -> s = obj.ZoneInPart5
+            5 -> s = obj.ZoneInPart6
+            6 -> s = obj.ZoneInPart7
+            7 -> s = obj.ZoneInPart8
+            8 -> s = obj.ZoneInPart9
+            9 -> s = obj.ZoneInPart10
+            10 -> s = obj.ZoneInPart11
+            11 -> s = obj.ZoneInPart12
+            12 -> s = obj.ZoneInPart13
+            13 -> s = obj.ZoneInPart14
+            14 -> s = obj.ZoneInPart15
+            15 -> s = obj.ZoneInPart16
+        }
+        return s
+    }
+    fun fillConfigPart(obj: Obj, part: Int) {
         var c: Int
         var p = 0
-        val b = Str.Str2Bin(configPart[part]!!)
+        val cfgPart : String = getStrCfgPart(obj, part)
+        val b = Str.Str2Bin(cfgPart)
         for (i in 0 until b.len) {
             c = b.buf[i].toInt()
             for (j in 0..7) {
@@ -261,18 +288,18 @@ class ObjState(obj: Obj) {
         if (p != 0) partPresent[part] = 1
     }
 
-    fun fillPartStat() {
-        val b = Str.Str2Bin(strPartStat)
+    fun fillPartStat(obj : Obj) {
+        val b = Str.Str2Bin(obj.PartStat)
         for (i in 0 until b.len) {
             if (i >= NUMBER_PART) break
             partStat[i] = b.buf[i].toInt()
         }
     }
 
-    fun fillZoneStat() {
+    fun fillZoneStat(obj : Obj) {
         var c: Int
         var zone: Int
-        val b = Str.Str2Bin(strZoneStat)
+        val b = Str.Str2Bin(obj.ZoneStat)
         for (i in 0 until b.len) {
             c = b.buf[i].toInt()
             for (j in 0..7) {
@@ -286,10 +313,10 @@ class ObjState(obj: Obj) {
         }
     }
 
-    fun fillZoneAlarm() {
+    fun fillZoneAlarm(obj : Obj) {
         var c: Int
         var zone: Int
-        var b : Buf = Str.Str2Bin(strZoneAlarm)
+        var b : Buf = Str.Str2Bin(obj.ZoneAlarm)
         for (i in 0 until b.len) {
             c = b.buf[i].toInt()
             for (j in 0..7) {
@@ -303,99 +330,7 @@ class ObjState(obj: Obj) {
         }
     }
 
-    //======================================== from http ======
 
-    fun UpdConfigPart(part: Int, s: String?) {
-        if (s != null) configPart[part] = s          // init from mqtt or http
-        checkLenConfigPart(part)
-        fillConfigPart(part)
-    }
-    fun UpdPartStat(s: String?) {
-        if (s != null) strPartStat = s
-        checkLenPartStat()
-        fillPartStat()
-    }
-
-    fun UpdZoneStat(s: String?) {
-        if (s != null) strZoneStat = s
-        checkLenZoneStat()
-        fillZoneStat()
-    }
-
-    fun UpdZoneAlarm(s: String?) {
-        if (s != null) strZoneAlarm = s
-        checkLenZoneAlarm()
-        fillZoneAlarm()
-    }
-
-    fun UpdTemper(t: Int, s: String?) {
-        if (s != null) strTemp[t] = s
-    }
-
-    fun UpdGsm(g: Int, s: String?) {
-        if (s != null) strGsm[g] = s
-    }
-
-    fun Upd12v(s: String) {
-        if (s != null) str12V = s
-    }
-
-    fun UpdTcp(s: String) {
-        if (s != null) strTcp = s
-    }
-
-    fun UpdVers(s: String) {
-        if (s != null) strVers = s
-    }
-
-    fun UpdTime(s: String) {
-        if (s != null) strTime = s
-    }
-
-    //============================================================
-
-    fun Upd(buf: ByteArray, len: Int) {
-        val k = Str.indexof(buf, 0, '='.toByte(), 1, len)
-        if (k == -1) return
-        val cmd = Str.byte2str(buf, k - 1)
-        var value = ""
-        if (k < len - 1) value = Str.byte2str(buf, k, len)
-        // Logm.Log("cmd=" + cmd);
-        // Logm.Log("val=" + val);
-        val s = ObjDb.getStrDbColumns()
-
-        for (part in 0 until NUMBER_PART) {
-            if (cmd == s[part + 4]) {
-                UpdConfigPart(part, value)
-                return
-            }
-        }
-        for (t in 0 until NUMBER_TEMP) {
-            if (cmd == s[t + 27]) {
-                UpdTemper(t, value)
-                return
-            }
-        }
-        for (t in 0..1) {
-            if (cmd == s[t + 41]) {
-                UpdGsm(t, value)
-                return
-            }
-        }
-        if (cmd == s[20])
-            UpdZoneStat(value)
-        else if (cmd == s[21])
-            UpdZoneAlarm(value)
-        else if (cmd == s[22])
-            UpdPartStat(value)
-        else if (cmd == s[39])
-            Upd12v(value)
-        else if (cmd == s[43])
-            UpdTcp(value)
-        else if (cmd == s[44])
-            UpdVers(value)
-        else if (cmd == s[46]) UpdTime(value)
-    }
 
     //========================================================== obj-part-zone =================
 
@@ -438,13 +373,14 @@ class ObjState(obj: Obj) {
         return parts
     }
 
+    //
     fun getObjStatList(): ArrayList<StatList> {
-        val objPartZone = ObjPartZone(id, num, GetParts())
+        val objPartZone = ObjPartZone(GetParts())
 
         val listStat = ArrayList<StatList>()
 
         val np = objPartZone.part.size
-        Logm.aa("nparts:" + num + " " + np.toString())
+        Logm.aa("nparts:"  + " " + np.toString())
         for (p in 0 until np) {
             val pp = objPartZone.part.get(p)
             val dp = StatList(1, pp.number, pp.statInt, pp.strStat, pp.cmdArm, pp.color, "")

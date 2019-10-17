@@ -1,14 +1,14 @@
 package ru.vit499.d04.objstate
 
-class ObjPartZone(id1: Int, objName: String, parts: ArrayList<Part>) {
+class ObjPartZone(parts: ArrayList<Part>) {
 
-    var id: Int = 0
-    var num: String = ""
+    //var id: Int = 0
+    //var num: String = ""
     var part = ArrayList<Part>()
 
     init {
-        id = id1
-        num = objName
+        //id = id1
+        //num = objName
         copyArr(parts)
     }
 
