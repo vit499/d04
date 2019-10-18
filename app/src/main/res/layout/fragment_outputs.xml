@@ -4,10 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_view_main"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/view_outputs"
-        style="@style/tvstyle1" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:bufferType="spannable"
+            android:drawablePadding="2dp"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="5dp"
+            android:isScrollContainer="true"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbars="vertical">
+        </TextView>
+    </ScrollView>
 </LinearLayout>

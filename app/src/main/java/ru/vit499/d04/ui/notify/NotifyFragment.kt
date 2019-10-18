@@ -30,8 +30,7 @@ class NotifyFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_notify, container, false)
         setHasOptionsMenu(true)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_notify1)
-
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recl_notify)
         val adapter = NotifyAdapter()
@@ -51,7 +50,7 @@ class NotifyFragment : Fragment() {
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
             (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)
-            Logm.aa("curObjName in MainFragment")
+            Logm.aa("curObjName in NotifyFragment")
         })
         mainViewModel.events.observe(this, Observer {
             it?.let {

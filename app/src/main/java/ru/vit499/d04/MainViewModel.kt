@@ -10,11 +10,15 @@ import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
 import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
-import ru.vit499.d04.objstate.ObjUpd
+import ru.vit499.d04.objstate.ObjStringUpd
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.ui.notify.NotifyItem
 import ru.vit499.d04.ui.notify.ParseEvents
 import ru.vit499.d04.util.*
+import ru.vit499.d04.util.Str
+import ru.vit499.d04.objstate.ObjState
+import ru.vit499.d04.ui.main.StatList
+
 
 class MainViewModel(
     val database: ObjDatabaseDao,
@@ -77,6 +81,10 @@ class MainViewModel(
     private val _curObjEdit = MutableLiveData<Obj?>()
     val curObjEdit : LiveData<Obj?>
         get() = _curObjEdit
+
+    private val _statList = MutableLiveData<List<StatList>>()
+    val statList : LiveData<List<StatList>>
+        get() = _statList
 
     private val _navigateBackFromObj = MutableLiveData<Boolean>()
     val navigateBackFromObj : LiveData<Boolean>
@@ -315,7 +323,7 @@ class MainViewModel(
         if(httpR == null) httpR = HttpCor()
         httpScope.launch {
             val s = httpR?.reqStat(strReq, 1, 10) ?: "-"
-            updObjStat(s)
+            UpdState(s)
             _progress.postValue(false)
         }
     }
@@ -330,12 +338,6 @@ class MainViewModel(
             updEvents(s)
             _progress.postValue(false)
         }
-    }
-
-    fun updObjStat (s: String) {
-        Logm.aa("http end:")
-        Logm.aa(s)
-        _strHttpStat.postValue(s)
     }
 
     fun onHttpClose(){
@@ -371,7 +373,7 @@ class MainViewModel(
             Logm.aa(strReq)
             if(httpR == null) httpR = HttpCor()
             val s = httpR?.reqStat(strReq, 3, 10) ?: "-"
-            updObjStat(s)
+           // updObjStat(s)
             _progress.postValue(false)
         }
     }
@@ -390,19 +392,42 @@ class MainViewModel(
 
     //================================== state
 
-    fun UpdState(list: ArrayList<Buf>){
+    fun getListState(s: String) : ArrayList<Buf>? {
+        val str1 : ByteArray = s.toByteArray()
+        val len_str1 = str1.size
+        val src = ByteArray(len_str1)
+
+        if (!Str.checkHttpOk(str1, len_str1)) {
+
+            return null                 // to do
+        }
+        var len_content = Str.findContent(src, str1, len_str1)        // to do
+        val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
+        return list
+    }
+
+    fun UpdState(s: String){
+
+        val list = getListState(s)
+        if(list == null) {
+            return             // to do
+        }
 
         var obj = _curObj.value ?: return
         Logm.aa("start update")
         val idObj = obj.objId
         uiScope.launch {
             withContext(Dispatchers.IO) {
-                val objUpd = ObjUpd(obj)
-                obj = objUpd.UpdAll(list)
+
+                val objUpd = ObjStringUpd(obj)
+                obj = objUpd.UpdStringAll(list)
 
                 database.update(obj)
 
-                _curObj.postValue(obj)
+                val objState = ObjState(obj)
+                val sList = objState.getObjStatList()
+                _statList.postValue(sList)
+                //_curObj.postValue(obj)
                 Logm.aa("state updated")
             }
         }
@@ -419,4 +444,10 @@ class MainViewModel(
 //        dbObjHelper.updateObj(obj);
 //        setListObj();
 //    }
+
+    fun updObjStat (s: String) {
+        Logm.aa("http end:")
+        Logm.aa(s)
+        _strHttpStat.postValue(s)
+    }
 }

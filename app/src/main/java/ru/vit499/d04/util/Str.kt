@@ -249,5 +249,112 @@ class Str {
             if (p == -1) return false
             return if (strncmp3(buf, p, httpOk, 3) != 0) false else true
         }
+
+        //===================================================
+        /*
+    HTTP/1.1 200 OK<0D><0A>
+Server: nginx/1.10.3<0D><0A>
+Date: Wed, 14 Aug 2019 16:44:22 GMT<0D><0A>
+Transfer-Encoding: chunked<0D><0A>
+Connection: close<0D><0A><0D><0A>
+3b2<0D><0A>
+ZoneInPart1 = 0300000000000000<0D><0A>
+ZoneInPart2 = 7800000000000000<0D><0A>
+     */
+        fun findContent(dst: ByteArray, src: ByteArray, len_src: Int): Int {
+            var p = -1
+            var len = 0
+            var i: Int
+            val strZ = "ZoneInPart"
+            val zp = strZ.toByteArray()
+            val src_c = ByteArray(len_src)
+            var len_src_c = 0
+
+            i = 0
+            while (i < len_src) {     // delete ' ' (space) удалить пробелы
+                if (src[i] == 0x20.toByte()) {
+                    i++
+                    continue
+                }
+                src_c[len_src_c++] = src[i]
+                i++
+            }
+
+            i = 0
+            while (i < len_src_c - 10) {
+                if (strncmp3(src_c, i, zp, 10) == 0) {
+                    p = i
+                    break
+                }
+                i++
+            }
+            if (p == -1) return 0
+            len_src_c = len_src_c - p
+            i = 0
+            while (i < len_src_c) {
+                dst[len++] = src_c[i + p]
+                i++
+            }
+            return len
+        }
+
+        fun Is_0d(c: Byte): Boolean {
+            return if (c == 0xd.toByte() || c == 0xa.toByte()) true else false
+        }
+        /*
+ mes0
+ 0d 0a mes1
+ 0d 0a 0d 0a mes2
+ od 0a mes3
+ out: mes0mes1mes2mes3
+*/
+        fun mes_substr(src: ByteArray, len: Int): ArrayList<Buf> {
+            val listBuf = ArrayList<Buf>()
+            var i: Int
+            var start = 0
+            var mes_cnt = 0
+            var p_buf = 0
+            var len_buf = 0
+
+            i = 0
+            while (i < len) {
+                if (Is_0d(src[i])) {
+                    if (start != 0) {      // end mes
+                        if (len_buf != 0) {
+                            val b = Buf()
+                            for (j in 0 until len_buf) {
+                                b.Add(src[p_buf + j].toInt())
+                            }
+                            listBuf.add(b)
+                        }
+                        start = 0
+                        if (++mes_cnt > 100) break
+                    }
+                } else {
+                    if (start == 0) {
+                        start = 1
+                        p_buf = i
+                        len_buf = 0
+                        //s_mdm[mes_cnt].pt = i;
+                        //s_mdm[mes_cnt].len = 0;
+                    }
+                    len_buf++
+                    //s_mdm[mes_cnt].len += 1;
+                }
+                i++
+            }
+            if (start != 0) {
+                if (len_buf != 0) {
+                    val b = Buf()
+                    for (j in 0 until len_buf) {
+                        b.Add(src[p_buf + j].toInt())
+                    }
+                    listBuf.add(b)
+                }
+                mes_cnt++
+            }
+
+            return listBuf
+        }
     }
 }

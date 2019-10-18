@@ -11,23 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/view_main" />
 
-    <Button
-        android:id="@+id/buttonHttp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:text="@string/button_http" />
 
-    <Button
-        android:id="@+id/buttonClose"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:text="Close" />
 
     <ScrollView
         android:layout_width="match_parent"

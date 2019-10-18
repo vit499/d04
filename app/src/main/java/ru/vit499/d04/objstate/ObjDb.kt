@@ -3,12 +3,10 @@ package ru.vit499.d04.objstate
 class ObjDb {
 
     companion object{
-
         val COLUMN_ID = "id"
         val COLUMN_NUM = "num"
         val COLUMN_DESCR = "event"
         val COLUMN_CODE = "time"
-
         val COLUMN_CFG_PART1 = "ZoneInPart1"
         val COLUMN_CFG_PART2 = "ZoneInPart2"
         val COLUMN_CFG_PART3 = "ZoneInPart3"
@@ -25,7 +23,6 @@ class ObjDb {
         val COLUMN_CFG_PART14 = "ZoneInPart14"
         val COLUMN_CFG_PART15 = "ZoneInPart15"
         val COLUMN_CFG_PART16 = "ZoneInPart16"
-
         val COLUMN_ZONESTAT = "ZoneStat"    // 18
         val COLUMN_ZONEALARM = "ZoneAlarm"
         val COLUMN_PARTSTAT = "PartStat"
@@ -33,7 +30,7 @@ class ObjDb {
         val COLUMN_FTOUT = "ftout"
         val COLUMN_SOUT = "sout"
         val COLUMN_TRBL = "trbl"
-
+        val COLUMN_TEMP0 = "dv_t0"    // 25
         val COLUMN_TEMP1 = "dv_t1"    // 25
         val COLUMN_TEMP2 = "dv_t2"
         val COLUMN_TEMP3 = "dv_t3"
@@ -52,10 +49,8 @@ class ObjDb {
         val COLUMN_GSM2 = "dv_gsm2"
         val COLUMN_TCP = "tcp"       // 41
         val COLUMN_VERS = "vers"
-
         val COLUMN_EVENT = "dv_event"
         val COLUMN_TIME = "dv_time"
-
         val COLUMN_RES1 = "reserv1"    // 25
         val COLUMN_RES2 = "reserv2"
         val COLUMN_RES3 = "reserv3"
@@ -105,7 +100,8 @@ class ObjDb {
             COLUMN_SOUT,
             COLUMN_TRBL, // 26
 
-            COLUMN_TEMP1, // 27
+            COLUMN_TEMP0, // 27
+            COLUMN_TEMP1, // 28
             COLUMN_TEMP2,
             COLUMN_TEMP3,
             COLUMN_TEMP4,
@@ -118,15 +114,15 @@ class ObjDb {
             COLUMN_TEMP11,
             COLUMN_TEMP12,
 
-            COLUMN_U12, // 39
-            COLUMN_U3, // 40
-            COLUMN_GSM1, // 41
+            COLUMN_U12, // 40
+            COLUMN_U3, // 41
+            COLUMN_GSM1, // 42
             COLUMN_GSM2,
-            COLUMN_TCP, // 43
-            COLUMN_VERS, // 44
-            COLUMN_EVENT, // 45
-            COLUMN_TIME, // 46
-            COLUMN_RES1, // 47
+            COLUMN_TCP, // 44
+            COLUMN_VERS, // 45
+            COLUMN_EVENT, // 46
+            COLUMN_TIME, // 47
+            COLUMN_RES1, // 48
             COLUMN_RES2,
             COLUMN_RES3,
             COLUMN_RES4,

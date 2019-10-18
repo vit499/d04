@@ -19,6 +19,7 @@ import ru.vit499.d04.MainViewModel
 import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
 import java.lang.Exception
+import java.lang.StringBuilder
 
 /**
  * A simple [Fragment] subclass.
@@ -36,17 +37,7 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         val application = requireNotNull(this.activity).application
-        val buttonSend = view.findViewById<Button>(R.id.buttonHttp)
-        val buttonClose = view.findViewById<Button>(R.id.buttonClose)
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
-        buttonSend.setOnClickListener(){
-            mainViewModel.onReqStat()
-          //  mainViewModel.onFbSub()
-        }
-        buttonClose.setOnClickListener(){
-            //httpReq?.Close()
-            mainViewModel.onHttpClose()
-        }
 
         mainViewModel = activity?.run {
             Logm.aa("main fr")
@@ -79,17 +70,19 @@ class MainFragment : Fragment() {
                 mainViewModel.clrNavigationToAcc()
             }
         })
-        mainViewModel.strHttpStat.observe(this, Observer { s ->
-            s?.let{
-                var s1 : StringBuffer = StringBuffer()
-                s1.append(tvLog.text.toString())
-                s1.append("\r\n")
-                s1.append(s)
-                tvLog.text = s1.toString()
+        mainViewModel.statList.observe(this, Observer { list ->
+            list?.let{
+                var sb = StringBuilder()
+                var k = list.size
+                for(i in 0 until k){
+                    sb.append("\r\n")
+                    sb.append(list.get(i).getName())
+                }
+                tvLog.text = sb.toString()
             }
         })
 
-        //(activity as AppCompatActivity).actionBar?.title = ""
+        mainViewModel.onReqStat()
         return view
     }
 

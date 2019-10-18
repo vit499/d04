@@ -11,7 +11,7 @@ class ObjState(obj: Obj) {
     val NUMBER_ZONE = 64
     val NUMBER_PART = 16
     val NUMBER_OUT = 32
-    val NUMBER_TEMP = 12
+    val NUMBER_TEMP = 13
 
     internal var id: Int = 0
     internal var num: String = ""
@@ -25,8 +25,7 @@ class ObjState(obj: Obj) {
     internal var zoneStat = IntArray(NUMBER_ZONE)
     internal var partStat = IntArray(NUMBER_PART)
     internal var zoneAlarm = IntArray(NUMBER_ZONE)
-    internal var functOut = IntArray(NUMBER_OUT)
-    internal var statOut = IntArray(NUMBER_OUT)
+
     internal var zonePresentInPart = Array(NUMBER_PART) { IntArray(NUMBER_ZONE) }
     internal var partPresent = IntArray(NUMBER_PART)
 
@@ -51,119 +50,6 @@ class ObjState(obj: Obj) {
         fillDevDataByte(obj)
     }
 
-    fun fillEmpty() {
-        for (i in 0 until NUMBER_PART) {
-            configPart[i] = "0000000000000000"
-        }
-        strZoneStat = "0000000000000000"
-        strZoneAlarm = "0000000000000000"
-        strPartStat = "00000000000000000000000000000000"
-        strFout = "0000000000000000000000000000000000000000000000000000000000000000"
-        strFtout = "0000000000000000000000000000000000000000000000000000000000000000"
-        strSout = "00000000"
-        strTrbl = "000000"
-        for (i in strTemp.indices) {
-            strTemp[i] = "n"
-        }
-        str12V = "0"
-        str3V = "0"
-        for (i in strGsm.indices) {
-            strGsm[i] = "0"
-        }
-        strTcp = "000000"
-        strVers = "0"
-        strEvent = "0"
-        strTime = "0"
-
-        var timeLastData = ""
-        // fill
-        for (i in 0 until NUMBER_ZONE) {
-            zoneStat[i] = 0
-            zoneAlarm[i] = 0
-        }
-        for (i in 0 until NUMBER_OUT) {
-            functOut[i] = 0
-            statOut[i] = 0
-        }
-        for (i in 0 until NUMBER_PART) {
-            partStat[i] = 1
-            for (j in 0 until NUMBER_ZONE) zonePresentInPart[i][j] = 0
-            partPresent[i] = 0
-        }
-    }
-
-
-    fun fillStrings(obj : Obj, s: Array<String>) {
-//        var ind = 4
-//        for (i in 0 until NUMBER_PART) {
-//            configPart[i] = s[ind++]  // 4,5...
-//        }
-//        strZoneStat = s[ind++]
-//        strZoneAlarm = s[ind++]
-//        strPartStat = s[ind++]
-//        strFout = s[ind++]
-//        strFtout = s[ind++]
-//        strSout = s[ind++]  // 25
-//        strTrbl = s[ind++]  //
-//
-//        for (i in strTemp.indices) {
-//            strTemp[i] = s[ind++]
-//        }
-//        str12V = s[ind++]             // 39
-//        str3V = s[ind++]
-//
-//        for (i in strGsm.indices) {
-//            strGsm[i] = s[ind++]
-//        }
-//        strTcp = s[ind++]
-//        strVers = s[ind++]
-//        strEvent = s[ind++]
-//        strTime = s[ind++]
-
-        fillDevDataByte(obj)
-    }
-
-    fun getAllStr(): Array<String> {
-        val k = ObjDb.getColumnCount()
-        val s = arrayOfNulls<String>(k)
-        var ind = 0
-        s[ind++] = "0"
-        s[ind++] = num
-        s[ind++] = descr
-        s[ind++] = code
-        for (i in 0 until NUMBER_PART) {
-            s[ind++] = configPart[i]
-        }
-        s[ind++] = strZoneStat
-        s[ind++] = strZoneAlarm
-        s[ind++] = strPartStat
-        s[ind++] = strFout
-        s[ind++] = strFtout
-        s[ind++] = strSout  // 25
-        s[ind++] = strTrbl  //
-
-        for (i in 0 until NUMBER_TEMP) {
-            s[ind++] = strTemp[i]
-        }
-        s[ind++] = str12V             // 39
-        s[ind++] = str3V
-
-        for (i in strGsm.indices) {
-            s[ind++] = strGsm[i]
-        }
-        s[ind++] = strTcp
-        s[ind++] = strVers
-        s[ind++] = strEvent
-        s[ind++] = strTime
-        for (i in ind until k) {
-            s[i] = "0"
-        }
-        val s1 = arrayOf<String>()
-        for(i in 0 until k){
-            s1[i] = s[i] ?: ""
-        }
-        return s1
-    }
 
     fun fillDevDataByte(obj: Obj) {
         FillConfigPartsFromDb(obj)
@@ -247,26 +133,25 @@ class ObjState(obj: Obj) {
     //=========================================== fill data bytes ==============
 
     fun getStrCfgPart(obj: Obj, p: Int) : String {
-        var s:String = ""
-        when(p){
-            0 -> s = obj.ZoneInPart1
-            1 -> s = obj.ZoneInPart2
-            2 -> s = obj.ZoneInPart3
-            3 -> s = obj.ZoneInPart4
-            4 -> s = obj.ZoneInPart5
-            5 -> s = obj.ZoneInPart6
-            6 -> s = obj.ZoneInPart7
-            7 -> s = obj.ZoneInPart8
-            8 -> s = obj.ZoneInPart9
-            9 -> s = obj.ZoneInPart10
-            10 -> s = obj.ZoneInPart11
-            11 -> s = obj.ZoneInPart12
-            12 -> s = obj.ZoneInPart13
-            13 -> s = obj.ZoneInPart14
-            14 -> s = obj.ZoneInPart15
-            15 -> s = obj.ZoneInPart16
+        return when(p){
+            0 -> obj.ZoneInPart1
+            1 -> obj.ZoneInPart2
+            2 -> obj.ZoneInPart3
+            3 -> obj.ZoneInPart4
+            4 -> obj.ZoneInPart5
+            5 -> obj.ZoneInPart6
+            6 -> obj.ZoneInPart7
+            7 -> obj.ZoneInPart8
+            8 -> obj.ZoneInPart9
+            9 -> obj.ZoneInPart10
+            10 -> obj.ZoneInPart11
+            11 -> obj.ZoneInPart12
+            12 -> obj.ZoneInPart13
+            13 -> obj.ZoneInPart14
+            14 -> obj.ZoneInPart15
+            15 -> obj.ZoneInPart16
+            else -> ""
         }
-        return s
     }
     fun fillConfigPart(obj: Obj, part: Int) {
         var c: Int
@@ -329,6 +214,7 @@ class ObjState(obj: Obj) {
             }
         }
     }
+
 
 
 
