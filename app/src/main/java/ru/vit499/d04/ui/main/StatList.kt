@@ -20,6 +20,8 @@ class StatList(
     private var ind: Int = 0
 
     init {
+        ind = ind1
+        descr = descr1
         if (partOrZone == 1) {  // part
             name = "Раздел " + (ind + 1).toString()
             intColor = color // intColorP[stat];
@@ -35,8 +37,7 @@ class StatList(
             span = 1
             strPart = 0
         }
-        ind = ind1
-        descr = descr1
+
     }
     fun getName(): String {
         return name

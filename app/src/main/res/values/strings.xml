@@ -44,4 +44,5 @@
     <string name="fcm_message">fcm message</string>
     <string name="button_text_sub">subscribe</string>
     <string name="title_events">уведомления</string>
+    <string name="bot_info">Info</string>
 </resources>

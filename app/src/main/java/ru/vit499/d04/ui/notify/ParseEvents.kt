@@ -10,7 +10,8 @@ class ParseEvents {
     companion object {
 
         fun ParseEvents(s: String): ArrayList<NotifyItem> {
-            val evLists = ArrayList<NotifyItem>()
+            val evList = ArrayList<NotifyItem>()
+            val evListTemp = ArrayList<NotifyItem>()
 
             //Logm.aa(s)
             val src = s.toByteArray()
@@ -56,21 +57,20 @@ class ParseEvents {
                 val k4 = Str.indexof(src, a, '"'.toByte(), 8, len_str) // s1.indexOf(':'); // + 2;
                 if (k4 == -1) continue
                 val s3 = Str.byte2str(src, a + k3, a + k4 - 1)
-                //k1 += 2;
-                //String s2 = s1.substring(k1, k1+13);
-                //int k2 = s1.indexOf(':', k1 + 13);
-                //if(k2 == -1) continue;
-                //k2 += 2;
-                //String s3 = s1.substring(k2, k2+10);
                 val ev = NotifyItem(s2, s3)
-                evLists.add(ev)
+                evListTemp.add(ev)
                 if (c >= len_src) break
                 if (i >= len_src) break
-                //if(list.size() > 10) break;
             }
             //Logm.Log("sz evList=" + evLists.size.toString())
             //Logm.aa("ev: ${evLists.toString()}")
-            return evLists
+            val k = evListTemp.size
+            for(i in 0 until k){
+                val ev = evListTemp.get(k-1-i)
+                evList.add(ev)
+            }
+
+            return evList
         }
     }
 }

@@ -7,10 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
@@ -49,10 +48,10 @@ class NotifyFragment : Fragment() {
                 Logm.aa("cur obj in ev= $s ")
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
-            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)
+            //(activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)
             Logm.aa("curObjName in NotifyFragment")
         })
-        mainViewModel.events.observe(this, Observer {
+        mainViewModel.events.observe(viewLifecycleOwner, Observer {
             it?.let {
                 Logm.aa("ev observe")
                 Logm.aa("ev cnt= ${it.size}")
@@ -60,6 +59,16 @@ class NotifyFragment : Fragment() {
                 adapter.notifyDataSetChanged()
             }
         })
+
+        val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeN)
+        swipe.setColorSchemeColors(0x607d8b)
+        swipe.setOnRefreshListener {
+            mainViewModel.onReqEvent()
+        }
+        mainViewModel.progress.observe(this, Observer {
+            swipe.isRefreshing = it
+        })
+
         return view
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -16,20 +16,20 @@ class ObjStringUpd(var obj: Obj) {
     internal var temp = arrayOfNulls<String>(NUMBER_TEMP)
     internal var gsm = arrayOfNulls<String>(2)
 
-    internal var ZoneStat: String = ""
-    internal var ZoneAlarm: String = ""
-    internal var PartStat: String = ""
-    internal var fout: String = ""
-    internal var ftout: String = ""
-    internal var sout: String = ""
-    internal var trbl: String = ""
-    internal var objEvent: String = ""
-    internal var dv12v: String = ""
-    internal var dv3v: String = ""
-    internal var tcp: String = ""
-    internal var vers: String = ""
-    internal var timeLastData: String = ""
-    internal var objTime: String = ""
+    internal var ZoneStat: String? = ""
+    internal var ZoneAlarm: String? = ""
+    internal var PartStat: String? = ""
+    internal var fout: String? = ""
+    internal var ftout: String? = ""
+    internal var sout: String? = ""
+    internal var trbl: String? = ""
+    internal var objEvent: String? = ""
+    internal var dv12v: String? = ""
+    internal var dv3v: String? = ""
+    internal var tcp: String? = ""
+    internal var vers: String? = ""
+    internal var timeLastData: String? = ""
+    internal var objTime: String? = ""
 
     init {
         setObjUpd(obj)
@@ -103,13 +103,13 @@ class ObjStringUpd(var obj: Obj) {
         obj.ZoneInPart15 = ZoneInPart[14] ?: "0000000000000000"
         obj.ZoneInPart16 = ZoneInPart[15] ?: "0000000000000000"
 
-        obj.ZoneStat = ZoneStat
-        obj.ZoneAlarm = ZoneAlarm
-        obj.PartStat = PartStat
-        obj.fout = fout
-        obj.ftout = ftout
-        obj.sout = sout
-        obj.trbl = trbl
+        obj.ZoneStat = ZoneStat ?: "0000000000000000"
+        obj.ZoneAlarm = ZoneAlarm ?: "0000000000000000"
+        obj.PartStat = PartStat ?: "00000000000000000000000000000000"
+        obj.fout = fout ?: "0000000000000000000000000000000000000000000000000000000000000000"
+        obj.ftout = ftout ?: "0000000000000000000000000000000000000000000000000000000000000000"
+        obj.sout = sout ?: "00000000"
+        obj.trbl = trbl ?: ""
 
         obj.temp0 = temp[0] ?: ""
         obj.temp1 = temp[1] ?: ""
@@ -123,109 +123,72 @@ class ObjStringUpd(var obj: Obj) {
         obj.gsm1 = gsm[0] ?: ""
         obj.gsm2 = gsm[1] ?: ""
 
-        obj.dv12v = dv12v
-        obj.dv3v = dv3v
-        obj.tcp = tcp
-        obj.vers = vers
+        obj.dv12v = dv12v ?: ""
+        obj.dv3v = dv3v ?: ""
+        obj.tcp = tcp ?: ""
+        obj.vers = vers ?: ""
 
-        obj.objEvent = objEvent
-        obj.objTime = objTime
+        obj.objEvent = objEvent ?: ""
+        obj.objTime = objTime ?: ""
 
         return obj
-    }
-
-    //======================== check length =========================
-    fun checkLenConfigPart(part: Int) {
-        if (ZoneInPart[part] == null) ZoneInPart[part] = "0000000000000000"
-        var s = ZoneInPart[part]
-        val k = s!!.length
-        if (k < 16) {
-            val s1 = "0000000000000000"
-            s = s + s1.substring(k, 16)
-            ZoneInPart[part] = s
-        }
-    }
-
-    fun checkLenPartStat() {
-        if (PartStat == null) PartStat = "00000000000000000000000000000000"
-        var s = PartStat
-        val k = s.length
-        if (k < 32) {
-            val s1 = "00000000000000000000000000000000"
-            s = s + s1.substring(k, 32)
-            PartStat = s
-        }
-    }
-
-    fun checkLenZoneStat() {
-        if (ZoneStat == null) ZoneStat = "0000000000000000"
-        var s = ZoneStat
-        val k = s.length
-        if (k < 16) {
-            val s1 = "0000000000000000"
-            s = s + s1.substring(k, 16)
-            ZoneStat = s
-        }
-    }
-
-    fun checkLenZoneAlarm() {
-        if (ZoneAlarm == null) ZoneAlarm = "0000000000000000"
-        var s = ZoneAlarm
-        val k = s.length
-        if (k < 16) {
-            val s1 = "0000000000000000"
-            s = s + s1.substring(k, 16)
-            ZoneAlarm = s
-        }
     }
 
     //-----------------------------------------------------------
 
     fun UpdConfigPart(part: Int, s: String?) {
-        if (s != null) ZoneInPart[part] = s          // init from mqtt or http
-        checkLenConfigPart(part)
-        //fillConfigPart(part)
+        ZoneInPart[part] = s          // init from mqtt or http
     }
     fun UpdPartStat(s: String?) {
-        if (s != null) PartStat = s
-        checkLenPartStat()
-        //fillPartStat()
+        PartStat = s
     }
 
     fun UpdZoneStat(s: String?) {
-        if (s != null) ZoneStat = s
-        checkLenZoneStat()
-        //fillZoneStat()
+        ZoneStat = s
     }
 
     fun UpdZoneAlarm(s: String?) {
-        if (s != null) ZoneAlarm = s
-        checkLenZoneAlarm()
-        //fillZoneAlarm()
+        ZoneAlarm = s
     }
 
     fun UpdTemper(t: Int, s: String?) {
-        if (s != null) temp[t] = s
+        temp[t] = s
     }
 
     fun UpdGsm(g: Int, s: String?) {
-        if (s != null) gsm[g] = s
+        gsm[g] = s
     }
 
     fun Upd12v(s: String) {
-        if (s != null) dv12v = s
+        dv12v = s
+    }
+
+    fun Upd3v(s: String) {
+        dv3v = s
     }
 
     fun UpdTcp(s: String) {
-        if (s != null) tcp = s
+        tcp = s
     }
 
     fun UpdVers(s: String) {
-        if (s != null) vers = s
+        vers = s
     }
 
     fun UpdTime(s: String) {
-        if (s != null) objTime = s
+        objTime = s
+    }
+
+    fun UpdSout(s: String?) {
+        sout = s
+    }
+
+    fun UpdFout(s: String?) {
+        fout = s
+    }
+
+    fun UpdFtout(s: String?) {
+        ftout = s
     }
 
     //------------------------------------------
@@ -259,19 +222,19 @@ class ObjStringUpd(var obj: Obj) {
                 return
             }
         }
-        if (cmd == s[20])
-            UpdZoneStat(value)
-        else if (cmd == s[21])
-            UpdZoneAlarm(value)
-        else if (cmd == s[22])
-            UpdPartStat(value)
-        else if (cmd == s[40])
-            Upd12v(value)
-        else if (cmd == s[44])
-            UpdTcp(value)
-        else if (cmd == s[45])
-            UpdVers(value)
-        else if (cmd == s[47]) UpdTime(value)
+        when(cmd){
+            s[20] -> UpdZoneStat(value)
+            s[21] -> UpdZoneAlarm(value)
+            s[22] -> UpdPartStat(value)
+            s[23] -> UpdFout(value)
+            s[24] -> UpdFtout(value)
+            s[25] -> UpdSout(value)
+            s[40] -> Upd12v(value)
+            s[41] -> Upd3v(value)
+            s[44] -> UpdTcp(value)
+            s[45] -> UpdVers(value)
+            s[47] -> UpdTime(value)
+        }
     }
 
     fun UpdStringAll(list: ArrayList<Buf>) : Obj {

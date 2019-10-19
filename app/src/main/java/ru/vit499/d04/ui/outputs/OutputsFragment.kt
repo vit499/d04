@@ -9,7 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_outputs.*
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
@@ -32,7 +33,11 @@ class OutputsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_outputs, container, false)
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        val tvInfo = view.findViewById<TextView>(R.id.tv_info)
+        //val tvInfo = view.findViewById<TextView>(R.id.tv_info)
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recl_outputs)
+        val adapter = OutputsAdapter(onClickListener = { o, b -> onClick(o, b) })
+        recyclerView.adapter = adapter
 
         mainViewModel = activity?.run {
             Logm.aa("obj fr")
@@ -44,15 +49,28 @@ class OutputsFragment : Fragment() {
             obj?.let{
                 s = obj.objDescr
                 Logm.aa("cur obj in out= $s ")
-                tvInfo.text = getStrInfo(obj)
+                //tvInfo.text = getStrInfo(obj)
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
-            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_outputs)
+            //(activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_outputs)
             Logm.aa("curObjName in OutputFragment")
         })
 
+        mainViewModel.outList.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                Logm.aa("fr out cnt= ${it.size}")
+                adapter.data = it
+            }
+        })
 
-
+        val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeO)
+        swipe.setColorSchemeColors(0x8bc34a)
+        swipe.setOnRefreshListener {
+            mainViewModel.onReqStat()
+        }
+        mainViewModel.progress.observe(this, Observer {
+            swipe.isRefreshing = it
+        })
 
         return view
     }
@@ -69,38 +87,8 @@ class OutputsFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun getStrInfo(obj: Obj) : String {
-        val sb = StringBuilder()
-        sb.append("Версия:")
-        sb.append("\t\t")
-        sb.append(obj.vers)
-        sb.append("\r\n")
+    fun onClick(o: Int, b: Int) {
 
-        sb.append("Temp:")
-        sb.append("\t\t")
-        sb.append(obj.temp0)
-        sb.append("\r\n")
-
-        sb.append("gsm:")
-        sb.append("\t\t")
-        sb.append(obj.gsm1)
-        sb.append("\r\n")
-
-        sb.append("U:")
-        sb.append("\t\t")
-        sb.append(obj.dv12v)
-        sb.append("\r\n")
-
-        sb.append("tcp:")
-        sb.append("\t\t")
-        sb.append(obj.tcp)
-        sb.append("\r\n")
-
-        sb.append("time:")
-        sb.append("\t\t")
-        sb.append(obj.objTime)
-        sb.append("\r\n")
-
-        return sb.toString()
     }
+
 }

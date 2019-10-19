@@ -10,6 +10,10 @@
         android:icon="@drawable/ic_touch_app_black_24dp"
         android:title="@string/bot_outputs" />
     <item
+        android:id="@+id/infoFragment"
+        android:icon="@drawable/ic_announcement_black_24dp"
+        android:title="@string/bot_info" />
+    <item
         android:id="@+id/notifyFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/bot_notify" />

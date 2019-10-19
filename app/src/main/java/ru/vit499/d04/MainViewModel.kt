@@ -17,7 +17,9 @@ import ru.vit499.d04.ui.notify.ParseEvents
 import ru.vit499.d04.util.*
 import ru.vit499.d04.util.Str
 import ru.vit499.d04.objstate.ObjState
+import ru.vit499.d04.objstate.OutState
 import ru.vit499.d04.ui.main.StatList
+import ru.vit499.d04.ui.outputs.OutItem
 
 
 class MainViewModel(
@@ -85,6 +87,10 @@ class MainViewModel(
     private val _statList = MutableLiveData<List<StatList>>()
     val statList : LiveData<List<StatList>>
         get() = _statList
+
+    private val _outList = MutableLiveData<List<OutItem>>()
+    val outList : LiveData<List<OutItem>>
+        get() = _outList
 
     private val _navigateBackFromObj = MutableLiveData<Boolean>()
     val navigateBackFromObj : LiveData<Boolean>
@@ -373,7 +379,7 @@ class MainViewModel(
             Logm.aa(strReq)
             if(httpR == null) httpR = HttpCor()
             val s = httpR?.reqStat(strReq, 3, 10) ?: "-"
-           // updObjStat(s)
+            updObjStat(s)
             _progress.postValue(false)
         }
     }
@@ -426,24 +432,17 @@ class MainViewModel(
 
                 val objState = ObjState(obj)
                 val sList = objState.getObjStatList()
+
+                val outState = OutState(obj)
+                val oList = outState.getOutStatList()
+
+                _outList.postValue(oList)
                 _statList.postValue(sList)
                 //_curObj.postValue(obj)
                 Logm.aa("state updated")
             }
         }
-
     }
-//    public void UpdData(ArrayList<Buf> list){
-//        Obj obj = getOneObj();
-//        for(int i = 0; i < list.size(); i++){
-//            obj.Upd(list.get(i).buf, list.get(i).len);
-//        }
-//        obj.fillDevDataByte();
-//        Context cn = SingletoneC.get().getContext();
-//        DbObjHelper dbObjHelper = new DbObjHelper(cn);
-//        dbObjHelper.updateObj(obj);
-//        setListObj();
-//    }
 
     fun updObjStat (s: String) {
         Logm.aa("http end:")

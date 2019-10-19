@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, nd: NavDestination, _ ->
             if (nd.id == R.id.mainFragment || nd.id == R.id.outputsFragment
-                || nd.id == R.id.notifyFragment) {
+                || nd.id == R.id.notifyFragment || nd.id == R.id.infoFragment) {
                 //toolbar.visibility = View.VISIBLE
                 bottomNav.visibility = View.VISIBLE
             } else {
@@ -71,12 +71,12 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-        mainViewModel.progress.observe(this, Observer {
-            if(it){
-                progressBar.visibility = View.VISIBLE
-            }
-            else progressBar.visibility = View.GONE
-        })
+//        mainViewModel.progress.observe(this, Observer {
+//            if(it){
+//                progressBar.visibility = View.VISIBLE
+//            }
+//            else progressBar.visibility = View.GONE
+//        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

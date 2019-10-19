@@ -69,4 +69,8 @@
         android:id="@+id/hiddenFragment"
         android:name="ru.vit499.d04.ui.misc.HiddenFragment"
         android:label="HiddenFragment" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="ru.vit499.d04.ui.info.InfoFragment"
+        android:label="InfoFragment" />
 </navigation>

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import ru.vit499.d04.MainViewModel
@@ -52,7 +53,7 @@ class MainFragment : Fragment() {
                 s2 = obj.objName
             }
             (activity as AppCompatActivity).supportActionBar?.title = s
-            (activity as AppCompatActivity).supportActionBar?.subtitle = s2
+            //(activity as AppCompatActivity).supportActionBar?.subtitle = s2
             Logm.aa("cur obj in main= $s ")
         })
 
@@ -80,6 +81,15 @@ class MainFragment : Fragment() {
                 }
                 tvLog.text = sb.toString()
             }
+        })
+
+        val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipe)
+        swipe.setColorSchemeColors(0x8bc34a)
+        swipe.setOnRefreshListener {
+            mainViewModel.onReqStat()
+        }
+        mainViewModel.progress.observe(this, Observer {
+            swipe.isRefreshing = it
         })
 
         mainViewModel.onReqStat()

@@ -2,6 +2,7 @@ package ru.vit499.d04.objstate
 
 import ru.vit499.d04.database.Obj
 import ru.vit499.d04.ui.main.StatList
+import ru.vit499.d04.ui.outputs.OutItem
 import ru.vit499.d04.util.Buf
 import ru.vit499.d04.util.Logm
 import ru.vit499.d04.util.Str

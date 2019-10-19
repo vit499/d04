@@ -37,19 +37,6 @@ class ObjFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_obj)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recl_obj)
-//        val adapter = ObjAdapter(onClickListener = { m, objId ->
-//            Logm.aa("m= $m , pos=$objId")
-//            Logm.aa("ajdf")
-//            if(m == 0){
-//                objViewModel.onCurrentObj(objId)
-//                //this.findNavController().navigate(R.id.action_objFragment_to_mainFragment)
-//                (activity as AppCompatActivity).onBackPressed()
-//            }
-//            else {
-//                objViewModel.onCurrentObjEdit(objId)
-//                this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
-//            }
-//        })
         val adapter = ObjAdapter(onClickListener = { m, objId -> onClick(m, objId) })
         recyclerView.adapter = adapter
 
