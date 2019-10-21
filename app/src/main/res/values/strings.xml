@@ -45,4 +45,12 @@
     <string name="button_text_sub">subscribe</string>
     <string name="title_events">уведомления</string>
     <string name="bot_info">Info</string>
+    <string name="text_close">close</string>
+    <string name="text_open">open</string>
+    <string name="button_text_clear">Clear</string>
+    <string name="main_menu_log">Log</string>
+    <string name="text_req_stat">Upd</string>
+    <string name="text_req_temp">Temp</string>
+    <string name="text_set_out5">5град</string>
+    <string name="text_set_out_bi">bi</string>
 </resources>

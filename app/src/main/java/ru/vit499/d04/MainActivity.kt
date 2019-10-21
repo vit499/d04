@@ -71,12 +71,6 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
-//        mainViewModel.progress.observe(this, Observer {
-//            if(it){
-//                progressBar.visibility = View.VISIBLE
-//            }
-//            else progressBar.visibility = View.GONE
-//        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

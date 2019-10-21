@@ -302,7 +302,8 @@ class MainViewModel(
         super.onCleared()
         viewModelJob.cancel()
         httpJob.cancel()
-        httpR?.Close()
+        _progress.postValue(false)
+        //httpR?.Close()
         Logm.aa("shutdown")
     }
 
@@ -319,27 +320,32 @@ class MainViewModel(
     val progress : LiveData<Boolean>
         get() = _progress
 
-    private var httpR: HttpCor? = null
+
+    //private var httpR: HttpCor? = null
 
     fun onReqStat () {
-        //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
-        val strReq = strReqHttp(curObjName, "state")
-        Logm.aa(strReq)
+        if(_progress.value == true) return
         _progress.value = true
-        if(httpR == null) httpR = HttpCor()
+        Logm.aa("on Rec Stat...")
+        val strReq = strReqHttp(curObjName, "state")
+        //Logm.aa(strReq)
         httpScope.launch {
+            //if(httpR == null) httpR = HttpCor()
+            var httpR = HttpCor(10)
             val s = httpR?.reqStat(strReq, 1, 10) ?: "-"
             UpdState(s)
             _progress.postValue(false)
         }
     }
     fun onReqEvent () {
-        //val strReq = "GET / HTTP/1.1\r\nHost: vit499.ru\r\n\r\n"
-        val strReq = strReqHttp(curObjName, "events")
-        Logm.aa(strReq)
+        if(_progress.value == true) return
         _progress.value = true
-        if(httpR == null) httpR = HttpCor()
+        Logm.aa("on Rec Ev...")
+        val strReq = strReqHttp(curObjName, "events")
+        //Logm.aa(strReq)
         httpScope.launch {
+            //if(httpR == null) httpR = HttpCor()
+            val httpR = HttpCor(10)
             val s = httpR?.reqStat(strReq, 2, 10) ?: "-"
             updEvents(s)
             _progress.postValue(false)
@@ -347,8 +353,10 @@ class MainViewModel(
     }
 
     fun onHttpClose(){
-        httpR?.Close()
-        //httpJob.cancel()
+        Logm.aa("on http close")
+        //httpR?.Close()
+        httpJob.cancel()
+        _progress.postValue(false)
     }
 
     //-------------------- fcm -------------
@@ -369,7 +377,7 @@ class MainViewModel(
     }
     fun onFbSub () {
 
-        _progress.value = true
+        //_progress.value = true
         httpScope.launch {
             var arr = getArrObj() ?: return@launch
             //Logm.aa("arr: ${arr.toString()}")
@@ -377,10 +385,11 @@ class MainViewModel(
             val token = FcmToken.waitToken()
             val strReq = strSendToken(arr, token)
             Logm.aa(strReq)
-            if(httpR == null) httpR = HttpCor()
-            val s = httpR?.reqStat(strReq, 3, 10) ?: "-"
-            updObjStat(s)
-            _progress.postValue(false)
+            //if(httpR == null) httpR = HttpCor()
+            val http = HttpCor(10)
+            val s = http?.reqStat(strReq, 3, 10) ?: "-"
+            updHttpAnswer(s)
+            //_progress.postValue(false)
         }
     }
 
@@ -444,7 +453,7 @@ class MainViewModel(
         }
     }
 
-    fun updObjStat (s: String) {
+    fun updHttpAnswer (s: String) {
         Logm.aa("http end:")
         Logm.aa(s)
         _strHttpStat.postValue(s)

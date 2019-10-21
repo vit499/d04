@@ -40,6 +40,7 @@ class NotifyFragment : Fragment() {
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
+        Logm.aa("a on req ev 1 ")
         mainViewModel.onReqEvent()
         mainViewModel.curObj.observe(this, Observer { obj ->
             var s: String = getString(R.string.obj_empty)
@@ -63,6 +64,7 @@ class NotifyFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeN)
         swipe.setColorSchemeColors(0x607d8b)
         swipe.setOnRefreshListener {
+            Logm.aa("a on rec ev 2 ")
             mainViewModel.onReqEvent()
         }
         mainViewModel.progress.observe(this, Observer {

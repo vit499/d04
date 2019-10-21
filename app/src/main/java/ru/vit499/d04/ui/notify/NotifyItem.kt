@@ -15,7 +15,7 @@ class NotifyItem(cid: String, _time: String) {
 
         descr = GetDescr(code)
 
-        color = GetColorEv(0)
+        color = getColorEv()
     }
 
     internal fun getDescr(): String {
@@ -31,11 +31,11 @@ class NotifyItem(cid: String, _time: String) {
         return color
     }
 
-    internal fun GetColorEv(p: Int): Int {
-        var p = p
-        val c = intArrayOf(
-            -0x3f3f40, // не акт. выключен
-            -0x6700, // не акт. включен
+    internal fun getColorEv(): Int {
+        var p = 0
+        val c = longArrayOf(
+            0xffffe0b2,
+            -0xffcc80,
             -0xff0100, // готов          зеленый
             -0xcd00, // на охране      красный
             -0x33cc67, -0x340000, // тревога
@@ -44,7 +44,7 @@ class NotifyItem(cid: String, _time: String) {
             -0x9f1000, -0x9f1000, -0x9f1000
         )
         if (p >= S_EV_END) p = 0
-        return c[p]
+        return c[p].toInt()
     }
 
     // 20190207221736

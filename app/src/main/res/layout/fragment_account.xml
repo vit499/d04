@@ -25,7 +25,8 @@
                 android:id="@+id/et_55_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"></EditText>
+                android:textAlignment="center">
+            </EditText>
 
             <TextView
                 android:id="@+id/tv55_2"
@@ -41,7 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textAlignment="center"></EditText>
+                android:textAlignment="center">
+            </EditText>
 
             <TextView
                 android:id="@+id/tv55_3"

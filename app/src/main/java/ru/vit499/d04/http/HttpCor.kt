@@ -1,5 +1,7 @@
 package ru.vit499.d04.http
 
+import android.os.CountDownTimer
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -11,15 +13,19 @@ import java.io.*
 import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
+//import kotlin.Exception
 
-class HttpCor() {
+class HttpCor(val tmax : Int) {
 
-    val SIZEBUF: Int = 100000
+    companion object {
+        val SIZEBUF: Int = 100000
+        val ONE_SEC : Long = 1000
+        val port: Int = 80  // strPort.toInt()
+    }
     val server = Account.accServ
     //val strPort = Account.accPort
-    val port: Int = 80  // strPort.toInt()
-    val user = Account.accUser
-    val pass = Account.accPass
+
+    private val timer: CountDownTimer
 
     var isOpen: Boolean = false
     var socket: Socket? = null
@@ -32,11 +38,26 @@ class HttpCor() {
     var rcnt1: Int = 0
     var rcnt2: Int = 0
 
+    init {
+        timer = object : CountDownTimer(tmax.toLong()*ONE_SEC, ONE_SEC) {
+            override fun onTick(mSec: Long) {
+                val t = (mSec / ONE_SEC)
+                //Logm.aa("timer=$t")
+            }
+
+            override fun onFinish() {
+                Logm.aa("timer end")
+                Close()
+            }
+        }
+        timer.start()
+    }
+
     fun send(
         strSend: String
     ) : Boolean {
         isOpen = false
-        var resStr : String = "error"
+        //var resStr : String = "error"
         try{
             socket = Socket(InetAddress.getByName(server), port)
             Logm.aa("connected")
@@ -44,105 +65,19 @@ class HttpCor() {
             val outputStream : OutputStream? = socket?.getOutputStream() ?: return false
             val inputStream : InputStream? = socket?.getInputStream() ?: return false
             outputStreamWriter = OutputStreamWriter(outputStream!!)
-           // inputStreamReader = InputStreamReader(inputStream!!)
             dataInputStream = DataInputStream(inputStream!!)
-            //inputStream = socket?.getInputStream()
 
             rcnt2 = 0
-            isOpen = true
 
             outputStreamWriter?.write(strSend)
             outputStreamWriter?.flush()
             Logm.aa("sended")
-
+            isOpen = true
         }
         catch(ex: Exception) {
             Logm.aa("open exc: ${ex.toString()}")
         }
         return(isOpen)
-    }
-
-    fun recEvent(buf : ByteArray, len : Int) : String? {
-        var s : String? = null
-
-        var a = -1 // = r2.indexOf('[');
-        var b = -1 // = r2.indexOf(']', a);
-        for (i in 0 until len) {
-            if (buf[i] == ']'.toByte()) {
-                b = i
-                //break;
-            }
-        }
-        for (i in 0 until len) {
-            if (buf[i] == '['.toByte()) {
-                a = i
-                break
-            }
-        }
-
-        if (a != -1 && b != -1) {
-            //Logm.LogAc(buf, (b-100), len);
-            s = Str.byte2str(buf, a, b)
-            //Logm.aa(s)
-            if (s == null || s!!.length < 2) s = null
-        }
-        return s
-    }
-
-    fun recState (buf: ByteArray, len_src : Int) : String? {
-        var s : String? = null
-        var a = -1
-        var b = -1
-        val cntEqMax : Int = 59
-        var cntEq : Int = 0
-        var len : Int = len_src
-
-        if(len < 100) return null
-        val r = String(buf, 0, len)
-        //Logm.aa(r)
-        if (!Str.checkHttpOk(buf, len)) {
-            if (len > 100) len = 100
-            val r2 = Str.byte2str(buf, 0, len)
-            if (r2 == null || r2.length < 2) return null
-            Logm.aa(r2)
-            return "error"
-        }
-        for (i in 0 until len) {
-            if (buf[i] == '='.toByte()) {
-                cntEq++
-                if (cntEq >= cntEqMax) {
-                    b = 1
-                    break
-                }
-            }
-        }
-        if (b != -1) {
-            s = Str.byte2str(buf, 0, len)
-            //Logm.aa("res: $s")
-            if (s == null || s.length < 2) return null
-            Logm.aa("ok > ")
-        }
-        else {
-            Logm.aa("... ")
-        }
-        return s
-    }
-
-    fun rec1111 (buf: ByteArray, len : Int) : String? {
-        var s = ""
-
-        val r2 = Str.byte2str(buf, len)
-
-        if (r2 == null || r2.length < 2) return null
-        Logm.aa("ht rec: $r2")
-        val a = r2.indexOf("111", 0)
-        if(a != -1) {
-            s = "ok"
-        }
-        else {
-            s = "error"
-        }
-        return s
     }
 
     suspend fun rec (timeout: Long, wa : Int) : String {
@@ -151,11 +86,22 @@ class HttpCor() {
             var resStr: String = "error"
             withTimeout(t) {
                 while (true) {
-                    if (!isOpen || !isActive) {
+                    if (!isActive) {
+                        Logm.aa("rec end isActive")
+                        Close()
+                        break;
+                    }
+                    if(socket == null || dataInputStream == null) {
+                        Logm.aa("rec end socket null")
                         Close()
                         break;
                     }
                     try {
+                        if(socket!!.isClosed || !socket!!.isConnected) {
+                            Logm.aa("rec end socket closed")
+                            Close()
+                            break;
+                        }
                         rcnt1 = dataInputStream?.read(rbuf1) ?: 0
                         if(rcnt1 > 0) {
                             for (j in 0 until rcnt1) {
@@ -179,8 +125,10 @@ class HttpCor() {
                                 break
                             }
                         }
-                    } catch (ex: Exception) {
-                        //Logm.aa("rec exc: ${ex.toString()}")
+                    } catch (ex: IOException) {
+                        Logm.aa("rec IOexc: ${ex.toString()}")
+                    } catch (ex: Exception){
+                        Logm.aa("rec exc: ${ex.toString()}")
                     }
                 }
             }
@@ -189,6 +137,7 @@ class HttpCor() {
     }
 
     fun Close(){
+        Logm.aa("http close")
         try {
             outputStreamWriter?.close()
             dataInputStream?.close()
@@ -202,14 +151,14 @@ class HttpCor() {
         isOpen = false
     }
 
-    suspend fun reqStat(strSend : String, wa: Int, timeout: Long) : String {
+    suspend fun reqStat(strSend : String, wa: Int, timeout: Long) : String? {
         var s = ""
         return withContext(Dispatchers.Default) {
             val b = send(strSend)
             if (b) {
-                s = rec(timeout, wa)
+                s = rec(timeout+5, wa)
             }
-            Close()
+            //Close()
             s
         }
     }

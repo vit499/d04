@@ -40,8 +40,9 @@ class OutputsAdapter(
             tv2.text = item.getFunct()
             tv3.text = item.getState()
             layout.setBackgroundColor(item.getColorOut())
-            itemView.setOnClickListener(){
+            itemView.setOnLongClickListener(){
                 onClickListener(0, position)
+                true
             }
         }
 

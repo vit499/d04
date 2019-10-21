@@ -66,6 +66,7 @@ class OutputsFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeO)
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
+            Logm.aa("a on rec stat (outs)")
             mainViewModel.onReqStat()
         }
         mainViewModel.progress.observe(this, Observer {
@@ -88,7 +89,7 @@ class OutputsFragment : Fragment() {
     }
 
     fun onClick(o: Int, b: Int) {
-
+        Logm.aa("out click ${b.toString()}")
     }
 
 }

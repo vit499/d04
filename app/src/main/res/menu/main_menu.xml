@@ -11,6 +11,9 @@
         android:id="@+id/accountFragment"
         android:title="@string/main_menu_account" />
     <item
+        android:id="@+id/logFragment"
+        android:title="@string/main_menu_log" />
+    <item
         android:id="@+id/aboutFragment"
         android:title="@string/main_menu_about" />
 </menu>

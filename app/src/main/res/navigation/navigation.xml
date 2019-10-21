@@ -73,4 +73,8 @@
         android:id="@+id/infoFragment"
         android:name="ru.vit499.d04.ui.info.InfoFragment"
         android:label="InfoFragment" />
+    <fragment
+        android:id="@+id/logFragment"
+        android:name="ru.vit499.d04.ui.misc.LogFragment"
+        android:label="LogFragment" />
 </navigation>

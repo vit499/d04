@@ -55,14 +55,14 @@ class OutItem(num: Int, funct1: Int, stat1: Int, temp1: Int) {
 
     internal fun getColorOut(): Int {
         var p = stat
-        val c = intArrayOf(
+        val c = longArrayOf(
             //-0x3f3f40, // не акт. выключен
             //-0x006700, // не акт. включен
-            -0xff0100, // готов          зеленый
-            -0x00cd00 // на охране      красный
+            0xff80cbc4, //0xffffe0b2,  // -0xff0100, // готов          зеленый
+            0xff00cd00 // на охране      красный
         )
         if (p >= c.size) p = 0
-        return c[p]
+        return c[p].toInt()
     }
 
     fun getState() : String {

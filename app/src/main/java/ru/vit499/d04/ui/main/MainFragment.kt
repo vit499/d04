@@ -40,6 +40,7 @@ class MainFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
 
+
         mainViewModel = activity?.run {
             Logm.aa("main fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
@@ -86,13 +87,25 @@ class MainFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipe)
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
+            Logm.aa("a on rec stat 2 ")
             mainViewModel.onReqStat()
         }
         mainViewModel.progress.observe(this, Observer {
             swipe.isRefreshing = it
         })
 
+        Logm.aa("a on rec stat 1")
         mainViewModel.onReqStat()
+
+        val buttonClose = view.findViewById<Button>(R.id.btn_close)
+        val buttonOpen = view.findViewById<Button>(R.id.btn_onen)
+        buttonOpen.setOnClickListener(){
+            Logm.aa("a on rec stat 3 ")
+            mainViewModel.onReqStat()
+        }
+        buttonClose.setOnClickListener(){
+            mainViewModel.onHttpClose()
+        }
         return view
     }
 
