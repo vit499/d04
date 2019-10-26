@@ -24,18 +24,20 @@ class OutState(var obj: Obj) {
         fillFtout(obj)
     }
 
+    // sout="25000080" -> 0x25 0x00 0x00 0x80 -> 0010 0101 ...
     fun fillSout(obj: Obj){
+        //Logm.aa("sout from obj: ${obj.sout}")
+        for(i in 0 until NUMBER_OUT) statOut[i] = 0
         val b = Str.Str2Bin(obj.sout)
         for (i in 0 until b.len) {
             val byte = b.buf[i].toInt()
-            var c : Int = 0
             for(j in 0 until 8){
                 val o = i * 8 + j
                 if (o >= NUMBER_OUT) break
-                val bit = byte and ((1 shl (7-j)))
-                if(bit != 0) c = c + (1 shl j)
+                val bit = byte and (1 shl j)
+                if(bit != 0) statOut[o] = 1
+                //Logm.aa("o${o+1}=${statOut[o]}")
             }
-            statOut[i] = c
         }
     }
     fun fillFout(obj: Obj){

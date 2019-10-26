@@ -181,6 +181,7 @@ class ObjStringUpd(var obj: Obj) {
 
     fun UpdSout(s: String?) {
         sout = s
+        Logm.aa("upd sout: $sout")
     }
 
     fun UpdFout(s: String?) {

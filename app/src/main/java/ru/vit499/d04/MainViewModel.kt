@@ -1,15 +1,20 @@
 package ru.vit499.d04
 
 import android.app.Application
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.work.*
 import kotlinx.coroutines.*
 import ru.vit499.d04.database.Obj
 import ru.vit499.d04.database.ObjDatabaseDao
 import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
+import ru.vit499.d04.http.HttpWorker
+import ru.vit499.d04.http.Link
 import ru.vit499.d04.objstate.ObjStringUpd
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.ui.notify.NotifyItem
@@ -43,6 +48,7 @@ class MainViewModel(
     private var curObjKey : Long = 0
     private var curObjName : String = ""
     private var curObjEditName : String = ""
+    private var mesId = (1..65535).random()
 //    private val _accExist = MutableLiveData<Boolean>()
 //    val accExist : LiveData<Boolean>
 //        get() = _accExist
@@ -139,6 +145,13 @@ class MainViewModel(
         _navigateToObj.value = false
     }
 
+    fun initLogFile (s: String) {
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+
+            }
+        }
+    }
     // извлечение активного объекта при старте
     fun initCurObj () {
         uiScope.launch {
@@ -325,14 +338,18 @@ class MainViewModel(
 
     fun onReqStat () {
         if(_progress.value == true) return
+        val link = Link.isLink(this.getApplication())
+        Logm.aa("link: $link")
+        if(!link) {
+
+        }
         _progress.value = true
         Logm.aa("on Rec Stat...")
         val strReq = strReqHttp(curObjName, "state")
         //Logm.aa(strReq)
         httpScope.launch {
-            //if(httpR == null) httpR = HttpCor()
             var httpR = HttpCor(10)
-            val s = httpR?.reqStat(strReq, 1, 10) ?: "-"
+            val s = httpR?.reqStat(strReq, 1, 10) ?: "error"
             UpdState(s)
             _progress.postValue(false)
         }
@@ -346,7 +363,7 @@ class MainViewModel(
         httpScope.launch {
             //if(httpR == null) httpR = HttpCor()
             val httpR = HttpCor(10)
-            val s = httpR?.reqStat(strReq, 2, 10) ?: "-"
+            val s = httpR?.reqStat(strReq, 2, 10) ?: "error"
             updEvents(s)
             _progress.postValue(false)
         }
@@ -387,9 +404,9 @@ class MainViewModel(
             Logm.aa(strReq)
             //if(httpR == null) httpR = HttpCor()
             val http = HttpCor(10)
-            val s = http?.reqStat(strReq, 3, 10) ?: "-"
+            val s = http?.reqStat(strReq, 3, 10) ?: "error"
             updHttpAnswer(s)
-            //_progress.postValue(false)
+            _progress.postValue(false)
         }
     }
 
@@ -400,6 +417,7 @@ class MainViewModel(
         get() = _events
 
     fun updEvents (s: String){
+        if(s.equals("error")) return
         var arr : List<NotifyItem>? = null
         arr = ParseEvents.ParseEvents(s)
         _events.postValue(arr)
@@ -423,6 +441,9 @@ class MainViewModel(
 
     fun UpdState(s: String){
 
+        if(s.equals("error")) {
+            return
+        }
         val list = getListState(s)
         if(list == null) {
             return             // to do
@@ -457,5 +478,51 @@ class MainViewModel(
         Logm.aa("http end:")
         Logm.aa(s)
         _strHttpStat.postValue(s)
+    }
+
+    //------------------  send cmd -------------
+    fun onPostCmd (key: String, value: String) {
+
+        //_progress.value = true
+        httpScope.launch {
+
+            val strReq = strSendCmd(curObjName, key, value, (mesId++).toString())
+            Logm.aa(strReq)
+            //if(httpR == null) httpR = HttpCor()
+            val http = HttpCor(10)
+            val s = http?.reqStat(strReq, 3, 10) ?: "error"
+            updHttpAnswer(s)
+            //_progress.postValue(false)
+        }
+    }
+
+    //---------------------------
+
+    fun onWork() {
+
+        if(_progress.value == true) return
+        _progress.value = true
+        Logm.aa("on work Rec Stat...")
+        val strReq = strReqHttp(curObjName, "state")
+
+        httpScope.launch {
+            val constraints = Constraints.Builder()
+                //.setRequiredNetworkType(NetworkType.CONNECTED)
+                //.setRequiresCharging(true)
+                //.setRequiresBatteryNotLow(true)
+                .build()
+
+            val builder = Data.Builder()
+            builder.putString("str", strReq)
+            val param = builder.build()
+           // Logm.aa("param: $param")
+            val httpWorkRequest = OneTimeWorkRequestBuilder<HttpWorker>()
+                .setInputData(param)
+                .build()
+            WorkManager.getInstance().enqueue(httpWorkRequest)
+
+            UpdState("error")
+            _progress.postValue(false)
+        }
     }
 }

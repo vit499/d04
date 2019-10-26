@@ -89,6 +89,7 @@ class MainFragment : Fragment() {
         swipe.setOnRefreshListener {
             Logm.aa("a on rec stat 2 ")
             mainViewModel.onReqStat()
+            //mainViewModel.onWork()
         }
         mainViewModel.progress.observe(this, Observer {
             swipe.isRefreshing = it
@@ -97,15 +98,15 @@ class MainFragment : Fragment() {
         Logm.aa("a on rec stat 1")
         mainViewModel.onReqStat()
 
-        val buttonClose = view.findViewById<Button>(R.id.btn_close)
-        val buttonOpen = view.findViewById<Button>(R.id.btn_onen)
-        buttonOpen.setOnClickListener(){
-            Logm.aa("a on rec stat 3 ")
-            mainViewModel.onReqStat()
-        }
-        buttonClose.setOnClickListener(){
-            mainViewModel.onHttpClose()
-        }
+//        val buttonClose = view.findViewById<Button>(R.id.btn_close)
+//        val buttonOpen = view.findViewById<Button>(R.id.btn_onen)
+//        buttonOpen.setOnClickListener(){
+//            Logm.aa("a on rec stat 3 ")
+//            mainViewModel.onReqStat()
+//        }
+//        buttonClose.setOnClickListener(){
+//            mainViewModel.onHttpClose()
+//        }
         return view
     }
 

@@ -1,95 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeI"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ScrollView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeI"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:bufferType="spannable"
-                    android:drawablePadding="2dp"
-                    android:fadingEdge="vertical"
-                    android:fadingEdgeLength="5dp"
-                    android:isScrollContainer="true"
-                    android:scrollbarStyle="outsideInset"
-                    android:scrollbars="vertical">
-                </TextView>
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/btn_cmd1"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="20dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/text_req_stat">
+                        android:layout_marginEnd="8dp"
+                        android:orientation="horizontal">
 
-                    </Button>
+                        <TextView
+                            android:id="@+id/tv_info_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1.2"
+                            android:bufferType="spannable"
+                            android:drawablePadding="2dp"
+                            android:fadingEdge="vertical"
+                            android:fadingEdgeLength="5dp"
+                            android:isScrollContainer="true"
+                            android:scrollbarStyle="outsideInset"
+                            android:scrollbars="vertical">
 
-                    <Button
-                        android:id="@+id/btn_cmd2"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/text_req_temp">
+                        </TextView>
 
-                    </Button>
+                        <TextView
+                            android:id="@+id/tv_info_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:bufferType="spannable"
+                            android:drawablePadding="2dp"
+                            android:fadingEdge="vertical"
+                            android:fadingEdgeLength="5dp"
+                            android:isScrollContainer="true"
+                            android:scrollbarStyle="outsideInset"
+                            android:scrollbars="vertical">
+
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_cmd1"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/text_req_stat">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_cmd2"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/text_req_temp">
+
+                        </Button>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_cmd3"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/text_set_out5">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/btn_cmd4"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"
+                            android:text="@string/text_set_out_bi">
+
+                        </Button>
+                    </LinearLayout>
                 </LinearLayout>
+            </ScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btn_cmd3"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/text_set_out5">
-
-                    </Button>
-
-                    <Button
-                        android:id="@+id/btn_cmd4"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/text_set_out_bi">
-
-                    </Button>
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-</LinearLayout>
+    </LinearLayout>
+</layout>

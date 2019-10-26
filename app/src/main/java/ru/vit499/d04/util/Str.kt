@@ -234,6 +234,8 @@ class Str {
         // HTTP/1.1 200 OK
         fun checkHttpOk(buf: ByteArray, len: Int): Boolean {
             var p = -1
+            if(len < 50) return false
+
             val s1 = "HTTP"
             val s2 = "200"
             val http = s1.toByteArray()

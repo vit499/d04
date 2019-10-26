@@ -27,7 +27,7 @@ internal var p3 = "&p3=1"
 internal var p4 = "&p4="
 internal var p5 = "&p5=xxxx"
 
-internal var h1 = "POST /andr2/up_tk"
+//internal var h1 = "POST /andr2/up_tk"
 //internal var h11 = "andr2/up_tk"
 internal var h2 = " HTTP/1.1" //Host: ";
 internal var h21 = "\r\nHost: "
@@ -51,6 +51,7 @@ fun getStrArr (arr: ArrayList<String>) : String {
 fun strSendToken (arr: ArrayList<String>, strId: String) : String {
     val sb = StringBuilder()
     val sbC = StringBuilder()   // sbContent
+    val h1 = "POST /andr2/up_tk"
 
     val user = Account.accUser
     val pass = Account.accPass
@@ -59,11 +60,7 @@ fun strSendToken (arr: ArrayList<String>, strId: String) : String {
     val auth = Base64.encodeToString(us.toByteArray(), Base64.NO_WRAP)
     val strObjs = getStrArr(arr)
 
-//    var lenContent = p1.length + strId.length + p2.length + strObjs.length
-//    lenContent += p3.length
-//    lenContent += p4.length + user.length
-//    lenContent += p5.length
-//    val strLenContent : String = lenContent.toString()  // ?
+
 
     sbC.append(p1);
     sbC.append(strId)
@@ -91,6 +88,60 @@ fun strSendToken (arr: ArrayList<String>, strId: String) : String {
 
     return strPost
 }
+
+// POST send cmd
+// p1=login&p2=0001&p3=control&p_id=2434&p4=out1&p5=10005
+fun strSendCmd (
+    objName: String,
+    key: String,
+    value: String,
+    mesId: String
+) : String {
+    val sb = StringBuilder()
+    val sbC = StringBuilder()   // sbContent
+
+    val user = Account.accUser
+    val pass = Account.accPass
+    val serv = Account.accServ
+    val us = user + ":" + pass
+    val auth = Base64.encodeToString(us.toByteArray(), Base64.NO_WRAP)
+    val ctrl = "control"
+    val p31 = "&p3="
+    val p51 = "&p5="
+    val pId = "&p_id="
+    val h1 = "POST /andr2/cmd"
+
+    sbC.append(p1);
+    sbC.append(user)
+    sbC.append(p2)
+    sbC.append(objName)
+    sbC.append(p31)
+    sbC.append(ctrl)
+    sbC.append(pId)
+    sbC.append(mesId)
+    sbC.append(p4)
+    sbC.append(key)
+    sbC.append(p51)
+    sbC.append(value)
+    val strContent = sbC.toString()
+    val lenContent = strContent.length
+    val strLenContent = lenContent.toString()
+
+    sb.append(h1)
+    sb.append(h2)
+    sb.append(strAuth)
+    sb.append(auth)
+    sb.append(h21)
+    sb.append(serv)
+    sb.append(h3)
+    sb.append(strLenContent)
+    sb.append(pn)
+    sb.append(strContent)
+    val strPost = sb.toString()
+
+    return strPost
+}
+
     // online.navigard.ru/device/NNNN/events
 fun strReqHttp (numObj: String, req: String) : String {
     val sb = StringBuilder()

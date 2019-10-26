@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import java.io.File
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Filem() {
 
@@ -16,9 +18,14 @@ class Filem() {
         val fileAccPort : String = "accPort.txt"
         var strDir : String = ""
         //val strDir : String = (application as Context).getFilesDir().getPath().toString()
+        var currentLogFile : String = "1"
 
         fun setDir(application: Application) {
             strDir = (application as Context).getFilesDir().getPath().toString()
+
+            val sdf = SimpleDateFormat("YYMMdd_HHmmss", Locale.getDefault())
+            currentLogFile = sdf.format(Date())
+
             Logm.aa("strDir = $strDir")
         }
         fun getVal(f1 : String): String {

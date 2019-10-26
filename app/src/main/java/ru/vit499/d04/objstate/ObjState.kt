@@ -133,7 +133,7 @@ class ObjState(obj: Obj) {
 
     //=========================================== fill data bytes ==============
 
-    fun getStrCfgPart(obj: Obj, p: Int) : String {
+    fun getStrCfgPart(obj: Obj, p: Int) : String? {
         return when(p){
             0 -> obj.ZoneInPart1
             1 -> obj.ZoneInPart2
@@ -151,14 +151,15 @@ class ObjState(obj: Obj) {
             13 -> obj.ZoneInPart14
             14 -> obj.ZoneInPart15
             15 -> obj.ZoneInPart16
-            else -> ""
+            else -> null
         }
     }
     fun fillConfigPart(obj: Obj, part: Int) {
         var c: Int
         var p = 0
-        val cfgPart : String = getStrCfgPart(obj, part)
-        val b = Str.Str2Bin(cfgPart)
+        val cfgPart : String? = getStrCfgPart(obj, part)
+        if(cfgPart == null) return
+        val b = Str.Str2Bin(cfgPart!!)
         for (i in 0 until b.len) {
             c = b.buf[i].toInt()
             for (j in 0..7) {

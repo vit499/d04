@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.io.File
+import java.lang.Exception
 import java.lang.StringBuilder
 
 class Logm {
@@ -32,6 +34,20 @@ class Logm {
         }
         fun getLog() : String {
             return sb.toString()
+        }
+
+        var currentLogFile : String = "1"
+
+        fun setVal(f1: String, str: String) {
+            var f = Filem.strDir + "/" + f1
+            try {
+                val file = File(f)
+                // Logm.aa("save val $str to file $f")
+                file.writeText(str)
+            }
+            catch(ex: Exception){
+                Logm.aa(ex.toString())
+            }
         }
     }
 }

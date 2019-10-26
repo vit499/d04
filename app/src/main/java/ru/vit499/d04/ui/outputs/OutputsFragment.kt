@@ -31,7 +31,7 @@ class OutputsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_outputs, container, false)
-        setHasOptionsMenu(true)
+        //setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         //val tvInfo = view.findViewById<TextView>(R.id.tv_info)
 
@@ -75,21 +75,22 @@ class OutputsFragment : Fragment() {
 
         return view
     }
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.over_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.objFragment) {
-            findNavController().navigate(R.id.action_outputsFragment_to_objFragment)
-            return false
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+//        inflater?.inflate(R.menu.over_menu, menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if(item.itemId == R.id.objFragment) {
+//            findNavController().navigate(R.id.action_outputsFragment_to_objFragment)
+//            return false
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     fun onClick(o: Int, b: Int) {
         Logm.aa("out click ${b.toString()}")
+        mainViewModel.onPostCmd("out${(b+1).toString()}", "10060")
     }
 
 }

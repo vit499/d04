@@ -1,27 +1,29 @@
 package ru.vit499.d04.http
 
+import android.content.Context
 import android.os.CountDownTimer
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
+import kotlinx.coroutines.*
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Logm
-import ru.vit499.d04.util.Str
 import java.io.*
-import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
-//import kotlin.Exception
 
-class HttpCor(val tmax : Int) {
+class HttpWorker(
+    context: Context,
+    param: WorkerParameters
+) : CoroutineWorker(context, param) {
 
-    companion object {
+    companion object{
+        const val WORK_NAME = "HttpWorker"
         val SIZEBUF: Int = 100000
         val ONE_SEC : Long = 1000
         val port: Int = 80  // strPort.toInt()
+        val tmax: Int = 10
     }
+
     val server = Account.accServ
     //val strPort = Account.accPort
 
@@ -74,7 +76,7 @@ class HttpCor(val tmax : Int) {
             Logm.aa("sended")
             isOpen = true
         }
-        catch(ex: Exception) {
+        catch(ex: java.lang.Exception) {
             Logm.aa("open exc: ${ex.toString()}")
         }
         catch(ex: IOException){
@@ -130,7 +132,7 @@ class HttpCor(val tmax : Int) {
                         }
                     } catch (ex: IOException) {
                         Logm.aa("rec IOexc: ${ex.toString()}")
-                    } catch (ex: Exception){
+                    } catch (ex: java.lang.Exception){
                         Logm.aa("rec exc: ${ex.toString()}")
                     }
                 }
@@ -148,24 +150,30 @@ class HttpCor(val tmax : Int) {
             socket?.shutdownInput()
             socket?.close()
         }
-        catch(ex: Exception){
+        catch(ex: java.lang.Exception){
             //Logm.aa("close exc: ${ex.toString()}")
         }
         isOpen = false
     }
 
-    suspend fun reqStat(strSend : String, wa: Int, timeout: Long) : String? {
-        var s : String? = null
-        return withContext(Dispatchers.Default) {
-            val b = send(strSend)
+    override suspend fun doWork(): Result = coroutineScope {
+        Logm.aa("worker start ... ")
+        var s: String = "error"
+        try{
+            val strReq = inputData.getString("str")
+            val b = send(strReq!!)
             if (b) {
-                s = rec(timeout+5, wa)
+                s = rec(15, 1)
             }
             else {
                 s = "error"
             }
-            s
+
+               Logm.aa("work res: $s")
+            Result.success()
+        }
+        catch (ex: Exception){
+            Result.failure()
         }
     }
-
 }
