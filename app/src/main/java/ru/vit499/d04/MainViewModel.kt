@@ -15,6 +15,7 @@ import ru.vit499.d04.fcm.FcmToken
 import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.http.HttpWorker
 import ru.vit499.d04.http.Link
+import ru.vit499.d04.mq.*
 import ru.vit499.d04.objstate.ObjStringUpd
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.ui.notify.NotifyItem
@@ -34,6 +35,12 @@ class MainViewModel(
 
     private val viewModelJob = Job()
     private val uiScope = CoroutineScope((Dispatchers.Main + viewModelJob))
+
+    val httpJob = Job()
+    val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
+
+    val mqttJob = Job()
+    val mqttScope = CoroutineScope(Dispatchers.Main + mqttJob)
 
     // current object (name)
 //    private var _curObjName = MutableLiveData<String>()
@@ -143,6 +150,11 @@ class MainViewModel(
         _navigateBackFromObj.value = false
         _navigateToEditObj.value = false
         _navigateToObj.value = false
+
+        if(accExist && objExist){
+            //getStateList()
+            onReqStatMqtt()
+        }
     }
 
     fun initLogFile (s: String) {
@@ -168,6 +180,8 @@ class MainViewModel(
                 if(obj != null) {
                     _curObj.postValue(obj)
                     curObjKey = obj.objId
+                    getStateList(obj)
+
                 }
                 else {
                     val obj1 = database.getObj()
@@ -186,6 +200,7 @@ class MainViewModel(
                 }
                 //Logm.aa("obj cnt= ${objs.value?.size.toString()}")
                 //Logm.aa("obj cnt= ${_listObj.value?.size.toString()}")
+
             }
         }
     }
@@ -200,6 +215,7 @@ class MainViewModel(
                     curObjName = obj.objName
                     Filem.setCurrentObjName(curObjName)
                     Logm.aa("new current obj: ${curObjName}")
+                    getStateList(obj)
                     _navigateBackFromObj.postValue(true)
                 } ?: return@withContext
             }
@@ -315,15 +331,17 @@ class MainViewModel(
         super.onCleared()
         viewModelJob.cancel()
         httpJob.cancel()
+        mqttJob.cancel()
         _progress.postValue(false)
         //httpR?.Close()
+        //cancelWork()
         Logm.aa("shutdown")
     }
 
     //--------------------------
 
-    val httpJob = Job()
-    val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
+//    val httpJob = Job()
+//    val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
 
     private var _strHttpStat = MutableLiveData<String>()
     val strHttpStat : LiveData<String>
@@ -406,7 +424,7 @@ class MainViewModel(
             val http = HttpCor(10)
             val s = http?.reqStat(strReq, 3, 10) ?: "error"
             updHttpAnswer(s)
-            _progress.postValue(false)
+            //_progress.postValue(false)
         }
     }
 
@@ -425,52 +443,50 @@ class MainViewModel(
 
     //================================== state
 
-    fun getListState(s: String) : ArrayList<Buf>? {
-        val str1 : ByteArray = s.toByteArray()
-        val len_str1 = str1.size
-        val src = ByteArray(len_str1)
-
-        if (!Str.checkHttpOk(str1, len_str1)) {
-
-            return null                 // to do
-        }
-        var len_content = Str.findContent(src, str1, len_str1)        // to do
-        val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
-        return list
-    }
-
-    fun UpdState(s: String){
+    suspend fun UpdState(s: String){
 
         if(s.equals("error")) {
             return
         }
-        val list = getListState(s)
-        if(list == null) {
-            return             // to do
-        }
+//        val list = ObjStringUpd.getListState(s)
+//        if(list == null) {
+//            return             // to do
+//        }
+        val map = ObjStringUpd.getMapState(s)
+        if(map == null) return
 
-        var obj = _curObj.value ?: return
         Logm.aa("start update")
-        val idObj = obj.objId
-        uiScope.launch {
-            withContext(Dispatchers.IO) {
 
-                val objUpd = ObjStringUpd(obj)
-                obj = objUpd.UpdStringAll(list)
+        updObjFromList(map)
+//        var obj = _curObj.value ?: return
+//        withContext(Dispatchers.IO) {
+//            val objUpd = ObjStringUpd(obj)
+//            obj = objUpd.UpdStringAll(list)
+//            database.update(obj)
+//            getStateList(obj)
+//            Logm.aa("state updated")
+//        }
+    }
 
-                database.update(obj)
+    suspend fun getStateList(obj: Obj) {
+        withContext(Dispatchers.IO){
+            val objState = ObjState(obj)
+            val sList = objState.getObjStatList()
 
-                val objState = ObjState(obj)
-                val sList = objState.getObjStatList()
+            val outState = OutState(obj)
+            val oList = outState.getOutStatList()
 
-                val outState = OutState(obj)
-                val oList = outState.getOutStatList()
-
-                _outList.postValue(oList)
-                _statList.postValue(sList)
-                //_curObj.postValue(obj)
-                Logm.aa("state updated")
-            }
+            _outList.postValue(oList)
+            _statList.postValue(sList)
+        }
+    }
+    suspend fun updObjFromList(map: Map<String, String>) {
+        var obj = _curObj.value ?: return
+        withContext(Dispatchers.IO){
+            val objUpd = ObjStringUpd(obj)
+            obj = objUpd.UpdStringAll(map)
+            database.update(obj)
+            getStateList(obj)
         }
     }
 
@@ -496,7 +512,61 @@ class MainViewModel(
         }
     }
 
+    fun onReqStatMqtt() {
+        onPostCmd("reqstatus", "")
+    }
+
     //---------------------------
+    //============================================= mqtt ============================
+
+
+    fun onMqttStart () {
+
+        mqttScope.launch {
+            withContext(Dispatchers.Default) {
+                val mqtt = MqttCor()
+                val res = mqtt.subMqtt(curObjName, updCallback = { b, len -> updFromMqtt(b, len) } )
+                Logm.aa("mqtt finished $res")
+                _progress.postValue(false)
+            }
+        }
+    }
+
+    fun updFromMqtt (b: ByteArray, len: Int) {
+        Logm.aa("callback: ")
+        Logm.aa(b, len)
+
+    }
+
+    private val workManager : WorkManager = WorkManager.getInstance()
+
+    fun onMqttStart2() {
+
+        val inputData = Data.Builder()
+            .putString("CURRENT_NAME", curObjName)
+            .build()
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val mqttWorkRequest = OneTimeWorkRequestBuilder<MqttWorker>()
+            .setConstraints(constraints)
+            .setInputData(inputData)
+            .addTag("mqtt")
+            .build()
+        WorkManager.getInstance().enqueue(mqttWorkRequest)
+
+    }
+    fun cancelWork() {
+        WorkManager.getInstance().cancelAllWorkByTag("mqtt")
+    }
+
+    fun onMqttStart3() {
+        //val mqtt = Mqtt()
+        //mqtt.mqttStart(curObjName, updCallback = { s -> updFromMqtt(s) })
+    }
+
+    //================================================================
 
     fun onWork() {
 

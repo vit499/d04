@@ -238,6 +238,44 @@ class ObjStringUpd(var obj: Obj) {
         }
     }
 
+    fun UpdMap(cmd: String, value: String) {
+        //Logm.aa("cmd $cmd")
+        //Logm.aa("value $value")
+        val s = ObjDb.getStrDbColumns()
+
+        for (part in 0 until NUMBER_PART) {
+            if (cmd == s[part + 4]) {
+                UpdConfigPart(part, value)
+                return
+            }
+        }
+        for (t in 0 until NUMBER_TEMP) {
+            if (cmd == s[t + 27]) {
+                UpdTemper(t, value)
+                return
+            }
+        }
+        for (t in 0..1) {
+            if (cmd == s[t + 42]) {
+                UpdGsm(t, value)
+                return
+            }
+        }
+        when(cmd){
+            s[20] -> UpdZoneStat(value)
+            s[21] -> UpdZoneAlarm(value)
+            s[22] -> UpdPartStat(value)
+            s[23] -> UpdFout(value)
+            s[24] -> UpdFtout(value)
+            s[25] -> UpdSout(value)
+            s[40] -> Upd12v(value)
+            s[41] -> Upd3v(value)
+            s[44] -> UpdTcp(value)
+            s[45] -> UpdVers(value)
+            s[47] -> UpdTime(value)
+        }
+    }
+
     fun UpdStringAll(list: ArrayList<Buf>) : Obj {
         var k = list.size
 
@@ -247,5 +285,63 @@ class ObjStringUpd(var obj: Obj) {
 
         val obj = getObjUpd()
         return obj
+    }
+    fun UpdStringAll(map: Map<String, String>) : Obj {
+
+        for((key, value) in map){
+            UpdMap(key, value)
+        }
+
+        val obj = getObjUpd()
+        return obj
+    }
+
+    companion object {
+
+        fun getListState(s: String) : ArrayList<Buf>? {
+            val str1 : ByteArray = s.toByteArray()
+            val len_str1 = str1.size
+            val src = ByteArray(len_str1)
+
+            if (!Str.checkHttpOk(str1, len_str1)) {
+                return null                 // to do
+            }
+            val len_content = Str.findContent(src, str1, len_str1)        // to do
+            val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
+            return list
+        }
+
+        fun getMap(buf: ByteArray, len: Int) : Map<String, String>? {
+            var map : MutableMap<String, String> = mutableMapOf()
+            val k = Str.indexof(buf, 0, '='.toByte(), 1, len)
+            if (k == -1) return null
+            val cmd = Str.byte2str(buf, k - 1)
+            var value = ""
+            if (k < len - 1) value = Str.byte2str(buf, k, len)
+            map.put(cmd, value)
+            return map
+        }
+
+        fun getMapState(s: String) : Map<String, String>? {
+            val str1 : ByteArray = s.toByteArray()
+            val len_str1 = str1.size
+            val src = ByteArray(len_str1)
+
+            if (!Str.checkHttpOk(str1, len_str1)) {
+                return null                 // to do
+            }
+            val len_content = Str.findContent(src, str1, len_str1)        // to do
+            val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
+
+            var mapUpdList : MutableMap<String, String> = mutableMapOf()
+
+            for(i in 0 until list.size){
+                val map = getMap(list.get(i).buf, list.get(i).len)
+                if(map != null) mapUpdList.putAll(map)
+                // Logm.Log("cmd=" + cmd);
+                // Logm.Log("val=" + val);
+            }
+            return mapUpdList
+        }
     }
 }

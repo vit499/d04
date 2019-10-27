@@ -13,7 +13,8 @@ class Buf {
         len = 0
     }
 
-    fun Add(b: Int): Int {
+    fun Add(b1: Int): Int {
+        val b = b1 and 0xff
         buf[len++] = b.toByte()
         return len
     }

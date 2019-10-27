@@ -89,6 +89,7 @@ class MainFragment : Fragment() {
         swipe.setOnRefreshListener {
             Logm.aa("a on rec stat 2 ")
             mainViewModel.onReqStat()
+            //mainViewModel.onMqttStart()
             //mainViewModel.onWork()
         }
         mainViewModel.progress.observe(this, Observer {
@@ -96,7 +97,7 @@ class MainFragment : Fragment() {
         })
 
         Logm.aa("a on rec stat 1")
-        mainViewModel.onReqStat()
+       // mainViewModel.onReqStat()
 
 //        val buttonClose = view.findViewById<Button>(R.id.btn_close)
 //        val buttonOpen = view.findViewById<Button>(R.id.btn_onen)

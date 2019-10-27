@@ -261,7 +261,8 @@ class ObjState(obj: Obj) {
         return parts
     }
 
-    //
+    //  из объекта, который представляет из себя список разделов, а те - списки зон
+    // формируется список разделов-зон - StatList
     fun getObjStatList(): ArrayList<StatList> {
         val objPartZone = ObjPartZone(GetParts())
 

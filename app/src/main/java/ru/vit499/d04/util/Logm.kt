@@ -29,6 +29,22 @@ class Logm {
             }
         }
 
+        fun aa(b: Buf){
+            //if(b == null) return
+            //if(len == null) return
+            val s : String? = Str.hex2str(b.buf, b.len)
+            if(s == null) return
+            Log.i("aa", s)
+        }
+
+        fun aa(b: ByteArray, len: Int){
+            //if(b == null) return
+            //if(len == null) return
+            val s : String? = Str.hex2str(b, len)
+            if(s == null) return
+            Log.i("aa", s)
+        }
+
         fun clear() {
             sb.clear()
         }

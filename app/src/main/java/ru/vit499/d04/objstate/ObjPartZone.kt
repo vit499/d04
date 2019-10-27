@@ -2,8 +2,12 @@ package ru.vit499.d04.objstate
 
 class ObjPartZone(parts: ArrayList<Part>) {
 
-    //var id: Int = 0
-    //var num: String = ""
+    // object:
+    //   part1: { zone1,zone2... }
+    //   part2: { zone5,zone6... }
+    //   ....
+    // класс состоит из списка разделов, разделы состоят из списка зон
+
     var part = ArrayList<Part>()
 
     init {
