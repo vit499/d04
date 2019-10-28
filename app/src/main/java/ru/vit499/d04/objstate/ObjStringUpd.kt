@@ -312,7 +312,7 @@ class ObjStringUpd(var obj: Obj) {
         }
 
         fun getMap(buf: ByteArray, len: Int) : Map<String, String>? {
-            var map : MutableMap<String, String> = mutableMapOf()
+            val map : MutableMap<String, String> = mutableMapOf()
             val k = Str.indexof(buf, 0, '='.toByte(), 1, len)
             if (k == -1) return null
             val cmd = Str.byte2str(buf, k - 1)

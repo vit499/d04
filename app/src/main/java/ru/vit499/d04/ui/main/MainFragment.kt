@@ -88,8 +88,8 @@ class MainFragment : Fragment() {
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
             Logm.aa("a on rec stat 2 ")
-            mainViewModel.onReqStat()
-            //mainViewModel.onMqttStart()
+           // mainViewModel.onReqStat()
+            mainViewModel.onMqttStart()
             //mainViewModel.onWork()
         }
         mainViewModel.progress.observe(this, Observer {

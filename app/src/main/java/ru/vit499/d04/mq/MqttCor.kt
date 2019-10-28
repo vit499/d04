@@ -104,6 +104,7 @@ class MqttCor {
     suspend fun rec (wa: Int, updCallback: (ByteArray, Int) -> Unit) : String {
         return withContext(Dispatchers.Default) {
             var resStr: String = "error"
+            rcnt2 = 0
             while (true) {
                 if (!isActive) {
                     Logm.aa("rec end isActive")
@@ -146,7 +147,13 @@ class MqttCor {
                             }
                         }
                         else if(wa == 3) {
-                            updCallback(rbuf2, rcnt2)
+                            val packId = RecPublish(rbuf2, rcnt2)
+                            if(packId != 0) {
+                                // send Ack
+                                Logm.aa("packId=$packId")
+                            }
+                            rcnt2 = 0
+                            //updCallback(rbuf2, rcnt2)
                             // udpCallback(s)
                         }
 

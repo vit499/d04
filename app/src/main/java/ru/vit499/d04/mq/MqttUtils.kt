@@ -3,6 +3,7 @@ package ru.vit499.d04.mq
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Buf
 import ru.vit499.d04.util.Logm
+import ru.vit499.d04.util.Str
 import java.util.*
 
 
@@ -150,19 +151,138 @@ fun FillSubMqtt(numObj: String): Buf {
 
 //==============================================
 
-fun correctSout(s: String): String {
-    var s1 = s
-
-    val k = s1.length
-    if (k > 8) s1 = s1.substring(0, 8)
-    if (k < 8) {
-        val s2 = "00000000"
-        s1 = s1 + s2.substring(k, 8)
-    }
-    return s1
-}
-fun MesStatusOut(id: Int, s1: String): Int {
+fun multiTopic(s1 : String) : Map<String, String>? {
     var r = 0
+    if (!s1.contains("&")) return null
+    var s : List<String>? = null
+    try{
+        s = s1.split("&")
+    }
+    catch (ex: Exception){
+        return null
+    }
+    if(s == null) return null
+    if(s.size < 1) return null
 
-    return r
+    val map : MutableMap<String, String> = mutableMapOf()
+
+    for (i in 0 until s.size) {
+        val s11 = s[i]
+        if (!s11.contains("=")) return null
+        var s2 : List<String>? = null
+        try {
+            s2 = s11.split("=")
+            if(s2.size == 2) {
+                map.put(s2[0], s2[1])
+            }
+        }
+        catch (ex: Exception){
+            return null
+        }
+    }
+    return map
+}
+
+// a1021/1021/devsend/topic1/topic2
+fun checkTopic(topic: String, mes: String): Map<String, String>? {
+    //var r = 0
+    //if(len_src < 5) return null
+    val s1 = topic    // Str.ByteToStr(b, len_src)
+
+    var s : List<String>? = null
+    try{
+        s = s1.split("/")
+    }
+    catch (ex: Exception){
+        return null
+    }
+    if(s == null) return null
+    if(s.size < 4) return null
+    //Logm.aa(s[3])
+
+    if (s[2] != "devsend") return null
+
+    val numObj = s[1]                             // тут можно найти нужный объект
+
+    val topic1 = s[3]
+    var topic2 = ""
+    if (s.size > 4) topic2 = s[4]
+
+    Logm.aa("t1:$topic1")
+    val map : MutableMap<String, String> = mutableMapOf()
+
+    if (topic1 == "status") {
+        if (topic2 == "cp") {
+            val map1 = multiTopic(mes) ?: return null
+            map.putAll(map1)
+        }
+        else if (topic2 == "sout"){
+            map.put(topic2, mes)
+        }
+    }
+    else if (topic1 == "param") {
+        val map1 = multiTopic(mes) ?: return null
+        map.putAll(map1)
+    }
+    else if (topic1 == "config") {
+
+    }
+    return map
+}
+
+//  <92><03><E2><B7><01>2D<00><1C>a1021/1021/devsend/status/cp<00><07>PartStat=01&ZoneStat=02&ZoneAlarm=00
+fun RecPublish(b: ByteArray, len_src: Int) : Int {
+    if(len_src < 10) return 0
+
+    Logm.aa(b, len_src);
+    val bb = b[1].toInt()
+    var lenPublish = bb and 0xff
+    var pLenTopic = 2                        // указатель на длину темы
+    if (lenPublish and 0x80 != 0) {
+        var m : Int = b[2].toInt() and 0xff
+        if (m == 0 || m > 3) m = 1
+        lenPublish += (m - 1) * 128   ; Logm.aa("len pub: $lenPublish")
+        pLenTopic = 3
+    }
+    //Logm.aa("len pub: $lenPublish")
+    if (len_src < lenPublish + 2) return 0
+
+    val lenTopic : Int = (b[pLenTopic].toInt() shl 8) + b[pLenTopic + 1].toInt()        // длина темы (строки)
+    val p_pId : Int = lenTopic + pLenTopic + 2                                  // указатель на идентификатор пакета
+    val packId : Int = (b[p_pId].toInt() shl 8) + b[p_pId + 1].toInt()                  // идентификатор (нужно ответить ACK)
+    val p_Mes = p_pId + 2                                                // указатель на сообщение
+    val p_Topic = pLenTopic + 2                                          // указатель на тему
+    var i = 0
+
+    val b_topic = ByteArray(lenTopic)
+    i = 0
+    while (i < lenTopic) {
+        b_topic[i] = b[i + p_Topic]
+        i++
+    }
+    Logm.aa("topic:")
+    Logm.aa(b_topic, lenTopic)
+
+    val lenMes = lenPublish - p_Mes + 2
+    val b_message = ByteArray(lenMes)
+    i = 0
+    while (i < lenMes) {
+        b_message[i] = b[i + p_Mes]
+        i++
+    }
+    Logm.aa("mes:")
+    Logm.aa(b_message, lenMes)
+
+    val topic = Str.byte2str(b_topic, lenTopic)
+    val message = Str.byte2str(b_message, lenMes)
+
+    val map = checkTopic(topic, message) ?: return packId
+
+    Logm.aa("mqtt map: ")
+    for((key, value) in map){
+        Logm.aa("key=$key");
+        Logm.aa("value=$value");
+    }
+
+    return packId
 }
