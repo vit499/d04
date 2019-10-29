@@ -1,5 +1,7 @@
 package ru.vit499.d04.mq
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Buf
 import ru.vit499.d04.util.Logm
@@ -149,6 +151,16 @@ fun FillSubMqtt(numObj: String): Buf {
     return b
 }
 
+fun FillAck(packId: Int) : Buf {
+    val b = Buf()
+
+    b.Add(0x40)
+    b.Add(0x02)
+    b.Add((packId shr 8) and 0xff)
+    b.Add(packId and 0xff)
+    return b
+}
+
 //==============================================
 
 fun multiTopic(s1 : String) : Map<String, String>? {
@@ -230,8 +242,90 @@ fun checkTopic(topic: String, mes: String): Map<String, String>? {
     return map
 }
 
+
+fun GetPackId(b: ByteArray, len_src: Int) : Int {
+    if (len_src < 10) return 0
+
+    //Logm.aa(b, len_src);
+    val bb = b[1].toInt()
+    var lenPublish = bb and 0xff
+    var pLenTopic = 2                        // указатель на длину темы
+    if (lenPublish and 0x80 != 0) {
+        var m: Int = b[2].toInt() and 0xff
+        if (m == 0 || m > 3) m = 1
+        lenPublish += (m - 1) * 128
+        pLenTopic = 3
+    }
+    //Logm.aa("len pub: $lenPublish")
+    if (len_src < lenPublish + 2) return 0
+
+    val lenTopic: Int = (b[pLenTopic].toInt() shl 8) + b[pLenTopic + 1].toInt()        // длина темы (строки)
+    val p_pId: Int = lenTopic + pLenTopic + 2                                  // указатель на идентификатор пакета
+    val packId: Int = (b[p_pId].toInt() shl 8) + b[p_pId + 1].toInt()     // идентификатор (нужно ответить ACK)
+    return packId
+}
+
+
+fun GetMap(b: ByteArray, len_src: Int) : Map<String, String>? {
+    if(len_src < 10) return null
+
+    Logm.aa(b, len_src);
+    val bb = b[1].toInt()
+    var lenPublish = bb and 0xff
+    var pLenTopic = 2                        // указатель на длину темы
+    if (lenPublish and 0x80 != 0) {
+        var m : Int = b[2].toInt() and 0xff
+        if (m == 0 || m > 3) m = 1
+        lenPublish += (m - 1) * 128
+        pLenTopic = 3
+    }
+    //Logm.aa("len pub: $lenPublish")
+    if (len_src < lenPublish + 2) return null
+
+    val lenTopic : Int = (b[pLenTopic].toInt() shl 8) + b[pLenTopic + 1].toInt()        // длина темы (строки)
+    //val p_pId : Int = lenTopic + pLenTopic + 2                                  // указатель на идентификатор пакета
+    //val packId : Int = (b[p_pId].toInt() shl 8) + b[p_pId + 1].toInt()                  // идентификатор (нужно ответить ACK)
+    val p_Mes = lenTopic + pLenTopic + 4                                              // указатель на сообщение
+    val p_Topic = pLenTopic + 2                                          // указатель на тему
+    var i = 0
+
+    val b_topic = ByteArray(lenTopic)
+    i = 0
+    while (i < lenTopic) {
+        b_topic[i] = b[i + p_Topic]
+        i++
+    }
+    Logm.aa("topic:")
+    Logm.aa(b_topic, lenTopic)
+
+    val lenMes = lenPublish - p_Mes + 2
+    val b_message = ByteArray(lenMes)
+    i = 0
+    while (i < lenMes) {
+        b_message[i] = b[i + p_Mes]
+        i++
+    }
+    Logm.aa("mes:")
+    Logm.aa(b_message, lenMes)
+
+    val topic = Str.byte2str(b_topic, lenTopic)
+    val message = Str.byte2str(b_message, lenMes)
+
+    val map = checkTopic(topic, message) ?: return null
+
+//    Logm.aa("mqtt map: ")
+//    for((key, value) in map){
+//        Logm.aa("key=$key");
+//        Logm.aa("value=$value");
+//    }
+
+    // callback(map)
+
+    return map
+}
+
 //  <92><03><E2><B7><01>2D<00><1C>a1021/1021/devsend/status/cp<00><07>PartStat=01&ZoneStat=02&ZoneAlarm=00
-fun RecPublish(b: ByteArray, len_src: Int) : Int {
+fun RecPublish(b: ByteArray, len_src: Int, callback: ( Map<String, String> ) -> Unit ) : Int {
     if(len_src < 10) return 0
 
     Logm.aa(b, len_src);
@@ -241,7 +335,7 @@ fun RecPublish(b: ByteArray, len_src: Int) : Int {
     if (lenPublish and 0x80 != 0) {
         var m : Int = b[2].toInt() and 0xff
         if (m == 0 || m > 3) m = 1
-        lenPublish += (m - 1) * 128   ; Logm.aa("len pub: $lenPublish")
+        lenPublish += (m - 1) * 128
         pLenTopic = 3
     }
     //Logm.aa("len pub: $lenPublish")
@@ -278,11 +372,13 @@ fun RecPublish(b: ByteArray, len_src: Int) : Int {
 
     val map = checkTopic(topic, message) ?: return packId
 
-    Logm.aa("mqtt map: ")
-    for((key, value) in map){
-        Logm.aa("key=$key");
-        Logm.aa("value=$value");
-    }
+//    Logm.aa("mqtt map: ")
+//    for((key, value) in map){
+//        Logm.aa("key=$key");
+//        Logm.aa("value=$value");
+//    }
+
+   // callback(map)
 
     return packId
 }

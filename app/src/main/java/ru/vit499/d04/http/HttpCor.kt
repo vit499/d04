@@ -22,8 +22,6 @@ class HttpCor(val tmax : Int) {
         val ONE_SEC : Long = 1000
         val port: Int = 80  // strPort.toInt()
     }
-    val server = Account.accServ
-    //val strPort = Account.accPort
 
     private val timer: CountDownTimer
 
@@ -57,6 +55,7 @@ class HttpCor(val tmax : Int) {
         strSend: String
     ) : Boolean {
         isOpen = false
+        val server = Account.accServ
         //var resStr : String = "error"
         try{
             socket = Socket(InetAddress.getByName(server), port)

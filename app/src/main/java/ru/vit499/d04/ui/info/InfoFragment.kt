@@ -41,7 +41,7 @@ class InfoFragment : Fragment() {
         //val tvInfoValue = view.findViewById<TextView>(R.id.tv_info_value)
 
         mainViewModel = activity?.run {
-            Logm.aa("obj fr")
+           // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
@@ -49,7 +49,7 @@ class InfoFragment : Fragment() {
             var s: String = getString(R.string.obj_empty)
             obj?.let{
                 s = obj.objDescr
-                Logm.aa("cur obj in out= $s ")
+               // Logm.aa("cur obj in out= $s ")
                 val arr = getArrStrInfo(obj)
                 binding.tvInfoKey.text = arr.get(0)
                 binding.tvInfoValue.text = arr.get(1)

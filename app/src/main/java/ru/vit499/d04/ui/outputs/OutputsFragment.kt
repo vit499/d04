@@ -40,7 +40,7 @@ class OutputsFragment : Fragment() {
         recyclerView.adapter = adapter
 
         mainViewModel = activity?.run {
-            Logm.aa("obj fr")
+           // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
@@ -48,17 +48,17 @@ class OutputsFragment : Fragment() {
             var s: String = getString(R.string.obj_empty)
             obj?.let{
                 s = obj.objDescr
-                Logm.aa("cur obj in out= $s ")
+              //  Logm.aa("cur obj in out= $s ")
                 //tvInfo.text = getStrInfo(obj)
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
             //(activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_outputs)
-            Logm.aa("curObjName in OutputFragment")
+           // Logm.aa("curObjName in OutputFragment")
         })
 
         mainViewModel.outList.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Logm.aa("fr out cnt= ${it.size}")
+               // Logm.aa("fr out cnt= ${it.size}")
                 adapter.data = it
             }
         })
@@ -66,7 +66,7 @@ class OutputsFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeO)
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
-            Logm.aa("a on rec stat (outs)")
+           // Logm.aa("a on rec stat (outs)")
             mainViewModel.onReqStat()
         }
         mainViewModel.progress.observe(this, Observer {
@@ -89,8 +89,8 @@ class OutputsFragment : Fragment() {
 //    }
 
     fun onClick(o: Int, b: Int) {
-        Logm.aa("out click ${b.toString()}")
-        mainViewModel.onPostCmd("out${(b+1).toString()}", "10060")
+       // Logm.aa("out click ${b.toString()}")
+        mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
     }
 
 }

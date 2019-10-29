@@ -41,14 +41,14 @@ class ObjFragment : Fragment() {
         recyclerView.adapter = adapter
 
         objViewModel = activity?.run {
-            Logm.aa("obj fr")
+           // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
         objViewModel.objs.observe(this, Observer {
             it?.let {
-                Logm.aa("objs observe")
-                Logm.aa("obj cnt= ${it.size}")
+              //  Logm.aa("objs observe")
+              //  Logm.aa("obj cnt= ${it.size}")
                 adapter.data = it
             }
         })
@@ -68,8 +68,8 @@ class ObjFragment : Fragment() {
     }
 
     fun onClick (m: Int, objId: Long) {
-        Logm.aa("m= $m , pos=$objId")
-        Logm.aa("ajdf")
+      //  Logm.aa("m= $m , pos=$objId")
+      //  Logm.aa("ajdf")
         if(m == 0){
             objViewModel.onCurrentObj(objId)
             //this.findNavController().navigate(R.id.action_objFragment_to_mainFragment)

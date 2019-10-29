@@ -42,7 +42,7 @@ class MainFragment : Fragment() {
 
 
         mainViewModel = activity?.run {
-            Logm.aa("main fr")
+           // Logm.aa("main fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid activity")
 
@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
             }
             (activity as AppCompatActivity).supportActionBar?.title = s
             //(activity as AppCompatActivity).supportActionBar?.subtitle = s2
-            Logm.aa("cur obj in main= $s ")
+           // Logm.aa("cur obj in main= $s ")
         })
 
         mainViewModel.navigateToNewObj.observe(this, Observer {
@@ -87,16 +87,17 @@ class MainFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipe)
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
-            Logm.aa("a on rec stat 2 ")
-           // mainViewModel.onReqStat()
-            mainViewModel.onMqttStart()
+           // Logm.aa("a on rec stat 2 ")
+            mainViewModel.onReqStat()
+           // mainViewModel.onMqttStart()
             //mainViewModel.onWork()
         }
         mainViewModel.progress.observe(this, Observer {
             swipe.isRefreshing = it
         })
 
-        Logm.aa("a on rec stat 1")
+       // Logm.aa("a on rec stat 1")
+       // mainViewModel.onMqttStart()
        // mainViewModel.onReqStat()
 
 //        val buttonClose = view.findViewById<Button>(R.id.btn_close)

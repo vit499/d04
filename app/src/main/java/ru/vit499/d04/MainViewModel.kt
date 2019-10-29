@@ -153,7 +153,8 @@ class MainViewModel(
 
         if(accExist && objExist){
             //getStateList()
-            onReqStatMqtt()
+            onReqStatus()
+            onMqttStart()
         }
     }
 
@@ -216,6 +217,7 @@ class MainViewModel(
                     Filem.setCurrentObjName(curObjName)
                     Logm.aa("new current obj: ${curObjName}")
                     getStateList(obj)
+                    mqttRestart()
                     _navigateBackFromObj.postValue(true)
                 } ?: return@withContext
             }
@@ -249,6 +251,7 @@ class MainViewModel(
                 Filem.setCurrentObjName(curObjName)
                 objExist = true
                 Logm.aa("obj cnt= ${objs.value?.size}")
+                mqttRestart()
                 _navigateToObj.postValue(true)
             }
         }
@@ -284,6 +287,7 @@ class MainViewModel(
                     if(cObj != null) {
                         _curObj.postValue(cObj)
                         curObjName = cObj.objName
+                        mqttRestart()
                     }
                     else {
                         _curObj.postValue(null)
@@ -324,24 +328,13 @@ class MainViewModel(
         else if(!objExist){
             _navigateToNewObj.value = true
         }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-        httpJob.cancel()
-        mqttJob.cancel()
-        _progress.postValue(false)
-        //httpR?.Close()
-        //cancelWork()
-        Logm.aa("shutdown")
+        if(accExist && objExist){
+            //onReqStatus()
+            mqttRestart()
+        }
     }
 
     //--------------------------
-
-//    val httpJob = Job()
-//    val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
 
     private var _strHttpStat = MutableLiveData<String>()
     val strHttpStat : LiveData<String>
@@ -350,6 +343,19 @@ class MainViewModel(
     private var _progress = MutableLiveData<Boolean>()
     val progress : LiveData<Boolean>
         get() = _progress
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+        httpJob.cancel()
+        mqttJob.cancel()
+        _progress.value = false
+        //httpR?.Close()
+        //cancelWork()
+        Logm.aa("shutdown")
+    }
+
+    //======================================================= http =========================
 
 
     //private var httpR: HttpCor? = null
@@ -448,24 +454,12 @@ class MainViewModel(
         if(s.equals("error")) {
             return
         }
-//        val list = ObjStringUpd.getListState(s)
-//        if(list == null) {
-//            return             // to do
-//        }
         val map = ObjStringUpd.getMapState(s)
         if(map == null) return
 
         Logm.aa("start update")
 
         updObjFromList(map)
-//        var obj = _curObj.value ?: return
-//        withContext(Dispatchers.IO) {
-//            val objUpd = ObjStringUpd(obj)
-//            obj = objUpd.UpdStringAll(list)
-//            database.update(obj)
-//            getStateList(obj)
-//            Logm.aa("state updated")
-//        }
     }
 
     suspend fun getStateList(obj: Obj) {
@@ -512,30 +506,45 @@ class MainViewModel(
         }
     }
 
-    fun onReqStatMqtt() {
+    fun onReqStatus() {
         onPostCmd("reqstatus", "")
     }
 
     //---------------------------
     //============================================= mqtt ============================
 
+    var mqtt : MqttCor? = null
 
     fun onMqttStart () {
 
-        mqttScope.launch {
-            withContext(Dispatchers.Default) {
-                val mqtt = MqttCor()
-                val res = mqtt.subMqtt(curObjName, updCallback = { b, len -> updFromMqtt(b, len) } )
+        httpScope.launch {
+            withContext(Dispatchers.IO) {
+                if(mqtt == null) mqtt = MqttCor()
+                val res = mqtt!!.subMqtt(curObjName, updCallback = { map -> updFromMqtt(map) } )
                 Logm.aa("mqtt finished $res")
-                _progress.postValue(false)
+                //_progress.postValue(false)
             }
         }
     }
+    fun mqttClose(){
+        if(mqtt != null) mqtt!!.Close()
+    }
+    fun mqttRestart() {
+        mqttClose()
+        onMqttStart()
+    }
 
-    fun updFromMqtt (b: ByteArray, len: Int) {
+    fun updFromMqtt (map: Map<String, String>) {
         Logm.aa("callback: ")
-        Logm.aa(b, len)
-
+        //if(map == null) return
+        for((key, value) in map){
+            Logm.aa("key=$key")
+            Logm.aa("value=$value")
+        }
+        if(_progress.value == true) return
+        mqttScope.launch {
+            updObjFromList(map)
+        }
     }
 
     private val workManager : WorkManager = WorkManager.getInstance()

@@ -19,11 +19,6 @@ class MqttCor {
         //val port: Int = 80  // strPort.toInt()
         const val tmax: Int = 10
     }
-    private val server = Account.accServ
-    private val strPort = Account.accPort
-    private val port : Int = strPort.toInt()
-
-    //private val timer: CountDownTimer
 
     private var isOpen: Boolean = false
     private var socket: Socket? = null
@@ -52,13 +47,17 @@ class MqttCor {
         //timer.start()
     }
 
-    //private fun send(strSend: String) : Boolean {
+    private fun sendAck(packId: Int) {
+        val b = FillAck(packId)
+        send(b.buf, b.len)
+    }
+
     private fun send(b: ByteArray, len: Int) : Boolean {
         var isSend = false
         if(!isOpen) return false
         if(socket == null) return false
         if(dataOutputStream == null) return false
-        rcnt2 = 0
+        //rcnt2 = 0
         Logm.aa("mq send")
         Logm.aa(b, len)
         try {
@@ -80,6 +79,10 @@ class MqttCor {
     ) : Boolean {
         isOpen = false
         //var resStr : String = "error"
+        val server = Account.accServ
+        val strPort = Account.accPort
+        val port : Int = strPort.toInt()
+        Logm.aa("server: $server : $port")
         try{
             socket = Socket(InetAddress.getByName(server), port)
             Logm.aa("connected")
@@ -101,24 +104,24 @@ class MqttCor {
         return(isOpen)
     }
 
-    suspend fun rec (wa: Int, updCallback: (ByteArray, Int) -> Unit) : String {
-        return withContext(Dispatchers.Default) {
+    suspend fun rec (wa: Int, updCallback: (Map<String, String>) -> Unit) : String {
+        return withContext(Dispatchers.IO) {
             var resStr: String = "error"
             rcnt2 = 0
             while (true) {
                 if (!isActive) {
-                    Logm.aa("rec end isActive")
+                    Logm.aa("mqtt not Active")
                     Close()
                     break;
                 }
                 if(socket == null || dataInputStream == null) {
-                    Logm.aa("rec end socket null")
+                    Logm.aa("mqtt end socket null")
                     Close()
                     break;
                 }
                 try {
                     if(socket!!.isClosed || !socket!!.isConnected) {
-                        Logm.aa("rec end socket closed")
+                        Logm.aa("mqtt end socket closed")
                         Close()
                         break;
                     }
@@ -147,14 +150,17 @@ class MqttCor {
                             }
                         }
                         else if(wa == 3) {
-                            val packId = RecPublish(rbuf2, rcnt2)
+                            //val packId = RecPublish(rbuf2, rcnt2, updCallback)
+                            val packId = GetPackId(rbuf2, rcnt2)
+                            val map = GetMap(rbuf2, rcnt2)
+                            if(map != null) updCallback(map)
                             if(packId != 0) {
                                 // send Ack
                                 Logm.aa("packId=$packId")
+                                sendAck(packId)
                             }
                             rcnt2 = 0
-                            //updCallback(rbuf2, rcnt2)
-                            // udpCallback(s)
+                            //if(map != null) updCallback(map)
                         }
 
                     }
@@ -169,13 +175,14 @@ class MqttCor {
     }
 
     fun Close(){
-        Logm.aa("http close")
+        Logm.aa("mqtt close")
         try {
             dataOutputStream?.close()
             dataInputStream?.close()
             socket?.shutdownOutput()
             socket?.shutdownInput()
             socket?.close()
+            socket = null
         }
         catch(ex: Exception){
             //Logm.aa("close exc: ${ex.toString()}")
@@ -185,12 +192,12 @@ class MqttCor {
 
     suspend fun subMqtt(
         numObj: String,
-        updCallback: (ByteArray, Int) -> Unit ) {
+        updCallback: (Map<String, String>) -> Unit ) {
 
         val strConn = FillConnectMqtt()
         val strSub = FillSubMqtt(numObj)
         var s : String? = null
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
 
             val sendConnectMqtt = connect(strConn.buf, strConn.len)  // connect Mqtt
             if(!sendConnectMqtt) return@withContext

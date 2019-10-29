@@ -58,12 +58,16 @@ class OutState(var obj: Obj) {
 
     //
     fun getOutStatList(): ArrayList<OutItem> {
-
-
         val listStat = ArrayList<OutItem>()
 
+        var maxOut : Int = 0
+
+        for(i in 0 until NUMBER_OUT) {
+            if(functOut[i] != 0) maxOut = i
+        }
+        if(maxOut < 4) maxOut = 4;
         //Logm.aa("nout:"  + " " + np.toString())
-        for (p in 0 until 4) {
+        for (p in 0 until maxOut) {
 
             val out = OutItem(p, functOut[p], statOut[p], ftOut[p] )
 

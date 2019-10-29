@@ -36,11 +36,11 @@ class NotifyFragment : Fragment() {
         recyclerView.adapter = adapter
 
         mainViewModel = activity?.run {
-            Logm.aa("obj fr")
+           // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
-        Logm.aa("a on req ev 1 ")
+       // Logm.aa("a on req ev 1 ")
         mainViewModel.onReqEvent()
         mainViewModel.curObj.observe(this, Observer { obj ->
             var s: String = getString(R.string.obj_empty)
@@ -50,12 +50,12 @@ class NotifyFragment : Fragment() {
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
             //(activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)
-            Logm.aa("curObjName in NotifyFragment")
+           // Logm.aa("curObjName in NotifyFragment")
         })
         mainViewModel.events.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Logm.aa("ev observe")
-                Logm.aa("ev cnt= ${it.size}")
+               // Logm.aa("ev observe")
+               // Logm.aa("ev cnt= ${it.size}")
                 adapter.data = it
                 adapter.notifyDataSetChanged()
             }
@@ -64,7 +64,7 @@ class NotifyFragment : Fragment() {
         val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeN)
         swipe.setColorSchemeColors(0x607d8b)
         swipe.setOnRefreshListener {
-            Logm.aa("a on rec ev 2 ")
+           // Logm.aa("a on rec ev 2 ")
             mainViewModel.onReqEvent()
         }
         mainViewModel.progress.observe(this, Observer {
