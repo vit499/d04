@@ -24,7 +24,9 @@ import ru.vit499.d04.util.*
 import ru.vit499.d04.util.Str
 import ru.vit499.d04.objstate.ObjState
 import ru.vit499.d04.objstate.OutState
-import ru.vit499.d04.ui.main.StatList
+import ru.vit499.d04.ui.main.StatusItem
+import ru.vit499.d04.ui.misc.Settings
+import ru.vit499.d04.ui.misc.Settings.Companion.initSettings
 import ru.vit499.d04.ui.outputs.OutItem
 
 
@@ -97,8 +99,8 @@ class MainViewModel(
     val curObjEdit : LiveData<Obj?>
         get() = _curObjEdit
 
-    private val _statList = MutableLiveData<List<StatList>>()
-    val statList : LiveData<List<StatList>>
+    private val _statList = MutableLiveData<List<StatusItem>>()
+    val statList : LiveData<List<StatusItem>>
         get() = _statList
 
     private val _outList = MutableLiveData<List<OutItem>>()
@@ -134,6 +136,7 @@ class MainViewModel(
         objExist = !curObjName.equals("")
         val acc = Account.fill()
         accExist = acc
+        initSettings()
 
         Logm.aa(curObjName)
 
@@ -516,7 +519,7 @@ class MainViewModel(
     var mqtt : MqttCor? = null
 
     fun onMqttStart () {
-
+        if(!Settings.mqttEnable) return
         httpScope.launch {
             withContext(Dispatchers.IO) {
                 if(mqtt == null) mqtt = MqttCor()

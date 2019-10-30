@@ -63,7 +63,7 @@ class OutState(var obj: Obj) {
         var maxOut : Int = 0
 
         for(i in 0 until NUMBER_OUT) {
-            if(functOut[i] != 0) maxOut = i
+            if(functOut[i] != 0) maxOut = i + 1
         }
         if(maxOut < 4) maxOut = 4;
         //Logm.aa("nout:"  + " " + np.toString())

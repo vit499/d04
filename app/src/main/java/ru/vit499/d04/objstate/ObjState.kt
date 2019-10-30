@@ -1,7 +1,7 @@
 package ru.vit499.d04.objstate
 
 import ru.vit499.d04.database.Obj
-import ru.vit499.d04.ui.main.StatList
+import ru.vit499.d04.ui.main.StatusItem
 import ru.vit499.d04.ui.outputs.OutItem
 import ru.vit499.d04.util.Buf
 import ru.vit499.d04.util.Logm
@@ -262,22 +262,22 @@ class ObjState(obj: Obj) {
     }
 
     //  из объекта, который представляет из себя список разделов, а те - списки зон
-    // формируется список разделов-зон - StatList
-    fun getObjStatList(): ArrayList<StatList> {
+    // формируется список разделов-зон - StatusItem
+    fun getObjStatList(): ArrayList<StatusItem> {
         val objPartZone = ObjPartZone(GetParts())
 
-        val listStat = ArrayList<StatList>()
+        val listStat = ArrayList<StatusItem>()
 
         val np = objPartZone.part.size
         Logm.aa("nparts:"  + " " + np.toString())
         for (p in 0 until np) {
             val pp = objPartZone.part.get(p)
-            val dp = StatList(1, pp.number, pp.statInt, pp.strStat, pp.cmdArm, pp.color, "")
+            val dp = StatusItem(1, pp.number, pp.statInt, pp.strStat, pp.cmdArm, pp.color, "")
             listStat.add(dp)
             val nz = objPartZone.part.get(p).zone.size
             for (z in 0 until nz) {
                 val zz = objPartZone.part.get(p).zone.get(z)
-                val dz = StatList(0, zz.number, zz.statInt, zz.strStat, "", zz.color, "")
+                val dz = StatusItem(0, zz.number, zz.statInt, zz.strStat, "", zz.color, "")
                 listStat.add(dz)
             }
         }

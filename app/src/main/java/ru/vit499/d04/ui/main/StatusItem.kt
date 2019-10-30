@@ -1,6 +1,6 @@
 package ru.vit499.d04.ui.main
 
-class StatList(
+class StatusItem(
     partOrZone: Int,
     ind1: Int,
     stat: Int,

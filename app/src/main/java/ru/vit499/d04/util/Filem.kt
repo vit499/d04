@@ -16,6 +16,7 @@ class Filem() {
         val fileAccPass : String = "accPass.txt"
         val fileAccServ : String = "accServ.txt"
         val fileAccPort : String = "accPort.txt"
+        val fileSetMqEn : String = "setMqEn.txt"
         var strDir : String = ""
         //val strDir : String = (application as Context).getFilesDir().getPath().toString()
         var currentLogFile : String = "1"
@@ -72,6 +73,11 @@ class Filem() {
             if(s.equals("")) s = "-"
             return(s)
         }
+        fun getSetMqEn() : String {
+            var s = getVal(fileSetMqEn)
+            if(s.equals("")) s = "1"
+            return(s)
+        }
 
         fun setAccUser(s : String) {
             return(setVal(fileAccUser, s))
@@ -87,6 +93,9 @@ class Filem() {
         }
         fun setCurrentObjName(s : String) {
             return(setVal(fileCurObj, s))
+        }
+        fun setSetMqEn(s : String) {
+            return(setVal(fileSetMqEn, s))
         }
     }
 }
