@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
@@ -34,11 +37,23 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
+        val view = inflater.inflate(R.layout.fragment_main_status, container, false)
         setHasOptionsMenu(true)
 
-        val application = requireNotNull(this.activity).application
-        val tvLog = view.findViewById<TextView>(R.id.tv_log)
+        //val application = requireNotNull(this.activity).application
+        //val tvLog = view.findViewById<TextView>(R.id.tv_log)
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recl_main_status)
+        val manager = GridLayoutManager(activity, 3, LinearLayoutManager.VERTICAL, false)
+
+        manager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return mainViewModel.statList.value?.get(position)?.getSpan() ?: 0
+            }
+        })
+        recyclerView.layoutManager = manager
+        val adapter = MainAdapter(onClickListener = { a, b -> onClick(a, b) })
+        recyclerView.adapter = adapter
 
 
         mainViewModel = activity?.run {
@@ -74,17 +89,18 @@ class MainFragment : Fragment() {
         })
         mainViewModel.statList.observe(this, Observer { list ->
             list?.let{
-                var sb = StringBuilder()
-                var k = list.size
-                for(i in 0 until k){
-                    sb.append("\r\n")
-                    sb.append(list.get(i).getName())
-                }
-                tvLog.text = sb.toString()
+//                var sb = StringBuilder()
+//                var k = list.size
+//                for(i in 0 until k){
+//                    sb.append("\r\n")
+//                    sb.append(list.get(i).getName())
+//                }
+//                tvLog.text = sb.toString()
+                adapter.data = list
             }
         })
 
-        val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipe)
+        val swipe = view.findViewById<SwipeRefreshLayout>(R.id.swipeMain)
         swipe.setColorSchemeColors(0x8bc34a)
         swipe.setOnRefreshListener {
            // Logm.aa("a on rec stat 2 ")
@@ -121,6 +137,10 @@ class MainFragment : Fragment() {
         return NavigationUI.onNavDestinationSelected(item!!,
             view!!.findNavController())
                 || super.onOptionsItemSelected(item)
+    }
+
+    fun onClick(a: Int, b: Int) {
+
     }
 
 }
