@@ -84,6 +84,13 @@ class MainViewModel(
     fun clrNavigateToObj() {
         _navigateToObj.value = false
     }
+    // переход в события из уведомлений
+    private val _navigateToNotify = MutableLiveData<Boolean>()
+    val navigateToNotify : LiveData<Boolean>
+        get() = _navigateToNotify
+    fun clrNavigateToNotify() {
+        _navigateToNotify.value = false
+    }
 
     val objs = database.getAllObj1()
 
@@ -132,6 +139,7 @@ class MainViewModel(
         Log.i("aa", "--- init --- ")
         Filem.setDir(application)
         _navigateToNewObj.value = false
+        _navigateToNotify.value = false
         curObjName = Filem.getCurrentObjName()
         objExist = !curObjName.equals("")
         val acc = Account.fill()
@@ -226,6 +234,23 @@ class MainViewModel(
             }
         }
     }
+    // выбор текущего объекта и переход на уведомления
+    fun getObjByName (num: String) {
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                val obj = database.getObjByName(num)
+                obj?.let {
+                    _curObj.postValue(obj)
+                    curObjName = obj.objName
+                    Filem.setCurrentObjName(curObjName)
+                    Logm.aa("new current obj: ${curObjName}")
+                    getStateList(obj)
+                    mqttRestart()
+                    _navigateToNotify.postValue(true)
+                } ?: return@withContext
+            }
+        }
+    }
     fun getObjEditById (id: Long) {
         uiScope.launch {
             withContext(Dispatchers.IO){
@@ -311,6 +336,14 @@ class MainViewModel(
     fun getCurrentObj () : Obj? {
         val obj = _curObj.value
         return obj
+    }
+    fun onCurrentObjByName(numObj: String){
+        if(!curObjName.equals(numObj)) {
+            getObjByName(numObj)
+        }
+        else {
+            _navigateToNotify.value = true
+        }
     }
 
     // установка (выбор) объекта для редактирования, удаления
@@ -428,6 +461,8 @@ class MainViewModel(
             FcmToken.getFcmToken()
             val token = FcmToken.waitToken()
             val strReq = strSendToken(arr, token)
+            Logm.aa("token=")
+            Logm.aa(token)
             Logm.aa(strReq)
             //if(httpR == null) httpR = HttpCor()
             val http = HttpCor(10)

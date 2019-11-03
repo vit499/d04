@@ -17,7 +17,7 @@ class Logm {
         var sb = StringBuilder()
 
         fun aa(s: String?) {
-            s.let {
+            s?.let {
                 var a = s
                 if(a.equals("")) a = "-"
                 Log.i("aa", a)

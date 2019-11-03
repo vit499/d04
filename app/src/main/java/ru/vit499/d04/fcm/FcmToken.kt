@@ -34,7 +34,7 @@ class FcmToken {
         }
 
         fun getFcmToken() {
-
+            strToken = ""
             //var res: String = ""
             FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { task ->
@@ -43,6 +43,7 @@ class FcmToken {
                         return@OnCompleteListener
                     }
                     val token = task.result?.token
+                    Logm.aa("fb_listener:")
                     Logm.aa(token)
                     strToken = token
                 })
@@ -53,7 +54,7 @@ class FcmToken {
             return withContext(Dispatchers.Default){
                 withTimeout(5000){
                     while(true) {
-                        if (strToken != null) {
+                        if (strToken != null && !strToken.equals("")) {
                             res = strToken!!
                             break
                         }

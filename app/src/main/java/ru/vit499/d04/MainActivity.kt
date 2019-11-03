@@ -25,6 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.vit499.d04.database.ObjDatabase
+import ru.vit499.d04.ui.notify.NotifyFragment
 import ru.vit499.d04.util.Logm
 
 class MainActivity : AppCompatActivity() {
@@ -36,9 +37,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var s1 = intent.getStringExtra("NOTICE")
-        if(s1 != null) {
-            Logm.aa(" xxxxxx  $s1")
+        Logm.aa("onCreate")
+        var notifyObjName = ""
+        val s1 = intent.getStringExtra("NOTICE")
+        if(s1 != null && !s1.equals("")) {
+            val s2 = intent.getStringExtra("OBJ")
+            if(s2 != null && !s2.equals("")) {
+                Logm.aa("notify $s1")
+                intent.putExtra("NOTICE", "")
+                intent.putExtra("OBJ", "")
+                notifyObjName = s2
+            }
+
         }
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(navController.graph)
@@ -74,6 +84,16 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
 
+        if(!notifyObjName.equals("")) {
+            Logm.aa("change cur obj: $notifyObjName")
+            mainViewModel.onCurrentObjByName(notifyObjName)
+        }
+        mainViewModel.navigateToNotify.observe(this, Observer {
+            if(it){
+                navController.navigate(R.id.notifyFragment)
+                mainViewModel.clrNavigateToNotify()
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -85,6 +105,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onStart(){
+        super.onStart()
+        Logm.aa("onStart")
+        val s1 = intent.getStringExtra("NOTICE")
+        if(s1 == null) Logm.aa("null")
+        Logm.aa(s1)
+        if(s1 != null && !s1.equals("")) {
+            val s2 = intent.getStringExtra("OBJ")
+            if(s2 != null && !s2.equals("")) {
+                Logm.aa("start notify $s1")
+                intent.putExtra("NOTICE", "")
+                intent.putExtra("OBJ", "")
+                //notifyObjName = s2
+            }
 
+        }
+    }
+    override fun onResume(){
+        super.onResume()
+        Logm.aa("onResume")
+        val s1 = intent.getStringExtra("NOTICE")
+        if(s1 == null) Logm.aa("null")
+        Logm.aa(s1)
+        if(s1 != null && !s1.equals("")) {
+            val s2 = intent.getStringExtra("OBJ")
+            if(s2 != null && !s2.equals("")) {
+                Logm.aa("resume notify $s1")
+                intent.putExtra("NOTICE", "")
+                intent.putExtra("OBJ", "")
+                //notifyObjName = s2
+            }
+
+        }
+    }
 
 }

@@ -24,8 +24,8 @@ class Filem() {
         fun setDir(application: Application) {
             strDir = (application as Context).getFilesDir().getPath().toString()
 
-            val sdf = SimpleDateFormat("YYMMdd_HHmmss", Locale.getDefault())
-            currentLogFile = sdf.format(Date())
+            //val sdf = SimpleDateFormat("YYMMdd_HHmmss", Locale.getDefault())
+            //currentLogFile = sdf.format(Date())
 
             Logm.aa("strDir = $strDir")
         }
