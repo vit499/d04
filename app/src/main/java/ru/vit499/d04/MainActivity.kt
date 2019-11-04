@@ -180,8 +180,8 @@ class MainActivity : AppCompatActivity() {
         val packageName = this.getPackageName()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val isBackground = activityManager.isBackgroundRestricted()
-            if(!isBackground){
-                Logm.aa("is backgr= $isBackground")
+            Logm.aa("is backgr= $isBackground")
+           // if(!isBackground){
                 if(!Stp.getPm()) {
                     Stp.setPm(true)
                     val intent = Intent()
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                     intent.setData(Uri.parse("package:" + packageName))
                     startActivity(intent)
                 }
-            }
+           // }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

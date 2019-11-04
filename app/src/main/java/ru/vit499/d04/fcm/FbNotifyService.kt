@@ -87,18 +87,18 @@ class FbNotifyService : FirebaseMessagingService() {
 
 
     private fun sendNotification(numObj: String, messageBody: String) {
-//        if(Stp.getEn()){
-//            Logm.aa(" ----------------------- en -------------- ")
-////            val intentBr = Intent("FB1")
-////            intentBr.putExtra("NOTICE", messageBody)
-////            intentBr.putExtra("OBJ", numObj)
-////            this.sendBroadcast(intentBr)
-//            Stp.setFbId(numObj, messageBody)
-//            //return
-//        }
-//        else {
-//            Logm.aa(" ------------------------- dis ------------- ")
-//        }
+        if(Stp.getEn()){
+            //Logm.aa(" ----------------------- en -------------- ")
+//            val intentBr = Intent("FB1")
+//            intentBr.putExtra("NOTICE", messageBody)
+//            intentBr.putExtra("OBJ", numObj)
+//            this.sendBroadcast(intentBr)
+            Stp.setFbId(numObj, messageBody)
+            //return
+        }
+        else {
+            //Logm.aa(" ------------------------- dis ------------- ")
+        }
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.putExtra("NOTICE", messageBody)
@@ -137,8 +137,8 @@ class FbNotifyService : FirebaseMessagingService() {
             )
             notificationManager.createNotificationChannel(channel)
         }
-       // val id = numObj.toInt()
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        val id = numObj.toInt()
+        notificationManager.notify(id /* ID of notification */, notificationBuilder.build())
     }
 
 
