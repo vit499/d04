@@ -46,7 +46,7 @@ fun recState (buf: ByteArray, len_src : Int) : String? {
         if (len > 100) len = 100
         val r2 = Str.byte2str(buf, 0, len)
         if (r2 == null || r2.length < 2) return null
-        Logm.aa(r2)
+       // Logm.aa(r2)
         return "error"
     }
     for (i in 0 until len) {
@@ -76,7 +76,7 @@ fun rec1111 (buf: ByteArray, len : Int) : String? {
     val r2 = Str.byte2str(buf, len)
 
     if (r2 == null || r2.length < 2) return null
-    Logm.aa("ht rec: $r2")
+   // Logm.aa("ht rec: $r2")
     val a = r2.indexOf("111", 0)
     if(a != -1) {
         s = "ok"

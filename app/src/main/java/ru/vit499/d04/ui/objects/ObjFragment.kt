@@ -19,13 +19,16 @@ import ru.vit499.d04.MainViewModel
 import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
 import java.lang.Exception
+import ru.vit499.d04.MainActivity
+
+
 
 /**
  * A simple [Fragment] subclass.
  */
 class ObjFragment : Fragment() {
 
-    private lateinit var objViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,28 +43,28 @@ class ObjFragment : Fragment() {
         val adapter = ObjAdapter(onClickListener = { m, objId -> onClick(m, objId) })
         recyclerView.adapter = adapter
 
-        objViewModel = activity?.run {
+        mainViewModel = activity?.run {
            // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
-        objViewModel.objs.observe(this, Observer {
+        mainViewModel.objs.observe(this, Observer {
             it?.let {
               //  Logm.aa("objs observe")
               //  Logm.aa("obj cnt= ${it.size}")
                 adapter.data = it
             }
         })
-        objViewModel.navigateBackFromObj.observe(this, Observer {
+        mainViewModel.navigateBackFromObj.observe(this, Observer {
             if(it){
                 (activity as AppCompatActivity).onBackPressed()
-                objViewModel.onNavigateBackFromObj()
+                mainViewModel.onNavigateBackFromObj()
             }
         })
-        objViewModel.navigateToEditObj.observe(this, Observer {
+        mainViewModel.navigateToEditObj.observe(this, Observer {
             if(it){
                 this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
-                objViewModel.onNavigateToEditObj()
+                mainViewModel.onNavigateToEditObj()
             }
         })
         return view
@@ -71,12 +74,12 @@ class ObjFragment : Fragment() {
       //  Logm.aa("m= $m , pos=$objId")
       //  Logm.aa("ajdf")
         if(m == 0){
-            objViewModel.onCurrentObj(objId)
+            mainViewModel.onCurrentObj(objId)
             //this.findNavController().navigate(R.id.action_objFragment_to_mainFragment)
             //(activity as AppCompatActivity).onBackPressed()
         }
         else {
-            objViewModel.onCurrentObjEdit(objId)
+            mainViewModel.onCurrentObjEdit(objId)
             //this.findNavController().navigate(R.id.action_objFragment_to_objEditFragment)
         }
     }
@@ -110,4 +113,7 @@ class ObjFragment : Fragment() {
     }
 
 
+    fun alertD () {
+
+    }
 }

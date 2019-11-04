@@ -386,6 +386,7 @@ class MainViewModel(
         httpJob.cancel()
         mqttJob.cancel()
         _progress.value = false
+        Stp.en(false)
         //httpR?.Close()
         //cancelWork()
         Logm.aa("shutdown")
@@ -404,7 +405,7 @@ class MainViewModel(
 
         }
         _progress.value = true
-        Logm.aa("on Rec Stat...")
+       // Logm.aa("on Rec Stat...")
         val strReq = strReqHttp(curObjName, "state")
         //Logm.aa(strReq)
         httpScope.launch {
@@ -417,7 +418,7 @@ class MainViewModel(
     fun onReqEvent () {
         if(_progress.value == true) return
         _progress.value = true
-        Logm.aa("on Rec Ev...")
+      //  Logm.aa("on Rec Ev...")
         val strReq = strReqHttp(curObjName, "events")
         //Logm.aa(strReq)
         httpScope.launch {
@@ -495,7 +496,7 @@ class MainViewModel(
         val map = ObjStringUpd.getMapState(s)
         if(map == null) return
 
-        Logm.aa("start update")
+       // Logm.aa("start update")
 
         updObjFromList(map)
     }
@@ -523,8 +524,8 @@ class MainViewModel(
     }
 
     fun updHttpAnswer (s: String) {
-        Logm.aa("http end:")
-        Logm.aa(s)
+       // Logm.aa("http end:")
+       // Logm.aa(s)
         _strHttpStat.postValue(s)
     }
 
@@ -535,7 +536,7 @@ class MainViewModel(
         httpScope.launch {
 
             val strReq = strSendCmd(curObjName, key, value, (mesId++).toString())
-            Logm.aa(strReq)
+           // Logm.aa(strReq)
             //if(httpR == null) httpR = HttpCor()
             val http = HttpCor(10)
             val s = http?.reqStat(strReq, 3, 10) ?: "error"
@@ -576,8 +577,8 @@ class MainViewModel(
         Logm.aa("callback: ")
         //if(map == null) return
         for((key, value) in map){
-            Logm.aa("key=$key")
-            Logm.aa("value=$value")
+           // Logm.aa("key=$key")
+           // Logm.aa("value=$value")
         }
         if(_progress.value == true) return
         mqttScope.launch {

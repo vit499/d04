@@ -58,11 +58,11 @@ class MqttCor {
         if(socket == null) return false
         if(dataOutputStream == null) return false
         //rcnt2 = 0
-        Logm.aa("mq send")
-        Logm.aa(b, len)
+       // Logm.aa("mq send")
+       // Logm.aa(b, len)
         try {
             dataOutputStream?.write(b, 0, len)
-            Logm.aa("sended")
+           // Logm.aa("sended")
             isSend = true
         }
         catch(ex: Exception) {
@@ -84,10 +84,10 @@ class MqttCor {
         val server = Account.accServ
         val strPort = Account.accPort
         val port : Int = strPort.toInt()
-        Logm.aa("server: $server : $port")
+       // Logm.aa("server: $server : $port")
         try{
             socket = Socket(InetAddress.getByName(server), port)
-            Logm.aa("connected")
+           // Logm.aa("connected")
             socket?.setSoTimeout(2000)
             val outputStream : OutputStream? = socket?.getOutputStream() ?: return false
             val inputStream : InputStream? = socket?.getInputStream() ?: return false
@@ -160,7 +160,7 @@ class MqttCor {
                             if(map != null) updCallback(map)
                             if(packId != 0) {
                                 // send Ack
-                                Logm.aa("packId=$packId")
+                               // Logm.aa("packId=$packId")
                                 sendAck(packId)
                             }
                             rcnt2 = 0

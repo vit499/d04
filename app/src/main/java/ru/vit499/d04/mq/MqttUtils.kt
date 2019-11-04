@@ -10,7 +10,7 @@ import java.util.*
 
 
 fun RecConnect(b: ByteArray, len_src: Int) : String? {
-    Logm.aa(b, len_src)
+   // Logm.aa(b, len_src)
     var res : String? = null
     val type = (b[0].toInt() shr 4) and 0x0f
     if (type == 2) { // answer connect 0x20  0x02  0x00  0x00
@@ -24,7 +24,7 @@ fun RecConnect(b: ByteArray, len_src: Int) : String? {
 }
 
 fun RecSub(b: ByteArray, len_src: Int) : String? {
-    Logm.aa(b, len_src)
+   // Logm.aa(b, len_src)
     var res : String? = null
     var r : Int
     if(len_src < 5) return null
@@ -44,8 +44,8 @@ fun RecSub(b: ByteArray, len_src: Int) : String? {
 
 fun RecPub(b: ByteArray, len_src: Int) : String? {
     var r = 0
-    Logm.aa("rec pub")
-    Logm.aa(b, len_src)
+  //  Logm.aa("rec pub")
+  //  Logm.aa(b, len_src)
     val type = (b[0].toInt() shr 4) and 0x0f
 
     if (type != 0x0d) {
@@ -220,7 +220,7 @@ fun checkTopic(topic: String, mes: String): Map<String, String>? {
     var topic2 = ""
     if (s.size > 4) topic2 = s[4]
 
-    Logm.aa("t1:$topic1")
+   // Logm.aa("t1:$topic1")
     val map : MutableMap<String, String> = mutableMapOf()
 
     if (topic1 == "status") {
@@ -269,7 +269,7 @@ fun GetPackId(b: ByteArray, len_src: Int) : Int {
 fun GetMap(b: ByteArray, len_src: Int) : Map<String, String>? {
     if(len_src < 10) return null
 
-    Logm.aa(b, len_src);
+   // Logm.aa(b, len_src);
     val bb = b[1].toInt()
     var lenPublish = bb and 0xff
     var pLenTopic = 2                        // указатель на длину темы
@@ -295,8 +295,8 @@ fun GetMap(b: ByteArray, len_src: Int) : Map<String, String>? {
         b_topic[i] = b[i + p_Topic]
         i++
     }
-    Logm.aa("topic:")
-    Logm.aa(b_topic, lenTopic)
+   // Logm.aa("topic:")
+   // Logm.aa(b_topic, lenTopic)
 
     val lenMes = lenPublish - p_Mes + 2
     val b_message = ByteArray(lenMes)
@@ -305,8 +305,8 @@ fun GetMap(b: ByteArray, len_src: Int) : Map<String, String>? {
         b_message[i] = b[i + p_Mes]
         i++
     }
-    Logm.aa("mes:")
-    Logm.aa(b_message, lenMes)
+  //  Logm.aa("mes:")
+  //  Logm.aa(b_message, lenMes)
 
     val topic = Str.byte2str(b_topic, lenTopic)
     val message = Str.byte2str(b_message, lenMes)
@@ -328,7 +328,7 @@ fun GetMap(b: ByteArray, len_src: Int) : Map<String, String>? {
 fun RecPublish(b: ByteArray, len_src: Int, callback: ( Map<String, String> ) -> Unit ) : Int {
     if(len_src < 10) return 0
 
-    Logm.aa(b, len_src);
+   // Logm.aa(b, len_src);
     val bb = b[1].toInt()
     var lenPublish = bb and 0xff
     var pLenTopic = 2                        // указатель на длину темы
@@ -354,8 +354,8 @@ fun RecPublish(b: ByteArray, len_src: Int, callback: ( Map<String, String> ) -> 
         b_topic[i] = b[i + p_Topic]
         i++
     }
-    Logm.aa("topic:")
-    Logm.aa(b_topic, lenTopic)
+   // Logm.aa("topic:")
+   // Logm.aa(b_topic, lenTopic)
 
     val lenMes = lenPublish - p_Mes + 2
     val b_message = ByteArray(lenMes)
@@ -364,8 +364,8 @@ fun RecPublish(b: ByteArray, len_src: Int, callback: ( Map<String, String> ) -> 
         b_message[i] = b[i + p_Mes]
         i++
     }
-    Logm.aa("mes:")
-    Logm.aa(b_message, lenMes)
+   // Logm.aa("mes:")
+   // Logm.aa(b_message, lenMes)
 
     val topic = Str.byte2str(b_topic, lenTopic)
     val message = Str.byte2str(b_message, lenMes)

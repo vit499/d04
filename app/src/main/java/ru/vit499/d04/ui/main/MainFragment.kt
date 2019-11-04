@@ -24,6 +24,8 @@ import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
 import java.lang.Exception
 import java.lang.StringBuilder
+import android.content.Context
+
 
 /**
  * A simple [Fragment] subclass.

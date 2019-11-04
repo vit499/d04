@@ -17,7 +17,10 @@ import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import ru.vit499.d04.ui.misc.Account
+import ru.vit499.d04.util.Stp
 
 
 class FbNotifyService : FirebaseMessagingService() {
@@ -27,14 +30,14 @@ class FbNotifyService : FirebaseMessagingService() {
 
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Logm.aa("From: ${remoteMessage.from}")
+        Logm.aa("Fb message")
 
         // Check if message contains a data payload.
         remoteMessage.data.isNotEmpty().let {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+            //Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            var p1 = remoteMessage.getData().get("name");
-            var p2 = remoteMessage.getData().get("dv_ev");
+            val p1 = remoteMessage.getData().get("name");
+            val p2 = remoteMessage.getData().get("dv_ev");
             if(p1 != null && p2 != null && !p2.equals("")) {
                 sendNotification(p1, "event")
             }
@@ -82,9 +85,21 @@ class FbNotifyService : FirebaseMessagingService() {
         sendRegistrationToServer(token)
     }
 
+
     private fun sendNotification(numObj: String, messageBody: String) {
+//        if(Stp.getEn()){
+//            Logm.aa(" ----------------------- en -------------- ")
+////            val intentBr = Intent("FB1")
+////            intentBr.putExtra("NOTICE", messageBody)
+////            intentBr.putExtra("OBJ", numObj)
+////            this.sendBroadcast(intentBr)
+//            Stp.setFbId(numObj, messageBody)
+//            //return
+//        }
+//        else {
+//            Logm.aa(" ------------------------- dis ------------- ")
+//        }
         val intent = Intent(this, MainActivity::class.java)
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.putExtra("NOTICE", messageBody)
         intent.putExtra("OBJ", numObj)
@@ -122,7 +137,7 @@ class FbNotifyService : FirebaseMessagingService() {
             )
             notificationManager.createNotificationChannel(channel)
         }
-
+       // val id = numObj.toInt()
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 

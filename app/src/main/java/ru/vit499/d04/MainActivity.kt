@@ -1,7 +1,5 @@
 package ru.vit499.d04
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -29,11 +27,30 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ru.vit499.d04.database.ObjDatabase
 import ru.vit499.d04.ui.notify.NotifyFragment
 import ru.vit499.d04.util.Logm
+import android.os.Build
+import android.app.ActivityManager
+import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.IntentFilter
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.lifecycle.AndroidViewModel
+import ru.vit499.d04.fcm.FbNotifyService
+import ru.vit499.d04.util.Stp
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var brRec: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         val dataSource = ObjDatabase.getInstance(application).objDatabaseDao
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        //mainViewModel = createViewModel(this)
 
         if(!notifyObjName.equals("")) {
             Logm.aa("change cur obj: $notifyObjName")
@@ -98,6 +116,9 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.clrNavigateToNotify()
             }
         })
+
+        Stp.en(true)
+        addPm()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -112,36 +133,99 @@ class MainActivity : AppCompatActivity() {
     override fun onStart(){
         super.onStart()
         Logm.aa("onStart")
-        val s1 = intent.getStringExtra("NOTICE")
-        if(s1 == null) Logm.aa("null")
-        Logm.aa(s1)
-        if(s1 != null && !s1.equals("")) {
-            val s2 = intent.getStringExtra("OBJ")
-            if(s2 != null && !s2.equals("")) {
-                Logm.aa("start notify $s1")
-                intent.putExtra("NOTICE", "")
-                intent.putExtra("OBJ", "")
-                //notifyObjName = s2
-            }
-
-        }
+        //registerReceiver(broadcastReceiver, IntentFilter("FB1"))
     }
     override fun onResume(){
         super.onResume()
         Logm.aa("onResume")
-        val s1 = intent.getStringExtra("NOTICE")
-        if(s1 == null) Logm.aa("null")
-        Logm.aa(s1)
+        checkNotify()
+    }
+    override fun onStop(){
+        super.onStop()
+        //unregisterReceiver(broadcastReceiver)
+    }
+    fun checkNotify(){
+        var notifyObjName = ""
+        val s1 = Stp.mes
         if(s1 != null && !s1.equals("")) {
-            val s2 = intent.getStringExtra("OBJ")
+            val s2 = Stp.numObj
             if(s2 != null && !s2.equals("")) {
-                Logm.aa("resume notify $s1")
-                intent.putExtra("NOTICE", "")
-                intent.putExtra("OBJ", "")
-                //notifyObjName = s2
+                Logm.aa("stuped $s1")
+                Stp.clrFbId()
+                notifyObjName = s2
             }
 
         }
+        if(!notifyObjName.equals("")) {
+            Logm.aa("change cur obj: $notifyObjName")
+            mainViewModel.onCurrentObjByName(notifyObjName)
+        }
     }
 
+//    fun setForceAppStandby(
+//        uid: Int, packageName: String,
+//        mode: Int
+//    ) {
+//        val isPreOApp = isPreOApp(packageName)
+//        if (isPreOApp) {
+//            // Control whether app could run in the background if it is pre O app
+//            mAppOpsManager.setMode(AppOpsManager.OP_RUN_IN_BACKGROUND, uid, packageName, mode)
+//        }
+//        // Control whether app could run jobs in the background
+//        mAppOpsManager.setMode(AppOpsManager.OP_RUN_ANY_IN_BACKGROUND, uid, packageName, mode)
+//    }
+
+    fun addPm () {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val packageName = this.getPackageName()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val isBackground = activityManager.isBackgroundRestricted()
+            if(!isBackground){
+                Logm.aa("is backgr= $isBackground")
+                if(!Stp.getPm()) {
+                    Stp.setPm(true)
+                    val intent = Intent()
+                    intent.setAction(Settings.ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS)
+                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
+                    intent.setData(Uri.parse("package:" + packageName))
+                    startActivity(intent)
+                }
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //val packageName = this.getPackageName()
+            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent()
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
+                intent.setData(Uri.parse("package:" + packageName))
+                startActivity(intent)
+
+//                intent.setAction(Settings.ACTION_IGNORE_BACKGROUND_DATA_RESTRICTIONS_SETTINGS)
+//                intent.setFlags(FLAG_ACTIVITY_NEW_TASK)
+//                intent.setData(Uri.parse("package:" + packageName))
+//                startActivity(intent)
+            }
+        }
+    }
+
+//    val broadcastReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(contxt: Context?, intent: Intent?) {
+//            val s = intent?.getStringExtra("OBJ") ?: "-"
+//            Logm.aa("rec: $s")
+//            //checkNotify()
+//        }
+//    }
+
+    companion object{
+        fun createViewModel(activity: AppCompatActivity) : MainViewModel{
+            val application = requireNotNull(activity).application
+            val dataSource = ObjDatabase.getInstance(application).objDatabaseDao
+            val viewModelFactory = MainViewModelFactory(dataSource, application)
+            var mainViewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
+            return mainViewModel
+        }
+    }
 }
