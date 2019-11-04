@@ -49,9 +49,11 @@ class Mqtt {
         }
         catch(ex: Exception) {
             Logm.aa("send exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         catch(ex: IOException){
             Logm.aa("send exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         return isSend
     }
@@ -113,9 +115,11 @@ class Mqtt {
         }
         catch(ex: Exception) {
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         catch(ex: IOException){
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         return(isOpen)
     }

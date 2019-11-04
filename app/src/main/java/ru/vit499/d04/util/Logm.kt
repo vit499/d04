@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.crashlytics.android.Crashlytics
 import java.io.File
 import java.lang.Exception
 import java.lang.StringBuilder
@@ -45,6 +46,10 @@ class Logm {
             Log.i("aa", s)
         }
 
+        fun ex(e: Exception){
+            Crashlytics.logException(e)
+        }
+
         fun clear() {
             sb.clear()
         }
@@ -62,7 +67,7 @@ class Logm {
                 file.writeText(str)
             }
             catch(ex: Exception){
-                Logm.aa(ex.toString())
+                //Logm.ex(ex)
             }
         }
     }

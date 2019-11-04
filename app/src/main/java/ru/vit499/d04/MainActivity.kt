@@ -21,7 +21,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.fabric.sdk.android.Fabric
 
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.vit499.d04.database.ObjDatabase
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+       // Fabric.with(this, Crashlytics())
 
         Logm.aa("onCreate")
         var notifyObjName = ""

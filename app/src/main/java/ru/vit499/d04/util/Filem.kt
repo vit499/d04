@@ -39,7 +39,7 @@ class Filem() {
                 }
             }
             catch (ex: Exception){
-                Logm.aa(ex.toString())
+                //Logm.ex(ex)
             }
            // Logm.aa("get val $str from file $f ")
             return str
@@ -52,7 +52,7 @@ class Filem() {
                 file.writeText(str)
             }
             catch(ex: Exception){
-                Logm.aa(ex.toString())
+                Logm.ex(ex)
             }
         }
 

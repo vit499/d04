@@ -78,9 +78,11 @@ class HttpWorker(
         }
         catch(ex: java.lang.Exception) {
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         catch(ex: IOException){
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         return(isOpen)
     }

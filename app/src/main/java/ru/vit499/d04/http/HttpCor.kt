@@ -75,9 +75,11 @@ class HttpCor(val tmax : Int) {
         }
         catch(ex: Exception) {
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         catch(ex: IOException){
             Logm.aa("open exc: ${ex.toString()}")
+            Logm.ex(ex)
         }
         return(isOpen)
     }
@@ -149,6 +151,7 @@ class HttpCor(val tmax : Int) {
         }
         catch(ex: Exception){
             //Logm.aa("close exc: ${ex.toString()}")
+            //Logm.ex(ex)
         }
         isOpen = false
     }
