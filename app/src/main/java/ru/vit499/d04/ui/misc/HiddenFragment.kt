@@ -1,18 +1,27 @@
 package ru.vit499.d04.ui.misc
 
 
+import android.app.AlertDialog
+import android.content.ClipData
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import ru.vit499.d04.MainViewModel
 
 import ru.vit499.d04.R
+import ru.vit499.d04.util.Logm
 import java.lang.Exception
 
 /**
@@ -49,8 +58,38 @@ class HiddenFragment : Fragment() {
             }
         })
 
+        val btn1 = view.findViewById<ImageButton>(R.id.button1)
+        val btn2 = view.findViewById<Button>(R.id.button2)
+        btn1.setOnClickListener() {
+            //alertD(activity!!, "ab", "cd", doit = { abcd() } )
+            //btn1.setBackgroundColor(0xff3399ee.toInt())
+            btn2.setBackgroundResource(R.drawable.btnstyle1)
+        }
+
+        btn2.setOnClickListener(){
+            btn1.setBackgroundResource(R.drawable.btnstyle2)
+        }
+
         return view
     }
 
-
+    fun abcd(){
+        Logm.aa("doit")
+    }
+    // onClickListener: (Int, Int)-> Unit
+    fun alertD(context: Context, s1: String, s2: String, doit: () -> Unit) {
+        val alert = AlertDialog.Builder(context)
+        with (alert) {
+            setTitle(s1)
+            setMessage(s2)
+            setPositiveButton(" Да ") {
+                    dialog, whichButton ->
+                //Logm.aa("yes")
+                doit()
+            }
+            setNegativeButton("Отмена ") { dialog, whichButton -> }
+            create()
+            show()
+        }
+    }
 }

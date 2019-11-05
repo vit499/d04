@@ -12,6 +12,32 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/button_text_sub" />
+    <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        style="@style/ButtonText"
+        android:background="@drawable/red"
+        android:text="@string/button_text_test" />
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_text_test"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        style="@style/ButtonText"
+        android:background="@drawable/green" />
+    <Button
+        android:text="Button"
+        android:id="@+id/button11"
+        android:background="@drawable/red"
+        style="@style/ButtonText">
+    </Button>
 
     <ScrollView
         android:layout_width="match_parent"

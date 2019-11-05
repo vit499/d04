@@ -47,6 +47,7 @@ class NotifyFragment : Fragment() {
             obj?.let{
                 s = obj.objDescr
                 Logm.aa("cur obj in ev= $s ")
+                //mainViewModel.onReqEvent()
             }
             (activity as AppCompatActivity).supportActionBar?.title = s + " (${obj?.objName})"
             //(activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.title_events)

@@ -1,6 +1,7 @@
 package ru.vit499.d04.ui.objects
 
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.InputFilter
 import androidx.fragment.app.Fragment
@@ -80,9 +81,20 @@ class ObjEditFragment : Fragment() {
             }
         }
         binding.btn622.setOnClickListener(){
-            viewModel.onDeleteObj()
-            //this.findNavController().navigate(R.id.action_objNewFragment_to_objFragment)
-            //(activity as AppCompatActivity).onBackPressed()
+
+            val alert = AlertDialog.Builder(activity)
+            with (alert) {
+                setTitle(R.string.delete_object)
+                setMessage(R.string.are_you_sure)
+                setPositiveButton(" Да ") {
+                        dialog, whichButton ->
+                    viewModel.onDeleteObj()
+                }
+                setNegativeButton("Отмена") { dialog, whichButton -> }
+                create()
+                show()
+            }
+            //viewModel.onDeleteObj()
         }
 
 //        viewModel.navigateToObj.observe(this, Observer {

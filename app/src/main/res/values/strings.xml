@@ -53,4 +53,8 @@
     <string name="text_req_temp">Temp</string>
     <string name="text_set_out5">5град</string>
     <string name="text_set_out_bi">bi</string>
+    <string name="button_text_test">test</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="delete_object">Объект будет удален</string>
+    <string name="text_shutdown">Выйти из приложения?</string>
 </resources>

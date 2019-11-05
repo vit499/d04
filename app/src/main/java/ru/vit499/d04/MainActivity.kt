@@ -29,6 +29,7 @@ import ru.vit499.d04.ui.notify.NotifyFragment
 import ru.vit499.d04.util.Logm
 import android.os.Build
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mainViewModel: MainViewModel
     private lateinit var brRec: BroadcastReceiver
+    private var mainFr: Boolean = false
+    private var notifFr: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +101,10 @@ class MainActivity : AppCompatActivity() {
                 //toolbar.visibility =  View.GONE
                 bottomNav.visibility =  View.GONE
             }
+            if (nd.id == R.id.mainFragment) mainFr = true
+            else mainFr = false
+            if(nd.id == R.id.notifyFragment) notifFr = true
+            else notifFr = false
         }
 
         val application = requireNotNull(this).application
@@ -112,7 +119,8 @@ class MainActivity : AppCompatActivity() {
         }
         mainViewModel.navigateToNotify.observe(this, Observer {
             if(it){
-                navController.navigate(R.id.notifyFragment)
+                if(!notifFr) navController.navigate(R.id.notifyFragment)
+                else mainViewModel.onReqEvent()
                 mainViewModel.clrNavigateToNotify()
             }
         })
@@ -219,6 +227,24 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+    override fun onBackPressed() {
+        if(mainFr) {
+            val alert = AlertDialog.Builder(this)
+            with(alert) {
+                //setTitle(R.string.text_shutdown)
+                //setMessage(R.string.are_you_sure)
+                setMessage(R.string.text_shutdown)
+                setPositiveButton(" Да ") { dialog, whichButton ->
+                    super.onBackPressed()
+                }
+                setNegativeButton("Отмена") { dialog, whichButton -> }
+                create()
+                show()
+            }
+            return
+        }
+        super.onBackPressed()
+    }
     companion object{
         fun createViewModel(activity: AppCompatActivity) : MainViewModel{
             val application = requireNotNull(activity).application
