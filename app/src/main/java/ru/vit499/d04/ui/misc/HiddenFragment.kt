@@ -11,10 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +19,14 @@ import ru.vit499.d04.MainViewModel
 import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
 import java.lang.Exception
+import android.content.res.ColorStateList
+
+import android.graphics.Color
+import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
+import ru.vit499.d04.util.Colors
+
 
 /**
  * A simple [Fragment] subclass.
@@ -58,18 +62,30 @@ class HiddenFragment : Fragment() {
             }
         })
 
-        val btn1 = view.findViewById<ImageButton>(R.id.button1)
+        val btn1 = view.findViewById<Button>(R.id.button1)
         val btn2 = view.findViewById<Button>(R.id.button2)
+        val btn3 = view.findViewById<Button>(R.id.button3)
         btn1.setOnClickListener() {
-            //alertD(activity!!, "ab", "cd", doit = { abcd() } )
+            alertD("ab", "cd", doit = { abcd() } )
             //btn1.setBackgroundColor(0xff3399ee.toInt())
-            btn2.setBackgroundResource(R.drawable.btnstyle1)
+            //btn2.setBackgroundResource(R.drawable.btnstyle1)
+
         }
+
 
         btn2.setOnClickListener(){
-            btn1.setBackgroundResource(R.drawable.btnstyle2)
+            btn1.backgroundTintList = Colors.cSL1
+            btn2.backgroundTintList = Colors.cSL2
+            btn3.backgroundTintList = Colors.cSL3
+
         }
 
+        val lin1 = view.findViewById<LinearLayout>(R.id.linearLayout121)
+        val btnA = Button(activity!!)
+        btnA.setText("abcd")
+
+        btnA.backgroundTintList = Colors.cSL2
+        lin1.addView(btnA)
         return view
     }
 
@@ -77,7 +93,7 @@ class HiddenFragment : Fragment() {
         Logm.aa("doit")
     }
     // onClickListener: (Int, Int)-> Unit
-    fun alertD(context: Context, s1: String, s2: String, doit: () -> Unit) {
+    fun alertD(s1: String, s2: String, doit: () -> Unit) {
         val alert = AlertDialog.Builder(context)
         with (alert) {
             setTitle(s1)
