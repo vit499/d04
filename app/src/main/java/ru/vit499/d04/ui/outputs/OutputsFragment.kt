@@ -24,6 +24,7 @@ import java.lang.StringBuilder
 class OutputsFragment : Fragment() {
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var outViewModel: OutViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +44,9 @@ class OutputsFragment : Fragment() {
            // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
+        outViewModel = activity?.run {
+            ViewModelProviders.of(this)[OutViewModel::class.java]
+        } ?: throw Exception("Invalid out fragment")
 
         mainViewModel.curObj.observe(this, Observer { obj ->
             var s: String = getString(R.string.obj_empty)
@@ -73,6 +77,13 @@ class OutputsFragment : Fragment() {
             swipe.isRefreshing = it
         })
 
+        outViewModel.navigateToValOut.observe(this, Observer {
+            if(it){
+                this.findNavController().navigate(R.id.action_outputsFragment_to_outValueFragment)
+                outViewModel.clrNavigationToValOut()
+            }
+        })
+
         return view
     }
 //    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -90,7 +101,10 @@ class OutputsFragment : Fragment() {
 
     fun onClick(o: Int, b: Int) {
        // Logm.aa("out click ${b.toString()}")
-        mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
+        if(o == 0) mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
+        else if(o == 1) {
+            outViewModel.onSetValueOut(b)
+        }
     }
 
 }

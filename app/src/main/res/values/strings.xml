@@ -58,4 +58,6 @@
     <string name="delete_object">Объект будет удален</string>
     <string name="text_shutdown">Выйти из приложения?</string>
     <string name="textxx">xx</string>
+    <string name="text_out_funct">функция выхода</string>
+    <string name="text_out_value_temper">Температура</string>
 </resources>

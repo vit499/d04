@@ -60,6 +60,9 @@
         <action
             android:id="@+id/action_outputsFragment_to_objFragment"
             app:destination="@id/objFragment" />
+        <action
+            android:id="@+id/action_outputsFragment_to_outValueFragment"
+            app:destination="@id/outValueFragment" />
     </fragment>
     <fragment
         android:id="@+id/objNewFragment"
@@ -77,4 +80,12 @@
         android:id="@+id/logFragment"
         android:name="ru.vit499.d04.ui.misc.LogFragment"
         android:label="LogFragment" />
+    <fragment
+        android:id="@+id/outValueFragment"
+        android:name="ru.vit499.d04.ui.outputs.OutValueFragment"
+        android:label="OutValueFragment" >
+        <action
+            android:id="@+id/action_outValueFragment_to_outputsFragment"
+            app:destination="@id/outputsFragment" />
+    </fragment>
 </navigation>

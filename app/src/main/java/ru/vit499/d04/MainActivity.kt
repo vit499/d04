@@ -44,6 +44,8 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import ru.vit499.d04.fcm.FbNotifyService
+import ru.vit499.d04.ui.outputs.OutViewModel
+import ru.vit499.d04.ui.outputs.OutViewModelFactory
 import ru.vit499.d04.util.Stp
 
 
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var outViewModel: OutViewModel
     private lateinit var brRec: BroadcastReceiver
     private var mainFr: Boolean = false
     private var notifFr: Boolean = false
@@ -111,6 +114,8 @@ class MainActivity : AppCompatActivity() {
         val dataSource = ObjDatabase.getInstance(application).objDatabaseDao
         val viewModelFactory = MainViewModelFactory(dataSource, application)
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        val outViewModelFactory = OutViewModelFactory(application)
+        outViewModel = ViewModelProviders.of(this, outViewModelFactory).get(OutViewModel::class.java)
         //mainViewModel = createViewModel(this)
 
         if(!notifyObjName.equals("")) {

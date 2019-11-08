@@ -3,7 +3,9 @@ package ru.vit499.d04.ui.outputs
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.vit499.d04.R
@@ -33,7 +35,8 @@ class OutputsAdapter(
         val tv1 : TextView = itemView.findViewById(R.id.recl_item_o1)
         val tv2 : TextView = itemView.findViewById(R.id.recl_item_o2)
         val tv3 : TextView = itemView.findViewById(R.id.recl_item_o3)
-        val layout : LinearLayout = itemView.findViewById(R.id.out_item_layout)
+        val im : ImageButton = itemView.findViewById(R.id.imageButtonOut)
+        val layout : RelativeLayout = itemView.findViewById(R.id.out_item_layout)
 
         fun bind(item: OutItem, position: Int, onClickListener: (Int, Int) -> Unit) {
             tv1.text = item.getNumber()
@@ -43,6 +46,9 @@ class OutputsAdapter(
             itemView.setOnLongClickListener(){
                 onClickListener(0, position)
                 true
+            }
+            im.setOnClickListener() {
+                onClickListener(1, position)
             }
         }
 
