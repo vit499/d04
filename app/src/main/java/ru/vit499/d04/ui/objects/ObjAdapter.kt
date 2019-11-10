@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.vit499.d04.R
 import ru.vit499.d04.database.Obj
+import ru.vit499.d04.util.Colors
 import ru.vit499.d04.util.Logm
 
 class ObjAdapter(
@@ -36,10 +38,15 @@ class ObjAdapter(
         val tv1 : TextView = itemView.findViewById(R.id.textViewHead)
         val tv2 : TextView = itemView.findViewById(R.id.textViewDesc)
         val im : ImageButton = itemView.findViewById(R.id.imageButtonObj)
+        val layout : RelativeLayout = itemView.findViewById(R.id.obj_item_layout)
 
         fun bind(obj: Obj, pos: Int, onClickListener: (Int, Long) -> Unit) {
             tv2.text = obj.objName
             tv1.text = obj.objDescr
+            val color: Int = Colors.LightBlue
+            layout.setBackgroundColor(color)
+            im.setBackgroundColor(color)
+            im.setColorFilter(Colors.DarkSlateGray)
 
             tv1.setOnClickListener(){
                 onClickListener(0, obj.objId)

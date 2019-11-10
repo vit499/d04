@@ -52,6 +52,17 @@ class Colors {
         val DarkCyan = 0xFF008B8B.toInt()
         val Teal = 0xFF008080.toInt()
 
+        val Gainsboro = 0xFFDCDCDC.toInt()
+        val LightGray = 0xFFD3D3D3.toInt()
+        val Silver = 0xFFC0C0C0.toInt()
+        val DarkGray = 0xFFA9A9A9.toInt()
+        val Gray = 0xFF808080.toInt()
+        val DimGray = 0xFF696969.toInt()
+        val LightSlateGray = 0xFF778899.toInt()
+        val SlateGray = 0xFF708090.toInt()
+        val DarkSlateGray = 0xFF2F4F4F.toInt()
+        val Black = 0xFF000000.toInt()
+
 
         val arrState = arrayOf(
             intArrayOf(R.attr.state_pressed), //1

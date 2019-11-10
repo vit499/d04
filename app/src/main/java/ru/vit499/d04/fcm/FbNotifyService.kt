@@ -116,7 +116,7 @@ class FbNotifyService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val vibrate = longArrayOf(200, 500, 200)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notify2)
+            .setSmallIcon(R.drawable.ic_notify3)
             .setContentTitle(mesTitle)
             .setContentText(mesText)
             .setAutoCancel(true)

@@ -60,4 +60,9 @@
     <string name="textxx">xx</string>
     <string name="text_out_funct">функция выхода</string>
     <string name="text_out_value_temper">Температура</string>
+    <string name="text_switch_out_remote">Ручное управление</string>
+    <string name="text_out_value_set">Порог включения</string>
+    <string name="text_out_remote_set">Включить на время, мин</string>
+    <string name="text_turn_on">Включить</string>
+    <string name="text_apply">Применить</string>
 </resources>
