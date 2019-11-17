@@ -63,6 +63,23 @@ class FcmToken {
                 res
             }
         }
+
+        fun getFcmToken23 (wait: suspend () -> Unit) {
+            strToken = ""
+            //var res: String = ""
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Logm.aa("getInstanceId failed " + task.exception)
+                        return@OnCompleteListener
+                    }
+                    val token = task.result?.token
+                    Logm.aa("fb_listener:")
+                    Logm.aa(token)
+                    strToken = token
+                    //wait.invoke()
+                })
+        }
     }
 }
 
