@@ -44,6 +44,11 @@ class OutViewModel(
 
         _navigateBackFromValOut.value = true
     }
+
+    fun getOutItem (ind: Int) : OutItem? {
+        val o : OutItem? = null
+        return o
+    }
 }
 
 

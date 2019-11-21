@@ -86,6 +86,8 @@
         android:label="OutValueFragment" >
         <action
             android:id="@+id/action_outValueFragment_to_outputsFragment"
-            app:destination="@id/outputsFragment" />
+            app:destination="@id/outputsFragment"
+            app:popUpTo="@+id/outputsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

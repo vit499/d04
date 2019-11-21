@@ -19,8 +19,10 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Stp
+import ru.vit499.d04.util.strSendToken
 
 
 class FbNotifyService : FirebaseMessagingService() {
@@ -79,6 +81,9 @@ class FbNotifyService : FirebaseMessagingService() {
     private fun sendRegistrationToServer(token: String?) {
         // TODO: Implement this method to send token to your app server.
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
+       // if(token == null) return
+       // val http = HttpCor(10)
+       // http.send(token!!)
     }
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
@@ -137,8 +142,8 @@ class FbNotifyService : FirebaseMessagingService() {
             )
             notificationManager.createNotificationChannel(channel)
         }
-        val id = numObj.toInt()
-        notificationManager.notify(id /* ID of notification */, notificationBuilder.build())
+        //val id = numObj.toInt()
+        notificationManager.notify(0, notificationBuilder.build())
     }
 
 

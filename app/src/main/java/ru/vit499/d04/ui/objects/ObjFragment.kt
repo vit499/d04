@@ -53,6 +53,7 @@ class ObjFragment : Fragment() {
               //  Logm.aa("objs observe")
               //  Logm.aa("obj cnt= ${it.size}")
                 adapter.data = it
+                //mainViewModel.onObjUpd()
             }
         })
         mainViewModel.navigateBackFromObj.observe(this, Observer {

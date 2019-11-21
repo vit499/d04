@@ -158,7 +158,7 @@ class HttpCor(val tmax : Int) {
 
     suspend fun reqStat(strSend : String, wa: Int, timeout: Long) : String? {
         var s : String? = null
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             val b = send(strSend)
             if (b) {
                 s = rec(timeout+5, wa)

@@ -2,7 +2,7 @@ package ru.vit499.d04.ui.outputs
 
 import ru.vit499.d04.R
 
-class OutItem(num: Int, funct1: Int, stat1: Int, temp1: Int) {
+data class OutItem(val num: Int, val funct1: Int, val stat1: Int, val temp1: Int) {
 
     val NUMBER_OUT  = 32
 

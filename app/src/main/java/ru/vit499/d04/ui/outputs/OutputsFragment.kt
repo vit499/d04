@@ -37,7 +37,7 @@ class OutputsFragment : Fragment() {
         //val tvInfo = view.findViewById<TextView>(R.id.tv_info)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recl_outputs)
-        val adapter = OutputsAdapter(onClickListener = { o, b -> onClick(o, b) })
+        val adapter = OutputsAdapter(onClick)
         recyclerView.adapter = adapter
 
         mainViewModel = activity?.run {
@@ -99,7 +99,7 @@ class OutputsFragment : Fragment() {
 //        return super.onOptionsItemSelected(item)
 //    }
 
-    fun onClick(o: Int, b: Int) {
+    val onClick = { o: Int, b : Int ->
        // Logm.aa("out click ${b.toString()}")
         if(o == 0) mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
         else if(o == 1) {

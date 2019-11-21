@@ -28,6 +28,7 @@ import ru.vit499.d04.ui.main.StatusItem
 import ru.vit499.d04.ui.misc.Settings
 import ru.vit499.d04.ui.misc.Settings.Companion.initSettings
 import ru.vit499.d04.ui.outputs.OutItem
+import kotlin.random.Random
 
 
 class MainViewModel(
@@ -280,6 +281,7 @@ class MainViewModel(
                 objExist = true
                 Logm.aa("obj cnt= ${objs.value?.size}")
                 mqttRestart()
+                onFbSub()    // ? check test
                 _navigateToObj.postValue(true)
             }
         }
@@ -314,7 +316,7 @@ class MainViewModel(
                     val cObj = database.getObj()
                     if(cObj != null) {
                         _curObj.postValue(cObj)
-                        curObjName = cObj.objName
+                        curObjName = cObj!!.objName
                         mqttRestart()
                     }
                     else {
@@ -324,6 +326,7 @@ class MainViewModel(
                         _navigateToNewObj.postValue(true)
                     }
                 }
+                onFbSub()   // check test
                 _navigateToObj.postValue(true)
             }
         }
@@ -454,23 +457,48 @@ class MainViewModel(
         }
     }
 
-    fun onFbSub () {
 
-        //_progress.value = true
+//    fun onFbSub2 () {
+//        httpScope.launch {
+//            val arr = getArrObj() ?: return@launch
+//            FcmToken.getFcmToken()
+//            val token = FcmToken.waitToken()
+//            val strReq = strSendToken(arr, token)
+//            Logm.aa("token=")
+//            Logm.aa(token)
+//            Logm.aa(strReq)
+//            val http = HttpCor(10)
+//            val s = http?.reqStat(strReq, 3, 10) ?: "error"
+//            updHttpAnswer(s)
+//        }
+//    }
+
+    fun onFbSub () {
         httpScope.launch {
-            var arr = getArrObj() ?: return@launch
-            //Logm.aa("arr: ${arr.toString()}")
-            FcmToken.getFcmToken()
-            val token = FcmToken.waitToken()
-            val strReq = strSendToken(arr, token)
-            Logm.aa("token=")
+            val arr = getArrObj() ?: return@launch
+            val token = FcmToken.getFcmToken4()
+            if(token == null) return@launch
+            val strReq = strSendToken(arr, token!!)
+            Logm.aa("token1=")
             Logm.aa(token)
             Logm.aa(strReq)
-            //if(httpR == null) httpR = HttpCor()
             val http = HttpCor(10)
             val s = http?.reqStat(strReq, 3, 10) ?: "error"
             updHttpAnswer(s)
-            //_progress.postValue(false)
+        }
+    }
+    fun onObjUpd () {
+        // нужно проверить, если есть изменение объектов, отправить токен
+        //if(checkObjUpd()) {
+        //    onFbSub()
+        //}
+    }
+
+    suspend fun sendFb (token: String) {
+        withContext(Dispatchers.IO) {
+            val http = HttpCor(10)
+            val s = http?.reqStat(token, 3, 10) ?: "error"
+            updHttpAnswer(s)
         }
     }
 
