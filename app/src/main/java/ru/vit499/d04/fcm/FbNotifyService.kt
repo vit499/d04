@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import ru.vit499.d04.database.Mes
+import ru.vit499.d04.database.MesDatabase
 import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Stp
@@ -150,5 +152,12 @@ class FbNotifyService : FirebaseMessagingService() {
     companion object {
 
         private const val TAG = "MyFirebaseMsgService"
+    }
+
+    fun updDatabase (s : String) {
+        val database = MesDatabase.getInstance(application).mesDatabaseDao
+
+        val mes = Mes(numObj = "2211", mesContent = "aabb", mesTime1 = "0101", mesTime2 = "0202")
+        database.insert(mes)
     }
 }

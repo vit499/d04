@@ -1,32 +1,29 @@
 package ru.vit499.d04.database
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.vit499.d04.util.Logm
 
-@Database(entities = [Obj::class], version = 3, exportSchema = false)
-abstract class ObjDatabase : RoomDatabase() {
+@Database(entities = [Mes::class], version = 1, exportSchema = false)
+abstract class MesDatabase : RoomDatabase() {
 
-    abstract val objDatabaseDao: ObjDatabaseDao
+    abstract val mesDatabaseDao : MesDatabaseDao
 
-    companion object {
+    companion object{
 
         @Volatile
-        private var INSTANCE: ObjDatabase? = null
+        private var INSTANCE : MesDatabase? = null
 
-        fun getInstance(context: Context): ObjDatabase {
-
+        fun getInstance(context : Context) : MesDatabase {
             var instance = INSTANCE
-
-            if(instance == null){
-                Log.i("aa", "create instance --------------- ")
+            if(instance == null) {
+                Logm.aa("create instance mes ---- ")
                 instance = Room.databaseBuilder(
                     context.applicationContext,
-                    ObjDatabase::class.java,
-                "obj_database"
+                    MesDatabase::class.java,
+                    "mes_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()
