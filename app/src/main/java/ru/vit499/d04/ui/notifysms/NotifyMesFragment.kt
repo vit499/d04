@@ -18,7 +18,7 @@ import ru.vit499.d04.util.Logm
 /**
  * A simple [Fragment] subclass.
  */
-class NotifyTextFragment : Fragment() {
+class NotifyMesFragment : Fragment() {
 
     private lateinit var mesViewModel: MesViewModel
 

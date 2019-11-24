@@ -2,49 +2,32 @@ package ru.vit499.d04
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.fabric.sdk.android.Fabric
 
-import kotlinx.android.synthetic.main.activity_main.*
 import ru.vit499.d04.database.ObjDatabase
-import ru.vit499.d04.ui.notify.NotifyFragment
 import ru.vit499.d04.util.Logm
 import android.os.Build
 import android.app.ActivityManager
 import android.app.AlertDialog
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.content.IntentFilter
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import androidx.lifecycle.AndroidViewModel
 import ru.vit499.d04.database.MesDatabase
-import ru.vit499.d04.fcm.FbNotifyService
 import ru.vit499.d04.ui.notifysms.MesViewModel
 import ru.vit499.d04.ui.notifysms.MesViewModelFactory
 import ru.vit499.d04.ui.outputs.OutViewModel
@@ -137,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.navigateToNotify2.observe(this, Observer {
             if(it){
                 Logm.aa("to sms fragment")
-                navController.navigate(R.id.notifyTextFragment)
+                navController.navigate(R.id.notifyMesFragment)
                 mainViewModel.clrNavigateToNotify2()
             }
         })

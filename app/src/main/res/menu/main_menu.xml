@@ -11,7 +11,7 @@
         android:id="@+id/accountFragment"
         android:title="@string/main_menu_account" />
     <item
-        android:id="@+id/notifyTextFragment"
+        android:id="@+id/notifyMesFragment"
         android:title="@string/main_menu_notify2"/>
     <item
         android:id="@+id/logFragment"
