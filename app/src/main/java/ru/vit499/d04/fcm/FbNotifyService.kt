@@ -25,6 +25,7 @@ import ru.vit499.d04.http.HttpCor
 import ru.vit499.d04.ui.misc.Account
 import ru.vit499.d04.util.Stp
 import ru.vit499.d04.util.strSendToken
+import java.lang.Exception
 
 
 class FbNotifyService : FirebaseMessagingService() {
@@ -40,11 +41,20 @@ class FbNotifyService : FirebaseMessagingService() {
         remoteMessage.data.isNotEmpty().let {
             //Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            val p1 = remoteMessage.getData().get("name");
-            val p2 = remoteMessage.getData().get("dv_ev");
-            if(p1 != null && p2 != null && !p2.equals("")) {
-                sendNotification(p1, "event")
+            val p1 = remoteMessage.getData().get("name")
+            val event = remoteMessage.getData().get("dv_ev")
+            val text = remoteMessage.getData().get("text")
+            if(p1 != null) {
+                if(event != null && !event.equals("")) {
+                    sendNotification(p1, "event")
+                }
+                else if(text != null && !text.equals("")) {
+                    Logm.aa("text: $text")
+                    updDatabase(p1, text)
+                    sendNotification(p1, "text")
+                }
             }
+
 
 //            if (/* Check if data needs to be processed by long running job */ true) {
 //                // For long-running tasks (10 seconds or more) use WorkManager.
@@ -150,14 +160,27 @@ class FbNotifyService : FirebaseMessagingService() {
 
 
     companion object {
-
         private const val TAG = "MyFirebaseMsgService"
     }
 
-    fun updDatabase (s : String) {
-        val database = MesDatabase.getInstance(application).mesDatabaseDao
+    fun updDatabase (numObj: String, strMes : String) {
+        val len = strMes.length
+        if(len < 25) return
 
-        val mes = Mes(numObj = "2211", mesContent = "aabb", mesTime1 = "0101", mesTime2 = "0202")
+        var time : String? = ""
+        var mesContent : String? = ""
+        try{
+            time = strMes.substring(5, 24);
+            mesContent = strMes.substring(25, len);           // Logm.Log(event);
+            //timeLocal = Logm.getTime2();
+        }
+        catch (ex: Exception){
+
+        }
+        if(time == null || mesContent == null) return
+
+        val database = MesDatabase.getInstance(application).mesDatabaseDao
+        val mes = Mes(numObj = numObj, mesContent = mesContent!!, mesTime1 = time!!, mesTime2 = "-")
         database.insert(mes)
     }
 }

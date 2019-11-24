@@ -65,4 +65,9 @@
     <string name="text_out_remote_set">Включить на время, мин</string>
     <string name="text_turn_on">Включить</string>
     <string name="text_apply">Применить</string>
+    <string name="text_notify_sms">notify sms</string>
+    <string name="main_menu_notify2">PushSms</string>
+    <string name="text_title_notify2">Текстовые уведомления</string>
+    <string name="title_log_fragment">Лог</string>
+    <string name="title_hidden_fragment">Test</string>
 </resources>

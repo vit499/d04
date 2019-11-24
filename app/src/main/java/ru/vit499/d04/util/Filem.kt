@@ -19,6 +19,7 @@ class Filem() {
         val fileSetMqEn : String = "setMqEn.txt"
         val fileSetPm : String = "setPm.txt"
         var strDir : String = ""
+        var strCurrentObjName : String = ""
         //val strDir : String = (application as Context).getFilesDir().getPath().toString()
         var currentLogFile : String = "1"
 
@@ -72,6 +73,7 @@ class Filem() {
         fun getCurrentObjName() : String {
             var s = getVal(fileCurObj)
             if(s.equals("")) s = "-"
+            strCurrentObjName = s
             return(s)
         }
         fun getSetMqEn() : String {
@@ -100,6 +102,7 @@ class Filem() {
             return(setVal(fileAccPort, s))
         }
         fun setCurrentObjName(s : String) {
+            strCurrentObjName = s
             return(setVal(fileCurObj, s))
         }
         fun setSetMqEn(s : String) {

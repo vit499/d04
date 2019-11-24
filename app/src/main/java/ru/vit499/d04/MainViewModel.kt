@@ -92,6 +92,13 @@ class MainViewModel(
     fun clrNavigateToNotify() {
         _navigateToNotify.value = false
     }
+    // переход в текстовые смс из уведомлений
+    private val _navigateToNotify2 = MutableLiveData<Boolean>()
+    val navigateToNotify2 : LiveData<Boolean>
+        get() = _navigateToNotify2
+    fun clrNavigateToNotify2() {
+        _navigateToNotify2.value = false
+    }
 
     val objs = database.getAllObj1()
 
@@ -141,6 +148,7 @@ class MainViewModel(
         Filem.setDir(application)
         _navigateToNewObj.value = false
         _navigateToNotify.value = false
+        _navigateToNotify2.value = false
         curObjName = Filem.getCurrentObjName()
         objExist = !curObjName.equals("")
         val acc = Account.fill()
@@ -236,7 +244,7 @@ class MainViewModel(
         }
     }
     // выбор текущего объекта и переход на уведомления
-    fun getObjByName (num: String) {
+    fun getObjByName (num: String, toText: String) {
         uiScope.launch {
             withContext(Dispatchers.IO){
                 val obj = database.getObjByName(num)
@@ -247,7 +255,12 @@ class MainViewModel(
                     Logm.aa("new current obj: ${curObjName}")
                     getStateList(obj)
                     mqttRestart()
-                    _navigateToNotify.postValue(true)
+                    if(toText.equals("text")) {
+                        _navigateToNotify2.postValue(true)
+                    }
+                    else {
+                        _navigateToNotify.postValue(true)
+                    }
                 } ?: return@withContext
             }
         }
@@ -340,12 +353,19 @@ class MainViewModel(
         val obj = _curObj.value
         return obj
     }
-    fun onCurrentObjByName(numObj: String){
+    fun onCurrentObjByName(numObj: String, text: String){
         if(!curObjName.equals(numObj)) {
-            getObjByName(numObj)
+            getObjByName(numObj, text)
         }
         else {
-            _navigateToNotify.value = true
+            if(text.equals("text")){
+                // перейти на текстовые уведомления
+                _navigateToNotify2.value = true
+            }
+            else {
+                // получен push ContactID
+                _navigateToNotify.value = true
+            }
         }
     }
 

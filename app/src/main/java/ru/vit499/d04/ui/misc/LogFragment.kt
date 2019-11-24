@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 
 import ru.vit499.d04.R
 import ru.vit499.d04.util.Logm
@@ -25,6 +26,7 @@ class LogFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_log, container, false)
         val button = view.findViewById<Button>(R.id.buttonClear)
         val tvLog = view.findViewById<TextView>(R.id.tv_log)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_log_fragment)
 
         tvLog.text = Logm.getLog()
 

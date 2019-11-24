@@ -23,6 +23,7 @@ import android.content.res.ColorStateList
 
 import android.graphics.Color
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import ru.vit499.d04.util.Colors
@@ -41,6 +42,7 @@ class HiddenFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_hidden, container, false)
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.title_hidden_fragment)
 
         mainViewModel = activity?.run {
             ViewModelProviders.of(this)[MainViewModel::class.java]

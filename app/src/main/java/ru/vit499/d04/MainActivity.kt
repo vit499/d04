@@ -43,7 +43,10 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
+import ru.vit499.d04.database.MesDatabase
 import ru.vit499.d04.fcm.FbNotifyService
+import ru.vit499.d04.ui.notifysms.MesViewModel
+import ru.vit499.d04.ui.notifysms.MesViewModelFactory
 import ru.vit499.d04.ui.outputs.OutViewModel
 import ru.vit499.d04.ui.outputs.OutViewModelFactory
 import ru.vit499.d04.util.Stp
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mainViewModel: MainViewModel
     private lateinit var outViewModel: OutViewModel
+    private lateinit var mesViewModel: MesViewModel
     private lateinit var brRec: BroadcastReceiver
     private var mainFr: Boolean = false
     private var notifFr: Boolean = false
@@ -66,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         Logm.aa("onCreate")
         var notifyObjName = ""
+        var notifyText = ""
         val s1 = intent.getStringExtra("NOTICE")
         if(s1 != null && !s1.equals("")) {
             val s2 = intent.getStringExtra("OBJ")
@@ -73,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                 Logm.aa("notify $s1")
                 intent.putExtra("NOTICE", "")
                 intent.putExtra("OBJ", "")
+                notifyText = s1;
                 notifyObjName = s2
             }
 
@@ -116,12 +122,11 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val outViewModelFactory = OutViewModelFactory(application)
         outViewModel = ViewModelProviders.of(this, outViewModelFactory).get(OutViewModel::class.java)
+        val dsMes = MesDatabase.getInstance(application).mesDatabaseDao
+        mesViewModel = ViewModelProviders.of(this, MesViewModelFactory(dsMes, application)).get(MesViewModel::class.java)
+
         //mainViewModel = createViewModel(this)
 
-        if(!notifyObjName.equals("")) {
-            Logm.aa("change cur obj: $notifyObjName")
-            mainViewModel.onCurrentObjByName(notifyObjName)
-        }
         mainViewModel.navigateToNotify.observe(this, Observer {
             if(it){
                 if(!notifFr) navController.navigate(R.id.notifyFragment)
@@ -129,9 +134,21 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.clrNavigateToNotify()
             }
         })
+        mainViewModel.navigateToNotify2.observe(this, Observer {
+            if(it){
+                Logm.aa("to sms fragment")
+                navController.navigate(R.id.notifyTextFragment)
+                mainViewModel.clrNavigateToNotify2()
+            }
+        })
 
         Stp.en(true)
         addPm()
+
+        if(!notifyObjName.equals("")) {
+            Logm.aa("change cur obj: $notifyObjName")
+            mainViewModel.onCurrentObjByName(notifyObjName, notifyText)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -167,11 +184,10 @@ class MainActivity : AppCompatActivity() {
                 Stp.clrFbId()
                 notifyObjName = s2
             }
-
         }
-        if(!notifyObjName.equals("")) {
+        if (!notifyObjName.equals("")) {
             Logm.aa("change cur obj: $notifyObjName")
-            mainViewModel.onCurrentObjByName(notifyObjName)
+            mainViewModel.onCurrentObjByName(notifyObjName, s1!!)
         }
     }
 
