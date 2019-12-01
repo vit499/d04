@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import kotlinx.coroutines.*
 import ru.vit499.d04.database.Mes
 import ru.vit499.d04.database.MesDatabase
 import ru.vit499.d04.http.HttpCor
@@ -181,6 +182,11 @@ class FbNotifyService : FirebaseMessagingService() {
 
         val database = MesDatabase.getInstance(application).mesDatabaseDao
         val mes = Mes(numObj = numObj, mesContent = mesContent!!, mesTime1 = time!!, mesTime2 = "-")
-        database.insert(mes)
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO){
+                database.insert(mes)
+            }
+        }
+
     }
 }

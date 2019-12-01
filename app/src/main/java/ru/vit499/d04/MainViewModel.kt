@@ -37,7 +37,7 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
 
     private val viewModelJob = Job()
-    private val uiScope = CoroutineScope((Dispatchers.Main + viewModelJob))
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val httpJob = Job()
     val httpScope = CoroutineScope(Dispatchers.Main + httpJob)
@@ -357,7 +357,7 @@ class MainViewModel(
         if(!curObjName.equals(numObj)) {
             getObjByName(numObj, text)
         }
-        else {
+      //  else {
             if(text.equals("text")){
                 // перейти на текстовые уведомления
                 _navigateToNotify2.value = true
@@ -366,7 +366,7 @@ class MainViewModel(
                 // получен push ContactID
                 _navigateToNotify.value = true
             }
-        }
+      //  }
     }
 
     // установка (выбор) объекта для редактирования, удаления
