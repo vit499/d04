@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
     app:startDestination="@id/mainFragment">
 
     <fragment
@@ -63,6 +65,9 @@
         <action
             android:id="@+id/action_outputsFragment_to_outValueFragment"
             app:destination="@id/outValueFragment" />
+        <action
+            android:id="@+id/action_outputsFragment_to_outTermoFragment"
+            app:destination="@+id/outTermoFragment" />
     </fragment>
     <fragment
         android:id="@+id/objNewFragment"
@@ -94,4 +99,18 @@
         android:id="@+id/notifyMesFragment"
         android:name="ru.vit499.d04.ui.notifysms.NotifyMesFragment"
         android:label="NotifyMesFragment" />
+    <fragment
+        android:id="@+id/outTermoFragment"
+        android:name="ru.vit499.d04.ui.outputs.OutTermoFragment"
+        android:label="OutTermoFragment">
+        <action
+            android:id="@+id/action_outTermoFragment_to_outputsFragment"
+            app:destination="@id/outputsFragment"
+            app:popUpTo="@+id/outputsFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="indexOut"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 </navigation>

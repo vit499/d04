@@ -43,13 +43,21 @@ class OutputsAdapter(
             tv2.text = item.getFunct()
             tv3.text = item.getState()
             layout.setBackgroundColor(item.getColorOut())
-            im.setBackgroundColor(item.getColorOut())
-            itemView.setOnLongClickListener(){
-                onClickListener(0, position)
-                true
+            if(item.isRemote()) {
+                itemView.setOnLongClickListener() {
+                    onClickListener(0, position)
+                    true
+                }
             }
-            im.setOnClickListener() {
-                onClickListener(1, position)
+            if(item.IsTermo()) {
+                im.visibility = View.VISIBLE
+                im.setBackgroundColor(item.getColorOut())
+                im.setOnClickListener() {
+                    onClickListener(1, position)
+                }
+            }
+            else {
+                im.visibility = View.GONE
             }
         }
 

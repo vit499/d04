@@ -16,11 +16,11 @@ class OutViewModel(
 
 
     // если нет объектов, то из mainFragment переходим в добавление объекта
-    private val _navigateToValOut = MutableLiveData<Boolean>()
-    val navigateToValOut : LiveData<Boolean>
+    private val _navigateToValOut = MutableLiveData<Int>()
+    val navigateToValOut : LiveData<Int>
         get() = _navigateToValOut
     fun clrNavigationToValOut() {
-        _navigateToValOut.value = false
+        _navigateToValOut.value = null
     }
 
     private val _navigateBackFromValOut = MutableLiveData<Boolean>()
@@ -32,12 +32,12 @@ class OutViewModel(
 
     init{
         _navigateBackFromValOut.value = false
-        _navigateToValOut.value = false
+        _navigateToValOut.value = null
     }
 
     fun onSetValueOut(nOut: Int) {
 
-        _navigateToValOut.value = true
+        _navigateToValOut.value = nOut
     }
 
     fun onBackFromValOut(nOut: Int) {

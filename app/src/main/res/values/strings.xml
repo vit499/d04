@@ -58,7 +58,7 @@
     <string name="delete_object">Объект будет удален</string>
     <string name="text_shutdown">Выйти из приложения?</string>
     <string name="textxx">xx</string>
-    <string name="text_out_funct">функция выхода</string>
+    <string name="text_out_funct">Функция выхода - </string>
     <string name="text_out_value_temper">Температура</string>
     <string name="text_switch_out_remote">Ручное управление</string>
     <string name="text_out_value_set">Порог включения</string>
@@ -70,4 +70,10 @@
     <string name="text_title_notify2">Текстовые уведомления</string>
     <string name="title_log_fragment">Лог</string>
     <string name="title_hidden_fragment">Test</string>
+    <string name="text_number_object">Номер объекта</string>
+    <string name="funct_out_termoup">охлаждение</string>
+    <string name="funct_out_termodown">обогрев</string>
+    <string name="title_out_termo">Настройка выхода</string>
+    <string name="text_termo_index_temper">Датчик</string>
+    <string name="text_cmd_sended">Команда отправлена</string>
 </resources>

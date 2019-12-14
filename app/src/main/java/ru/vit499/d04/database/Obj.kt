@@ -158,10 +158,10 @@ data class Obj(
 
     //----------------------------- reserv --
     @ColumnInfo(name = "reserv1")
-    var reserv1: String = "",
+    var reserv1: String = "",      // index of temper for termo out
 
     @ColumnInfo(name = "reserv2")
-    var reserv2: String = "",
+    var reserv2: String = "",      // fact temper
 
     @ColumnInfo(name = "reserv3")
     var reserv3: String = "",

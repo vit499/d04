@@ -9,9 +9,11 @@ class OutState(var obj: Obj) {
 
     val NUMBER_OUT = 32
 
-    var functOut = IntArray(NUMBER_OUT)
-    var ftOut = IntArray(NUMBER_OUT)
-    var statOut = IntArray(NUMBER_OUT)
+    var functOut = IntArray(NUMBER_OUT)     // функция выхода
+    var ftOut = IntArray(NUMBER_OUT)        // пороговая температура
+    var statOut = IntArray(NUMBER_OUT)      // состояние выхода
+    var temperFact = IntArray(NUMBER_OUT)   // фактическая температура
+    var indexTemper = IntArray(NUMBER_OUT)  // датчик температуры, к которому привязан termoOut
 
     init {
         fillOutState()
@@ -22,6 +24,8 @@ class OutState(var obj: Obj) {
         fillSout(obj)
         fillFout(obj)
         fillFtout(obj)
+        fillTemperFact(obj)
+        fillIndTemperOut(obj)
     }
 
     // sout="25000080" -> 0x25 0x00 0x00 0x80 -> 0010 0101 ...
@@ -54,6 +58,20 @@ class OutState(var obj: Obj) {
             ftOut[i] = b.buf[i].toInt()
         }
     }
+    fun fillTemperFact(obj: Obj){
+        val b = Str.Str2Bin(obj.reserv2)    // temper
+        for (i in 0 until b.len) {
+            if (i >= NUMBER_OUT) break
+            temperFact[i] = b.buf[i].toInt()
+        }
+    }
+    fun fillIndTemperOut(obj: Obj){
+        val b = Str.Str2Bin(obj.reserv1)   // indtemp
+        for (i in 0 until b.len) {
+            if (i >= NUMBER_OUT) break
+            indexTemper[i] = b.buf[i].toInt()
+        }
+    }
 
 
     //
@@ -68,8 +86,9 @@ class OutState(var obj: Obj) {
         if(maxOut < 4) maxOut = 4;
         //Logm.aa("nout:"  + " " + np.toString())
         for (p in 0 until maxOut) {
-
-            val out = OutItem(p, functOut[p], statOut[p], ftOut[p] )
+            var indexT = indexTemper[p]
+            if(indexT >= NUMBER_OUT) indexT = 0
+            val out = OutItem(p, functOut[p], statOut[p], ftOut[p], indexTemper[p], temperFact[indexT])
 
             listStat.add(out)
 

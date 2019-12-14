@@ -39,6 +39,12 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="tvstyle12">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textAlignment">gravity</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
 
     <style name="btnStyle2" parent="AppTheme.2">
         <item name="colorControlHighlight">@android:color/holo_green_light</item>

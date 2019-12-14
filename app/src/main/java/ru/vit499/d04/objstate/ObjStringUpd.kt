@@ -30,6 +30,8 @@ class ObjStringUpd(var obj: Obj) {
     internal var vers: String? = ""
     internal var timeLastData: String? = ""
     internal var objTime: String? = ""
+    var temper : String? = ""
+    var indexTemper : String? = ""
 
     init {
         setObjUpd(obj)
@@ -84,6 +86,8 @@ class ObjStringUpd(var obj: Obj) {
         objEvent = obj.objEvent
         objTime = obj.objTime
 
+        indexTemper = obj.reserv1   // obj.indexTemper
+        temper = obj.reserv2   // obj.temper
     }
     fun getObjUpd() : Obj {
         obj.ZoneInPart1 = ZoneInPart[0] ?: "0000000000000000"
@@ -130,6 +134,9 @@ class ObjStringUpd(var obj: Obj) {
 
         obj.objEvent = objEvent ?: ""
         obj.objTime = objTime ?: ""
+
+        obj.reserv1 = indexTemper ?: "0000000000000000000000000000000000000000000000000000000000000000"
+        obj.reserv2 = temper ?: "8080808080808080808080808080808080808080808080808080808080808080"
 
         return obj
     }
@@ -191,52 +198,58 @@ class ObjStringUpd(var obj: Obj) {
     fun UpdFtout(s: String?) {
         ftout = s
     }
+    fun UpdIndexTemper(s: String?){
+        indexTemper = s
+    }
+    fun UpdArrTemper(s: String?) {
+        temper = s
+    }
 
     //------------------------------------------
 
 
-    fun Upd(buf: ByteArray, len: Int) {
-        val k = Str.indexof(buf, 0, '='.toByte(), 1, len)
-        if (k == -1) return
-        val cmd = Str.byte2str(buf, k - 1)
-        var value = ""
-        if (k < len - 1) value = Str.byte2str(buf, k, len)
-        // Logm.Log("cmd=" + cmd);
-        // Logm.Log("val=" + val);
-        val s = ObjDb.getStrDbColumns()
-
-        for (part in 0 until NUMBER_PART) {
-            if (cmd == s[part + 4]) {
-                UpdConfigPart(part, value)
-                return
-            }
-        }
-        for (t in 0 until NUMBER_TEMP) {
-            if (cmd == s[t + 27]) {
-                UpdTemper(t, value)
-                return
-            }
-        }
-        for (t in 0..1) {
-            if (cmd == s[t + 42]) {
-                UpdGsm(t, value)
-                return
-            }
-        }
-        when(cmd){
-            s[20] -> UpdZoneStat(value)
-            s[21] -> UpdZoneAlarm(value)
-            s[22] -> UpdPartStat(value)
-            s[23] -> UpdFout(value)
-            s[24] -> UpdFtout(value)
-            s[25] -> UpdSout(value)
-            s[40] -> Upd12v(value)
-            s[41] -> Upd3v(value)
-            s[44] -> UpdTcp(value)
-            s[45] -> UpdVers(value)
-            s[47] -> UpdTime(value)
-        }
-    }
+//    fun Upd(buf: ByteArray, len: Int) {
+//        val k = Str.indexof(buf, 0, '='.toByte(), 1, len)
+//        if (k == -1) return
+//        val cmd = Str.byte2str(buf, k - 1)
+//        var value = ""
+//        if (k < len - 1) value = Str.byte2str(buf, k, len)
+//        // Logm.Log("cmd=" + cmd);
+//        // Logm.Log("val=" + val);
+//        val s = ObjDb.getStrDbColumns()
+//
+//        for (part in 0 until NUMBER_PART) {
+//            if (cmd == s[part + 4]) {
+//                UpdConfigPart(part, value)
+//                return
+//            }
+//        }
+//        for (t in 0 until NUMBER_TEMP) {
+//            if (cmd == s[t + 27]) {
+//                UpdTemper(t, value)
+//                return
+//            }
+//        }
+//        for (t in 0..1) {
+//            if (cmd == s[t + 42]) {
+//                UpdGsm(t, value)
+//                return
+//            }
+//        }
+//        when(cmd){
+//            s[20] -> UpdZoneStat(value)
+//            s[21] -> UpdZoneAlarm(value)
+//            s[22] -> UpdPartStat(value)
+//            s[23] -> UpdFout(value)
+//            s[24] -> UpdFtout(value)
+//            s[25] -> UpdSout(value)
+//            s[40] -> Upd12v(value)
+//            s[41] -> Upd3v(value)
+//            s[44] -> UpdTcp(value)
+//            s[45] -> UpdVers(value)
+//            s[47] -> UpdTime(value)
+//        }
+//    }
 
     fun UpdMap(cmd: String, value: String) {
         //Logm.aa("cmd $cmd")
@@ -273,19 +286,21 @@ class ObjStringUpd(var obj: Obj) {
             s[44] -> UpdTcp(value)
             s[45] -> UpdVers(value)
             s[47] -> UpdTime(value)
+            s[48] -> UpdIndexTemper(value)
+            s[49] -> UpdArrTemper(value)
         }
     }
 
-    fun UpdStringAll(list: ArrayList<Buf>) : Obj {
-        var k = list.size
-
-        for(i in 0 until k){
-            Upd(list.get(i).buf, list.get(i).len)
-        }
-
-        val obj = getObjUpd()
-        return obj
-    }
+//    fun UpdStringAll(list: ArrayList<Buf>) : Obj {
+//        var k = list.size
+//
+//        for(i in 0 until k){
+//            Upd(list.get(i).buf, list.get(i).len)
+//        }
+//
+//        val obj = getObjUpd()
+//        return obj
+//    }
     fun UpdStringAll(map: Map<String, String>) : Obj {
 
         for((key, value) in map){
@@ -298,18 +313,18 @@ class ObjStringUpd(var obj: Obj) {
 
     companion object {
 
-        fun getListState(s: String) : ArrayList<Buf>? {
-            val str1 : ByteArray = s.toByteArray()
-            val len_str1 = str1.size
-            val src = ByteArray(len_str1)
-
-            if (!Str.checkHttpOk(str1, len_str1)) {
-                return null                 // to do
-            }
-            val len_content = Str.findContent(src, str1, len_str1)        // to do
-            val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
-            return list
-        }
+//        fun getListState(s: String) : ArrayList<Buf>? {
+//            val str1 : ByteArray = s.toByteArray()
+//            val len_str1 = str1.size
+//            val src = ByteArray(len_str1)
+//
+//            if (!Str.checkHttpOk(str1, len_str1)) {
+//                return null                 // to do
+//            }
+//            val len_content = Str.findContent(src, str1, len_str1)        // to do
+//            val list : ArrayList<Buf> = Str.mes_substr(src, len_content)  // to do
+//            return list
+//        }
 
         fun getMap(buf: ByteArray, len: Int) : Map<String, String>? {
             val map : MutableMap<String, String> = mutableMapOf()

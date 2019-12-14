@@ -1,8 +1,20 @@
 package ru.vit499.d04.ui.outputs
 
+import android.content.Context
+import android.graphics.Color
 import ru.vit499.d04.R
+import ru.vit499.d04.util.Colors
+import ru.vit499.d04.util.Logm
+import ru.vit499.d04.util.Str
 
-data class OutItem(val num: Int, val funct1: Int, val stat1: Int, val temp1: Int) {
+data class OutItem(
+    val num: Int,
+    val funct1: Int,    // функция выхода
+    val stat1: Int,
+    val temp1: Int,     // температура переключения
+    val indTemp1: Int,  // номер датчика температуры
+    val factTemp1: Int  // фактическая температура
+) {
 
     val NUMBER_OUT  = 32
 
@@ -10,12 +22,20 @@ data class OutItem(val num: Int, val funct1: Int, val stat1: Int, val temp1: Int
     var stat: Int = 0
     var ftout: Int = 0
     var funct: Int = 0
+    var indTemp: Int = 0
+    var factTemp: Int = 0
 
     init{
         number = num
         stat = stat1
         ftout = temp1
         funct = funct1
+        indTemp = indTemp1
+        factTemp = factTemp1
+//        var byteArr = ByteArray(10)
+//        byteArr[0] = factTemp.toByte()
+//        val strHex = Str.Companion.hex2str(byteArr, 1)
+//        Logm.aa("fact temp $number = $strHex")
     }
 
 
@@ -55,21 +75,28 @@ data class OutItem(val num: Int, val funct1: Int, val stat1: Int, val temp1: Int
 
     internal fun getColorOut(): Int {
         var p = stat
-        val c = longArrayOf(
-            //-0x3f3f40, // не акт. выключен
-            //-0x006700, // не акт. включен
-            0xff80cbc4, //0xffffe0b2,  // -0xff0100, // готов          зеленый
-            0xff00cd00 // на охране      красный
-        )
-        if (p >= c.size) p = 0
-        return c[p].toInt()
+//        val c = longArrayOf(
+//            0xff80cbc4, //  включен
+//            0xff00cd00  //
+//        )
+//        if (p >= c.size) p = 0
+//        return c[p].toInt()
+        return when(stat){
+            0 -> Colors.LightCyan
+            //1 -> Colors.LightGreen
+            1 -> Colors.SpringGreen
+            //1 -> Colors.Lime
+            2 -> Colors.AquaCyan
+            3 -> Colors.CornflowerBlue
+            else -> Colors.DarkGray
+        }
     }
 
     fun getState() : String {
         return when(stat){
             0 -> "выключен"
             1 -> "включен"
-            else -> "-"
+            else -> "включен"
         }
     }
     fun getNumber(): String {
@@ -86,7 +113,47 @@ data class OutItem(val num: Int, val funct1: Int, val stat1: Int, val temp1: Int
         }
         return s
     }
+    fun getTemperature() : String {
+
+        if(factTemp != 0x80) return factTemp.toString()
+        else return "-"
+    }
     fun getFtout() : String {
         return ftout.toString()
+    }
+    fun isRemote() : Boolean {
+        return when(funct){
+            FOUT_REMOTE -> true
+            FOUT_TIMETABLE -> true
+            FOUT_ZONE -> true
+            else -> false
+        }
+    }
+    fun IsTermo() : Boolean {
+        return when(funct){
+            FOUT_TERMO_DOWN -> true
+            FOUT_TERMO_UP -> true
+            else -> false
+        }
+    }
+    fun getTextTermo(context: Context) : String {
+        return when(funct){
+            FOUT_TERMO_DOWN -> context.getString(R.string.funct_out_termodown)
+            FOUT_TERMO_UP -> context.getString(R.string.funct_out_termoup)
+            else -> ""
+        }
+    }
+
+    fun getStrIndTemper () : String {
+        val s = indTemp.toString()
+        val s1 = when(indTemp){
+            0 -> " (на клемме T)"
+            1 -> " (на клемме CLK)"
+            2 -> " (на клемме DATA)"
+            4,5,6,7 -> " (на 85xx адр${indTemp-3})"
+            else -> " (на 8108 адр${(indTemp-8)/4 + 1} IN${(indTemp-8)%4 + 1})"
+        }
+        val s2 = "Датчик " + s + s1
+        return s2
     }
 }

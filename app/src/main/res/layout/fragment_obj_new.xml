@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:digits="0123456789ABCDEF"
-                android:hint="Номер объекта"
+                android:hint="@string/text_number_object"
                 android:inputType="textCapCharacters"
                 android:textAlignment="center">
                 <requestFocus />

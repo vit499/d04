@@ -121,6 +121,8 @@ class MainViewModel(
     private val _outList = MutableLiveData<List<OutItem>>()
     val outList : LiveData<List<OutItem>>
         get() = _outList
+    fun getOutList() = outList.value
+    fun getOutItem(ind: Int) = outList.value?.get(ind)
 
     private val _navigateBackFromObj = MutableLiveData<Boolean>()
     val navigateBackFromObj : LiveData<Boolean>

@@ -41,7 +41,6 @@ class OutputsFragment : Fragment() {
         recyclerView.adapter = adapter
 
         mainViewModel = activity?.run {
-           // Logm.aa("obj fr")
             ViewModelProviders.of(this)[MainViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
         outViewModel = activity?.run {
@@ -78,8 +77,10 @@ class OutputsFragment : Fragment() {
         })
 
         outViewModel.navigateToValOut.observe(this, Observer {
-            if(it){
-                this.findNavController().navigate(R.id.action_outputsFragment_to_outValueFragment)
+            it?.let {
+                //this.findNavController().navigate(R.id.action_outputsFragment_to_outValueFragment)
+                //this.findNavController().navigate(R.id.action_outputsFragment_to_outTermoFragment)
+                this.findNavController().navigate(OutputsFragmentDirections.actionOutputsFragmentToOutTermoFragment(it))
                 outViewModel.clrNavigationToValOut()
             }
         })
@@ -101,7 +102,9 @@ class OutputsFragment : Fragment() {
 
     val onClick = { o: Int, b : Int ->
        // Logm.aa("out click ${b.toString()}")
-        if(o == 0) mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
+        if(o == 0) {
+            mainViewModel.onPostCmd("out${(b+1).toString()}", "10010")
+        }
         else if(o == 1) {
             outViewModel.onSetValueOut(b)
         }
