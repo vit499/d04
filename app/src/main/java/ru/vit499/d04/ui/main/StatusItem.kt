@@ -26,13 +26,13 @@ class StatusItem(
             name = "Раздел " + (ind + 1).toString()
             intColor = color1 // intColorP[stat];
             strStat = strStat1
-            cmd = cmd1
+            cmd = ""; // cmd1
             span = 3
             strPart = 1
         } else {
-            name = "Зона " + (ind + 1).toString() + "\r\n" + strStat1
+            name = "Зона " + (ind + 1).toString(); // + "\r\n" + strStat1
             intColor = color1 // intColorZ[stat];
-            strStat = ""
+            strStat = strStat1; // ""
             cmd = ""
             span = 1
             strPart = 0

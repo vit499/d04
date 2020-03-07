@@ -3,6 +3,8 @@ package ru.vit499.d04.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +31,11 @@ class MainAdapter(
     }
 
     class ViewHolder private constructor (itemView: View) : RecyclerView.ViewHolder(itemView){
-        val tv1 : TextView = itemView.findViewById(R.id.recl_item_state1)
-        val tv2 : TextView = itemView.findViewById(R.id.recl_item_state2)
-        val tv3 : TextView = itemView.findViewById(R.id.recl_item_state3)
+        val tv1 : TextView = itemView.findViewById(R.id.recl_item_pz1)
+        val tv2 : TextView = itemView.findViewById(R.id.recl_item_pz2)
+        val tv3 : TextView = itemView.findViewById(R.id.recl_item_pz3)
+        val im : ImageButton = itemView.findViewById(R.id.imageButtonPz)
+        val layout : RelativeLayout = itemView.findViewById(R.id.zp_item_layout)
 
         fun bind(item: StatusItem, position: Int, onClickListener: (Int, Int) -> Unit) {
             tv1.text = item.getName()
@@ -39,15 +43,15 @@ class MainAdapter(
             tv3.text = item.getCmd()
 
             if(item.getStrPart() == 1) {
-
+                im.visibility = View.VISIBLE
+                im.setBackgroundColor(item.getIntColor())
+                im.setOnLongClickListener() {
+                    onClickListener(0, position)
+                    true
+                }
             }
             else {
-
-            }
-
-            itemView.setOnLongClickListener(){
-                onClickListener(0, position)
-                true
+                im.visibility = View.GONE
             }
         }
 

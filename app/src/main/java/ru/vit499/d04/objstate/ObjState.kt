@@ -274,9 +274,9 @@ class ObjState(obj: Obj) {
             val pp = objPartZone.part.get(p)
             val dp = StatusItem(1, pp.number, pp.statInt, pp.strStat, pp.cmdArm, pp.color, "")
             listStat.add(dp)
-            val nz = objPartZone.part.get(p).zone.size
+            val nz = pp.zone.size
             for (z in 0 until nz) {
-                val zz = objPartZone.part.get(p).zone.get(z)
+                val zz = pp.zone.get(z)
                 val dz = StatusItem(0, zz.number, zz.statInt, zz.strStat, "", zz.color, "")
                 listStat.add(dz)
             }

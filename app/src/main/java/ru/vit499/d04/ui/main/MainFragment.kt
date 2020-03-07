@@ -46,14 +46,14 @@ class MainFragment : Fragment() {
         //val tvLog = view.findViewById<TextView>(R.id.tv_log)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recl_main_status)
-        val manager = GridLayoutManager(activity, 3, LinearLayoutManager.VERTICAL, false)
+        //val manager = GridLayoutManager(activity, 3, LinearLayoutManager.VERTICAL, false)
 
-        manager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return mainViewModel.statList.value?.get(position)?.getSpan() ?: 0
-            }
-        })
-        recyclerView.layoutManager = manager
+//        manager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup() {
+//            override fun getSpanSize(position: Int): Int {
+//                return mainViewModel.statList.value?.get(position)?.getSpan() ?: 0
+//            }
+//        })
+        //recyclerView.layoutManager = manager
         val adapter = MainAdapter(onClickListener = { a, b -> onClick(a, b) })
         recyclerView.adapter = adapter
 

@@ -39,21 +39,21 @@ data class OutItem(
     }
 
 
-    var FOUT_OFF = 0
-    var FOUT_STATUS_ARM_ALARM = 1
-    var FOUT_STATUS_ARM = 2
-    var FOUT_SIREN = 3
-    var FOUT_REMOTE = 4
-    var FOUT_TRBL_GSM = 5
-    var FOUT_TIMETABLE = 6
-    var FOUT_TERMO_DOWN = 7
-    var FOUT_TERMO_UP = 8
-    var FOUT_AFTER_ARM = 9
-    var FOUT_AFTER_DISARM = 10
-    var FOUT_FIRE_RESET = 11
-    var FOUT_ZONE = 12
-    var FOUT_PART_ALARM = 13
-    var FOUT_END = 14
+    var FOUT_OFF : Int = 0
+    var FOUT_STATUS_ARM_ALARM : Int = 1
+    var FOUT_STATUS_ARM : Int = 2
+    var FOUT_SIREN : Int = 3
+    var FOUT_REMOTE : Int = 4
+    var FOUT_TRBL_GSM : Int = 5
+    var FOUT_TIMETABLE : Int = 6
+    var FOUT_TERMO_DOWN : Int = 7
+    var FOUT_TERMO_UP : Int = 8
+    var FOUT_AFTER_ARM : Int = 9
+    var FOUT_AFTER_DISARM : Int = 10
+    var FOUT_FIRE_RESET : Int = 11
+    var FOUT_ZONE : Int = 12
+    var FOUT_PART_ALARM : Int = 13
+    var FOUT_END : Int = 14
 
     private val strFouts = arrayOf(
         "не задействован",

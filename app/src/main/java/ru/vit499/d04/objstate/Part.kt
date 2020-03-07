@@ -1,6 +1,29 @@
 package ru.vit499.d04.objstate
 
+import ru.vit499.d04.util.Logm
+
 class Part(num: Int, stat: Int, zones: ArrayList<Zone>) {
+
+    val STATUS_ABSENT : Int = 0
+    val STATUS_NOT_ARMED : Int = 1
+    val STATUS_TIME_OUT : Int = 2
+    val STATUS_ARMED : Int = 4
+    val STATUS_TIME_IN : Int = 8
+    val STATUS_BYPASS : Int = 0x10
+    val STATUS_NOT_READY : Int = 0x20
+    val STATUS_ALARM : Int = 0x40
+    val STATUS_FORCE : Int = 0x80
+
+    val S_P_READY : Int = 1
+    val S_P_TIME_IN : Int = 2
+    val S_P_ARMED : Int = 3
+    val S_P_TIME_OUT : Int = 4
+    val S_P_NOT_READY : Int = 5
+    val S_P_ALARM : Int = 6
+    val S_P_ALARM_ARMED : Int = 7
+    val S_P_BYPASS : Int = 8
+    val S_P_FORCE : Int = 9
+    val S_P_END : Int = 10
 
     internal var number: Int = 0
     internal var statInt: Int = 0
@@ -27,29 +50,10 @@ class Part(num: Int, stat: Int, zones: ArrayList<Zone>) {
             zone.add(z.get(i))
         }
     }
-    internal val STATUS_ABSENT = 0
-    internal val STATUS_NOT_ARMED = 1 shl 0
-    internal val STATUS_TIME_OUT = 1 shl 1
-    internal val STATUS_ARMED = 1 shl 2
-    internal val STATUS_TIME_IN = 1 shl 3
-    internal val STATUS_BYPASS = 1 shl 4
-    internal val STATUS_FORCE = 1 shl 7
-    internal val STATUS_NOT_READY = 1 shl 5
-    internal val STATUS_ALARM = 1 shl 6
 
-    internal val S_P_READY = 1
-    internal val S_P_TIME_IN = 2
-    internal val S_P_ARMED = 3
-    internal val S_P_TIME_OUT = 4
-    internal val S_P_NOT_READY = 5
-    internal val S_P_ALARM = 6
-    internal val S_P_ALARM_ARMED = 7
-    internal val S_P_BYPASS = 8
-    internal val S_P_FORCE = 9
-    internal val S_P_END = 10
 
     //--------------
-    internal fun GetIndStatusPart(status: Int): Int {
+    fun GetIndStatusPart(status: Int): Int {
         var s = 0
         val sa: Int    // status armed
         val p: Int
@@ -81,12 +85,11 @@ class Part(num: Int, stat: Int, zones: ArrayList<Zone>) {
                 p = S_P_READY
             }
         }
-
         return p
     }
 
     //-----------------
-    internal fun GetStrStatusPart(p: Int): String {
+    fun GetStrStatusPart(p: Int): String {
         var p = p
         val s = arrayOf(
             "-", // 0
@@ -106,7 +109,7 @@ class Part(num: Int, stat: Int, zones: ArrayList<Zone>) {
     }
 
     //---
-    internal fun GetStrCmdArm(p: Int): String {
+    fun GetStrCmdArm(p: Int): String {
         var p = p
         val s = arrayOf(
             "-", // 0
@@ -125,7 +128,7 @@ class Part(num: Int, stat: Int, zones: ArrayList<Zone>) {
         return s[p]
     }
 
-    internal fun GetColorBtnArm(p: Int): Int {
+    fun GetColorBtnArm(p: Int): Int {
         var p = p
         val c = intArrayOf(
             -0x990067, -0xff0100, // готов          зеленый

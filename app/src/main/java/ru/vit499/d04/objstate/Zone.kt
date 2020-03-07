@@ -2,7 +2,7 @@ package ru.vit499.d04.objstate
 
 class Zone(num: Int, stat: Int) {
 
-    internal val S_Z_END = 4
+    internal val S_Z_END : Int = 4
 
     internal var number: Int = 0
     internal var statInt: Int = 0
