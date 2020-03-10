@@ -269,7 +269,7 @@ class ObjState(obj: Obj) {
         val listStat = ArrayList<StatusItem>()
 
         val np = objPartZone.part.size
-        Logm.aa("nparts:"  + " " + np.toString())
+        //Logm.aa("nparts:"  + " " + np.toString())
         for (p in 0 until np) {
             val pp = objPartZone.part.get(p)
             val dp = StatusItem(1, pp.number, pp.statInt, pp.strStat, pp.cmdArm, pp.color, "")

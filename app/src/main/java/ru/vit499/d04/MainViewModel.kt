@@ -145,6 +145,8 @@ class MainViewModel(
         _navBackFromEditObj.value = false
     }
 
+    var _networkLink : Int = 0
+
     init{
         Log.i("aa", "--- init --- ")
         Filem.setDir(application)
@@ -173,10 +175,20 @@ class MainViewModel(
         _navigateToEditObj.value = false
         _navigateToObj.value = false
 
-        if(accExist && objExist){
-            //getStateList()
+        if(accExist && objExist && (_networkLink == 1)){
+
             onReqStatus()
             onMqttStart()
+        }
+    }
+
+    fun setNetworkLink(s: Int){
+        if(_networkLink != s) {
+            _networkLink = s
+            if(s == 1){
+                onReqStatus()
+                onMqttStart()
+            }
         }
     }
 
@@ -424,10 +436,9 @@ class MainViewModel(
 
     fun onReqStat () {
         if(_progress.value == true) return
-        val link = Link.isLink(this.getApplication())
-        Logm.aa("link: $link")
-        if(!link) {
-
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- onReqStat ------ ")
+            return
         }
         _progress.value = true
        // Logm.aa("on Rec Stat...")
@@ -442,6 +453,10 @@ class MainViewModel(
     }
     fun onReqEvent () {
         if(_progress.value == true) return
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- onReqEvent ------ ")
+            return
+        }
         _progress.value = true
       //  Logm.aa("on Rec Ev...")
         val strReq = strReqHttp(curObjName, "events")
@@ -496,6 +511,10 @@ class MainViewModel(
 //    }
 
     fun onFbSub () {
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- onFbSub ------ ")
+            return
+        }
         httpScope.launch {
             val arr = getArrObj() ?: return@launch
             val token = FcmToken.getFcmToken4()
@@ -517,6 +536,10 @@ class MainViewModel(
     }
 
     suspend fun sendFb (token: String) {
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- sendFb ------ ")
+            return
+        }
         withContext(Dispatchers.IO) {
             val http = HttpCor(10)
             val s = http?.reqStat(token, 3, 10) ?: "error"
@@ -582,7 +605,10 @@ class MainViewModel(
 
     //------------------  send cmd -------------
     fun onPostCmd (key: String, value: String) {
-
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- onPostCmd ------ ")
+            return
+        }
         //_progress.value = true
         httpScope.launch {
 
@@ -607,6 +633,10 @@ class MainViewModel(
 
     fun onMqttStart () {
         if(!Settings.mqttEnable) return
+        if(_networkLink != 1) {
+            Logm.aa("network not ok! ------- onMqttStart ------ ")
+            return
+        }
         httpScope.launch {
             withContext(Dispatchers.IO) {
                 if(mqtt == null) mqtt = MqttCor()

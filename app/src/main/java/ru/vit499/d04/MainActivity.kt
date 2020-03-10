@@ -1,5 +1,6 @@
 package ru.vit499.d04
 
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -24,15 +25,21 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
+import android.net.*
 import android.os.PowerManager
 import android.provider.Settings
+import android.widget.Toast
 import ru.vit499.d04.database.MesDatabase
 import ru.vit499.d04.ui.notifysms.MesViewModel
 import ru.vit499.d04.ui.notifysms.MesViewModelFactory
 import ru.vit499.d04.ui.outputs.OutViewModel
 import ru.vit499.d04.ui.outputs.OutViewModelFactory
 import ru.vit499.d04.util.Stp
+import android.net.NetworkCapabilities
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.annotation.RequiresPermission
 
 
 class MainActivity : AppCompatActivity() {
@@ -108,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         val dsMes = MesDatabase.getInstance(application).mesDatabaseDao
         mesViewModel = ViewModelProviders.of(this, MesViewModelFactory(dsMes, application)).get(MesViewModel::class.java)
 
+        startProcLink()
         //mainViewModel = createViewModel(this)
 
         mainViewModel.navigateToNotify.observe(this, Observer {
@@ -154,6 +162,7 @@ class MainActivity : AppCompatActivity() {
         checkNotify()
     }
     override fun onStop(){
+        //if(connectivityManager != null) connectivityManager.unregisterNetworkCallback(networkCallback)
         super.onStop()
         //unregisterReceiver(broadcastReceiver)
     }
@@ -256,6 +265,86 @@ class MainActivity : AppCompatActivity() {
             val viewModelFactory = MainViewModelFactory(dataSource, application)
             var mainViewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
             return mainViewModel
+        }
+    }
+
+    private lateinit var connectivityManager: ConnectivityManager
+    fun startProcLink() {
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val builder = NetworkRequest.Builder()
+        builder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        //builder.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)//TRANSPORT_WIFI
+        //builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+        val build = builder.build()
+        //connectivityManager.requestNetwork(build, networkCallback)
+
+        connectivityManager.registerNetworkCallback(build, connectivityManagerCallback)
+    }
+
+
+//    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+//        override fun onAvailable(network: Network) {
+//            super.onAvailable(network)
+//            val caps = connectivityManager.getNetworkCapabilities(network)
+//            val cellular = caps!!.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+//            val s = "network ok, cel: $cellular"
+//            Logm.aa("onAvailable   ----------------")
+//            mainViewModel.setNetworkLink(1)
+//            Toast.makeText(application, s, Toast.LENGTH_LONG).show()
+//        }
+//
+//        override fun onLost(network: Network) {
+//            super.onLost(network)
+//            val caps = connectivityManager.getNetworkCapabilities(network)
+//            val cellular = caps!!.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+//            val s = "network lost, cel: $cellular"
+//            Logm.aa("onLost   ----------------")
+//            mainViewModel.setNetworkLink(2)
+//            Toast.makeText(application, s, Toast.LENGTH_LONG).show()
+//        }
+//        override fun onUnavailable() {
+//            super.onUnavailable()
+//            val s = "network not available"
+//            Logm.aa("onUnavailable   ----------------")
+//            mainViewModel.setNetworkLink(0)
+//            Toast.makeText(application, s, Toast.LENGTH_LONG).show()
+//        }
+//    }
+
+    val connectivityManagerCallback: ConnectivityManager.NetworkCallback = object : ConnectivityManager.NetworkCallback() {
+
+        private val activeNetworks: MutableList<Network> = mutableListOf()
+
+        //@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+
+            // Add to list of active networks if not already in list
+            if (activeNetworks.none { activeNetwork -> activeNetwork.networkHandle == network.networkHandle }) activeNetworks.add(network)
+            val isNetworkConnected = activeNetworks.isNotEmpty()
+
+            val s = "network ok"
+            Logm.aa("onAvailable   ----------------")
+            if(isNetworkConnected) {
+                mainViewModel.setNetworkLink(1)
+                Toast.makeText(application, s, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        //@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+        override fun onLost(network: Network) {
+            super.onLost(network)
+
+            // Remove network from active network list
+            activeNetworks.removeAll { activeNetwork -> activeNetwork.networkHandle == network.networkHandle }
+            val isNetworkConnected = activeNetworks.isNotEmpty()
+
+            val s = "network lost"
+            Logm.aa("onLost   ----------------")
+            if(!isNetworkConnected) {
+                mainViewModel.setNetworkLink(0)
+                Toast.makeText(application, s, Toast.LENGTH_LONG).show()
+            }
         }
     }
 }
